@@ -369,6 +369,10 @@ main > .section.hero {
   font-weight: 500;
 }
 
+.section .concept-label em {
+  font-style: normal;
+}
+
 /* section style: filters (category links on index pages) */
 .section.filters ul {
   display: flex;

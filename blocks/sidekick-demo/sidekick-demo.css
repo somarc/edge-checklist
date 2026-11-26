@@ -122,10 +122,13 @@
 }
 
 .sidekick-demo .sidekick-demo-score > div::first-line {
-  color: var(--color-pass);
+  color: var(--score-color, var(--color-pass));
   font-size: 1rem;
   font-weight: 600;
 }
+
+.sidekick-demo .sidekick-demo-score > div:nth-child(2) { --score-color: var(--color-human); }
+.sidekick-demo .sidekick-demo-score > div:nth-child(3) { --score-color: #b3261e; }
 
 .sidekick-demo .sidekick-demo-head {
   grid-row: 2;
