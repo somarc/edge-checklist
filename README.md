@@ -86,6 +86,25 @@ Metadata: `Title`, `Description`, `Template: checklist-page`, `Theme: cat-{categ
   Sidekick), tools (Search link to `/browse`, upgraded to a search dialog).
 - `/footer`: brand + CTA list, `columns` block with one column per category, bottom line.
 
+## Experience Workspace library
+
+Configured in da.live under Config > Library (site config `library` sheet, `content.da.live`
+paths, so changes need no publish):
+
+- **Blocks**: `/library/blocks/<block>` documents with real sample content, variants and a
+  `library-metadata` description; listed in `/library/blocks.json` (sheet `blocks`).
+- **Block options**: sheet `options` in `/library/blocks.json`: section styles for
+  `section-metadata`, and the page metadata fields (category, page colour, template, icon,
+  checks, verify mix, keywords, robots) that the Page panel shows as a form.
+- **Templates**: checklist page, category index, concept page (`/library/templates/*`).
+- **Icons**: every `/icons/*.svg`, inserted as `:name:` (`/library/icons.json`).
+- **Placeholders**: `/placeholders.json` (Key, Text) holds the UI text of the checklist block
+  and the search dialog (`scripts/placeholders.js`, defaults in code). Edit it in the
+  Placeholders tab, then preview and publish it. It is deliberately not added to the authoring
+  library: the site does not replace `{{key}}` tokens in content.
+
+`tools/library.py` regenerates all of it; `python3 tools/generate.py <dir>` writes it with the pages.
+
 ## Data and generator
 
 The checklist content was researched from aem.live, Experience League and the boilerplate and
