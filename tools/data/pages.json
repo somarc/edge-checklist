@@ -467,7 +467,7 @@
           "by": "machine",
           "how": "curl pdp | grep meta"
         },
-        "source": "https://experienceleague.adobe.com/developer/commerce/storefront/setup/seo/metadata/"
+        "source": "https://experienceleague.adobe.com/en/tools/commerce-storefront/setup/seo/metadata/"
       },
       {
         "title": "Full tag set",
@@ -477,7 +477,7 @@
           "by": "machine",
           "how": "curl pdp | grep og:"
         },
-        "source": "https://experienceleague.adobe.com/developer/commerce/storefront/setup/seo/metadata/"
+        "source": "https://experienceleague.adobe.com/en/tools/commerce-storefront/setup/seo/metadata/"
       },
       {
         "title": "Product JSON-LD",
@@ -487,7 +487,7 @@
           "by": "machine",
           "how": "Rich Results Test"
         },
-        "source": "https://experienceleague.adobe.com/developer/commerce/storefront/setup/seo/metadata/#schemaorg-data-json-ld"
+        "source": "https://experienceleague.adobe.com/en/tools/commerce-storefront/setup/seo/metadata/#schemaorg-data-json-ld"
       },
       {
         "title": "Generate metadata",
@@ -497,7 +497,7 @@
           "by": "machine",
           "how": "npm start in tools/pdp-metadata"
         },
-        "source": "https://experienceleague.adobe.com/developer/commerce/storefront/setup/seo/metadata/#generate-metadata"
+        "source": "https://experienceleague.adobe.com/en/tools/commerce-storefront/setup/seo/metadata/#generate-metadata"
       },
       {
         "title": "Lowercase SKU URLs",
@@ -507,7 +507,7 @@
           "by": "agent",
           "how": "/code-review"
         },
-        "source": "https://experienceleague.adobe.com/developer/commerce/storefront/setup/seo/indexing/#url-format-of-catalog-pages"
+        "source": "https://experienceleague.adobe.com/en/tools/commerce-storefront/setup/seo/indexing/#url-format-of-catalog-pages"
       },
       {
         "title": "Canonical to parent",
@@ -517,7 +517,7 @@
           "by": "machine",
           "how": "curl pdp | grep canonical"
         },
-        "source": "https://experienceleague.adobe.com/developer/commerce/storefront/setup/seo/indexing/#canonical-urls"
+        "source": "https://experienceleague.adobe.com/en/tools/commerce-storefront/setup/seo/indexing/#canonical-urls"
       },
       {
         "title": "PDPs in sitemap",
@@ -527,7 +527,7 @@
           "by": "machine",
           "how": "curl /sitemap.xml"
         },
-        "source": "https://experienceleague.adobe.com/developer/commerce/storefront/setup/seo/sitemaps/#whats-included-automatically"
+        "source": "https://experienceleague.adobe.com/en/tools/commerce-storefront/setup/seo/sitemaps/#whats-included-automatically"
       },
       {
         "title": "Prerender thin pages",
@@ -537,7 +537,7 @@
           "by": "machine",
           "how": "URL Inspection Tool"
         },
-        "source": "https://experienceleague.adobe.com/developer/commerce/storefront/setup/seo/#keep-both-layers-aligned"
+        "source": "https://experienceleague.adobe.com/en/tools/commerce-storefront/setup/seo/#keep-both-layers-aligned"
       }
     ],
     "related": [
@@ -554,12 +554,12 @@
       },
       {
         "label": "Product details drop-in",
-        "url": "https://experienceleague.adobe.com/developer/commerce/storefront/dropins/product-details/",
+        "url": "https://experienceleague.adobe.com/en/tools/commerce-storefront/dropins/product-details/",
         "note": "Containers that make up a PDP"
       },
       {
         "label": "Storefront SEO metadata",
-        "url": "https://experienceleague.adobe.com/developer/commerce/storefront/setup/seo/metadata/",
+        "url": "https://experienceleague.adobe.com/en/tools/commerce-storefront/setup/seo/metadata/",
         "note": "Required tags, JSON-LD and the metadata generator"
       }
     ]
@@ -578,7 +578,7 @@
           "by": "agent",
           "how": "/code-review"
         },
-        "source": "https://experienceleague.adobe.com/developer/commerce/storefront/dropins/product-discovery/"
+        "source": "https://experienceleague.adobe.com/en/tools/commerce-storefront/dropins/product-discovery/"
       },
       {
         "title": "Page metadata",
@@ -588,7 +588,7 @@
           "by": "machine",
           "how": "curl plp | grep meta"
         },
-        "source": "https://experienceleague.adobe.com/developer/commerce/storefront/setup/seo/metadata/"
+        "source": "https://experienceleague.adobe.com/en/tools/commerce-storefront/setup/seo/metadata/"
       },
       {
         "title": "Schema on catalog pages",
@@ -598,7 +598,7 @@
           "by": "machine",
           "how": "Rich Results Test"
         },
-        "source": "https://experienceleague.adobe.com/developer/commerce/storefront/setup/seo/metadata/#schemaorg-data-json-ld"
+        "source": "https://experienceleague.adobe.com/en/tools/commerce-storefront/setup/seo/metadata/#schemaorg-data-json-ld"
       },
       {
         "title": "Consistent product links",
@@ -608,7 +608,7 @@
           "by": "agent",
           "how": "/code-review"
         },
-        "source": "https://experienceleague.adobe.com/developer/commerce/storefront/setup/seo/metadata/#product-link-generation"
+        "source": "https://experienceleague.adobe.com/en/tools/commerce-storefront/setup/seo/metadata/#product-link-generation"
       },
       {
         "title": "LCP after the grid",
@@ -628,7 +628,7 @@
           "by": "machine",
           "how": "hreflang Tags Testing Tool"
         },
-        "source": "https://experienceleague.adobe.com/developer/commerce/storefront/setup/seo/indexing/#multi-store-setups"
+        "source": "https://experienceleague.adobe.com/en/tools/commerce-storefront/setup/seo/indexing/#multi-store-setups"
       },
       {
         "title": "Breadcrumbs",
@@ -650,7 +650,7 @@
     "wild": [
       {
         "label": "Product Discovery drop-in",
-        "url": "https://experienceleague.adobe.com/developer/commerce/storefront/dropins/product-discovery/",
+        "url": "https://experienceleague.adobe.com/en/tools/commerce-storefront/dropins/product-discovery/",
         "note": "Containers for PLPs, facets and quick search"
       },
       {
@@ -660,7 +660,7 @@
       },
       {
         "label": "Storefront SEO indexing",
-        "url": "https://experienceleague.adobe.com/developer/commerce/storefront/setup/seo/indexing/",
+        "url": "https://experienceleague.adobe.com/en/tools/commerce-storefront/setup/seo/indexing/",
         "note": "Canonicals, URL format and multi-store rules"
       }
     ]
@@ -749,7 +749,7 @@
           "by": "agent",
           "how": "/code-review"
         },
-        "source": "https://experienceleague.adobe.com/developer/commerce/storefront/setup/seo/indexing/#redirects"
+        "source": "https://experienceleague.adobe.com/en/tools/commerce-storefront/setup/seo/indexing/#redirects"
       }
     ],
     "related": [

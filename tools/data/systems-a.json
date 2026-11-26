@@ -104,7 +104,7 @@
     ],
     "wild": [
       {
-        "label": "Commerce boilerplate \u00b7 GitHub",
+        "label": "Commerce boilerplate · GitHub",
         "url": "https://github.com/hlxsites/aem-boilerplate-commerce",
         "note": "Starter repo for the EDS Commerce storefront"
       },
@@ -225,7 +225,7 @@
     ],
     "wild": [
       {
-        "label": "Media Assets \u00b7 aem.live",
+        "label": "Media Assets · aem.live",
         "url": "https://www.aem.live/docs/media",
         "note": "Media Bus vs DAM delivery approaches"
       },
@@ -351,12 +351,12 @@
     ],
     "wild": [
       {
-        "label": "Forms \u00b7 aem.live",
+        "label": "Forms · aem.live",
         "url": "https://www.aem.live/developer/forms",
         "note": "Feature matrix and getting-started links"
       },
       {
-        "label": "Forms boilerplate \u00b7 GitHub",
+        "label": "Forms boilerplate · GitHub",
         "url": "https://github.com/adobe-rnd/aem-boilerplate-forms",
         "note": "Project pre-configured with the Adaptive Forms Block"
       },
@@ -472,12 +472,12 @@
     ],
     "wild": [
       {
-        "label": "Search \u00b7 Block Collection",
+        "label": "Search · Block Collection",
         "url": "https://www.aem.live/developer/block-collection/search",
         "note": "Reference block over query-index.json"
       },
       {
-        "label": "search.js \u00b7 GitHub",
+        "label": "search.js · GitHub",
         "url": "https://github.com/adobe/aem-block-collection/blob/main/blocks/search/search.js",
         "note": "Filtering, highlighting and aria-live results"
       },
@@ -608,7 +608,7 @@
         "note": "Deployment options and benefits"
       },
       {
-        "label": "Adobe Managed CDN \u00b7 aem.live",
+        "label": "Adobe Managed CDN · aem.live",
         "url": "https://www.aem.live/docs/byo-cdn-adobe-managed",
         "note": "DNS, certificates and push invalidation"
       }
@@ -719,17 +719,17 @@
     ],
     "wild": [
       {
-        "label": "AEM Code Sync \u00b7 GitHub",
+        "label": "AEM Code Sync · GitHub",
         "url": "https://github.com/apps/aem-code-sync",
         "note": "The GitHub app that syncs your code"
       },
       {
-        "label": "AEM Boilerplate \u00b7 GitHub",
+        "label": "AEM Boilerplate · GitHub",
         "url": "https://github.com/adobe/aem-boilerplate",
         "note": "Template repo for new sites"
       },
       {
-        "label": "Repoless \u00b7 aem.live",
+        "label": "Repoless · aem.live",
         "url": "https://www.aem.live/docs/repoless",
         "note": "One codebase, many sites"
       },

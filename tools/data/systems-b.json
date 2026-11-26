@@ -104,18 +104,18 @@
     ],
     "wild": [
       {
-        "label": "aem-martech \u00b7 GitHub",
+        "label": "aem-martech · GitHub",
         "url": "https://github.com/adobe-rnd/aem-martech",
         "note": "Adobe Experience Cloud plugin with phased loading"
       },
       {
-        "label": "aem-gtm-martech \u00b7 GitHub",
+        "label": "aem-gtm-martech · GitHub",
         "url": "https://github.com/adobe-rnd/aem-gtm-martech",
         "note": "Google Analytics and GTM plugin"
       },
       {
         "label": "GTM martech demo",
-        "url": "https://www.aem.live/developer/gtm-martech-integration/demo",
+        "url": "https://main--aem-gtm-martech-site--adobe-rnd.aem.page/",
         "note": "Demo site running the GTM plugin"
       },
       {
@@ -230,18 +230,18 @@
     ],
     "wild": [
       {
-        "label": "Target integration \u00b7 aem.live",
+        "label": "Target integration · aem.live",
         "url": "https://www.aem.live/developer/target-integration",
         "note": "Web SDK and at.js code for scripts.js"
       },
       {
         "label": "Target with Web SDK",
-        "url": "https://experienceleague.adobe.com/docs/experience-platform/web-sdk/personalization/adobe-target/target-overview.html",
+        "url": "https://experienceleague.adobe.com/en/docs/target-dev/developer/client-side/aep/aep-web-sdk-overview",
         "note": "Experience League setup guide"
       },
       {
         "label": "Top and bottom of page events",
-        "url": "https://experienceleague.adobe.com/en/docs/experience-platform/web-sdk/use-cases/top-bottom-page-events",
+        "url": "https://experienceleague.adobe.com/en/docs/experience-platform/collection/use-cases/personalization/top-bottom-page-events",
         "note": "Pattern behind early personalization"
       }
     ]
@@ -351,7 +351,7 @@
     ],
     "wild": [
       {
-        "label": "aem-experimentation \u00b7 GitHub",
+        "label": "aem-experimentation · GitHub",
         "url": "https://github.com/adobe/aem-experimentation",
         "note": "Plugin install and configuration"
       },
@@ -361,7 +361,7 @@
         "note": "Split, dates, audiences and consent metadata"
       },
       {
-        "label": "Experimentation \u00b7 aem.live",
+        "label": "Experimentation · aem.live",
         "url": "https://www.aem.live/docs/experimentation",
         "note": "Author guide to variants"
       },
@@ -472,12 +472,12 @@
         "note": "Live explorer on an open domain"
       },
       {
-        "label": "helix-rum-js \u00b7 GitHub",
+        "label": "helix-rum-js · GitHub",
         "url": "https://github.com/adobe/helix-rum-js",
         "note": "The client-side collection library"
       },
       {
-        "label": "rum-distiller \u00b7 GitHub",
+        "label": "rum-distiller · GitHub",
         "url": "https://github.com/adobe/rum-distiller",
         "note": "Library behind the explorer, for scripted analysis"
       }
@@ -578,12 +578,12 @@
     ],
     "wild": [
       {
-        "label": "CMP integration \u00b7 aem.live",
+        "label": "CMP integration · aem.live",
         "url": "https://www.aem.live/developer/cmp-integration",
         "note": "OneTrust and Cookiebot examples"
       },
       {
-        "label": "consent-check.js \u00b7 boilerplate",
+        "label": "consent-check.js · boilerplate",
         "url": "https://github.com/adobe/aem-boilerplate/blob/main/scripts/consent-check.js",
         "note": "The default consent gate"
       },
@@ -689,12 +689,12 @@
     ],
     "wild": [
       {
-        "label": "Building integrations \u00b7 aem.live",
+        "label": "Building integrations · aem.live",
         "url": "https://www.aem.live/developer/integrations",
         "note": "Runtime choices and patterns"
       },
       {
-        "label": "JSON2HTML \u00b7 aem.live",
+        "label": "JSON2HTML · aem.live",
         "url": "https://www.aem.live/developer/json2html",
         "note": "Turn JSON endpoints into EDS pages"
       },

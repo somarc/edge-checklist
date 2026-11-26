@@ -32,13 +32,9 @@
   }
 }
 
-/* variants: steps (numbered cards) and modes (two command cards) */
-.columns.steps > div,
-.columns.modes > div {
-  gap: var(--space-4);
-}
-
+/* variant: steps (numbered cards) */
 .columns.steps > div {
+  gap: var(--space-4);
   counter-reset: step;
 }
 
@@ -74,44 +70,8 @@
   font-size: 0.9375rem;
 }
 
-.columns.modes > div > div {
-  padding: var(--space-6);
-  border-radius: var(--radius-xl);
-  background-color: var(--color-surface);
-  box-shadow: var(--shadow-card);
-}
-
-.columns.modes code {
-  display: inline-block;
-  padding: var(--space-1) var(--space-3);
-  border-radius: 0.5rem;
-  background-color: var(--color-ink);
-  color: #e9e8e3;
-}
-
-.columns.modes :is(h2, h3) {
-  margin-block-start: var(--space-4);
-  font-size: 1.5rem;
-}
-
-.columns.modes p {
-  color: var(--color-muted);
-}
-
-.columns.modes ul {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  padding: var(--space-4);
-  border-radius: var(--radius-m);
-  background-color: var(--color-bg);
-  font-size: var(--font-size-s);
-  list-style: none;
-}
-
 @media (width >= 900px) {
-  .columns.steps > div,
-  .columns.modes > div {
+  .columns.steps > div {
     align-items: stretch;
   }
 }

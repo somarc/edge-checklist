@@ -120,7 +120,7 @@
       },
       {
         "label": "Content modeling · Experience League",
-        "url": "https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/edge-delivery/wysiwyg-authoring/content-modeling",
+        "url": "https://www.aem.live/developer/component-model-definitions",
         "note": "The same rules for AEM authoring"
       }
     ]
@@ -1058,7 +1058,7 @@
       },
       {
         "label": "Set up library · docs.da.live",
-        "url": "https://docs.da.live/administrators/guides/setup-library",
+        "url": "https://www.aem.live/docs/ew/administering/set-up-library",
         "note": "Earlier DA version of the guide"
       },
       {

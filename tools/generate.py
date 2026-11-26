@@ -219,10 +219,6 @@ def home_page(lists, by_cat, by_id, totals):
         chips = ''.join(f'<li>{icon_link(by_id[i])}</li>' for i in FEATURED_CHIPS[cid] if i in by_id)
         cards.append([f'<h2>{e(name)}</h2><p>{e(blurb)}</p><p><a href="/{cid}">View all {len(by_cat[cid])}</a></p>',
                       f'<ul>{chips}</ul>'])
-    legend = []
-    for k in KINDS:
-        top = ''.join(f'<li>{e(how)} <em>{n}</em></li>' for how, n in top_checkers(lists, k))
-        legend.append([str(totals[k]), f'<h3>{k.capitalize()} checks</h3><p>{e(KIND_BLURB[k])}</p>', f'<ul>{top}</ul>'])
     items_total = sum(totals.values())
     machine_pct = round(totals['machine'] / items_total * 100)
     sourced = sum(1 for c in lists for it in c['items'] if it.get('source'))
@@ -243,7 +239,7 @@ def home_page(lists, by_cat, by_id, totals):
         '<h2>Every check says who can verify it.</h2>'
         f'<p>Edge Delivery is measurable: {machine_pct}% of these checks are a tool run, not an opinion. '
         'Each item is tagged so a pipeline, an agent or a person knows it is theirs.</p>'
-        + block('verify-legend', legend) + section_style('intro'),
+        + legend_block(lists, totals) + section_style('intro'),
         '<p><em>Concept</em></p><h2>The gut check, inside Sidekick.</h2>'
         '<p>Open any preview page and the Sidekick picks the checklists that match its template and blocks. '
         'Machine checks run on the spot; the rest becomes a short list for the agent or the author.</p>'
@@ -270,7 +266,29 @@ def sidekick_demo():
     ])
 
 
-def skill_page(lists):
+def legend_block(lists, totals):
+    rows = []
+    for k in KINDS:
+        top = []
+        for how, n in top_checkers(lists, k):
+            found = checker(how)
+            name = f'<a href="{e(found[1])}">{e(how)}</a>' if found and found[1] else e(how)
+            top.append(f'<li>{name} <em>{n}</em></li>')
+        rows.append([str(totals[k]), f'<h3>{k.capitalize()} checks</h3><p>{e(KIND_BLURB[k])}</p>',
+                     f'<ul>{"".join(top)}</ul>'])
+    return block('verify-legend', rows)
+
+
+def skill_page(lists, by_id, totals):
+    items_total = sum(totals.values())
+    # the demo audit: the three checklists a hero change on a homepage matches
+    matched = [by_id[i] for i in ('hero', 'homepage', 'performance') if i in by_id]
+    mk = Counter(it['verify']['by'] for c in matched for it in c['items'])
+    human_items = [it for c in matched for it in c['items'] if it['verify']['by'] == 'human']
+    human_line = (f'{len(human_items)} check{"s" if len(human_items) != 1 else ""} for you: '
+                  + '; '.join(e(it['title']) for it in human_items) + '.')
+    matched_names = ', '.join(f"{c['title']} · {CAT_NAME[c['category']]}" for c in matched)
+
     tally = defaultdict(lambda: {'n': 0, 'by': '', 'lists': set()})
     for c in lists:
         for it in c['items']:
@@ -285,49 +303,56 @@ def skill_page(lists):
         found = checker(how)
         cell = f'<a href="{e(found[1])}">{e(how)}</a>' if found and found[1] else e(how)
         rows.append([cell, t['by'].capitalize(), str(t['n']), str(len(t['lists']))])
+
     chat = block('chat', [
         ['You', 'Check <code>feat-hero--brand-site--acme.aem.page</code> before I merge.'],
-        ['Steps', '<ul><li>Rendered the branch preview, mobile and desktop</li>'
-                  '<li>Matched to Hero · Blocks, Homepage · Pages, Lighthouse 100 · Delivery</li>'
-                  '<li>Ran PageSpeed Insights and /code-review on the branch</li></ul>'],
+        ['Steps', f'<ul><li>Matched {e(matched_names)}: {sum(mk.values())} checks</li>'
+                  '<li>Ran PageSpeed Insights, curl and Page Status on the branch preview</li>'
+                  '<li>Read the diff with Adobe\'s /code-review and /building-blocks skills</li></ul>'],
         ['Edge Checklist', '<ul>'
-         '<li>✅ Hero image sits in the first section and is the LCP; mobile Lighthouse is 100. <code>machine · PageSpeed Insights</code></li>'
-         '<li>✅ Block works from the authored table alone; no new dependencies. <code>agent · /code-review</code></li>'
-         '<li>🤔 The hero heading is an h2 and the page has no h1; authors will copy this. <code>agent · rendered DOM</code></li>'
-         '<li>⛔ The analytics tag moved into the lazy phase; it belongs in delayed. <code>agent · scripts.js diff</code></li>'
+         f'<li>✅ {mk["machine"]} tool checks pass, including mobile Lighthouse 100 and the hero in the first '
+         'section. <code>machine · PageSpeed Insights</code></li>'
+         f'<li>🤔 {mk["agent"]} agent checks read; the hero heading is an h2 and the page has no h1. '
+         '<code>agent · rendered DOM</code></li>'
+         '<li>⛔ The analytics tag moved into the lazy phase; it belongs in delayed. '
+         '<code>agent · /code-review</code></li>'
+         f'<li>👤 {human_line} <code>human · {e(human_items[0]["verify"]["how"]) if human_items else "review"}</code></li>'
          '</ul>'],
     ])
     steps = block('columns steps', [[
-        '<h3>Point it at a page</h3><p>A preview URL, a branch URL from a pull request, or localhost:3000 from aem up. '
-        'It reviews what renders, plus the repo when it has it.</p>',
-        '<h3>It finds the checklists</h3><p>Template metadata, the blocks in the DOM and the scripts on the page tell it '
-        'which checklists apply. If nothing fits, it says so.</p>',
-        '<h3>It splits the work</h3><p>Machine checks run, agent checks get a verdict with evidence, and human checks '
-        'come back as a short list with who should answer.</p>',
-    ]])
-    modes = block('columns modes', [[
-        '<p><code>/edge-checklist audit</code></p><h3>Coverage</h3><p>Item by item: present, partial or missing, and '
-        'whether the gap matters on this page.</p><ul><li>✅ LCP image eager</li><li>✅ Title and description</li>'
-        '<li>⚠️ og:image falls back to the first image</li><li>⛔ No canonical on the locale root</li></ul>',
-        '<p><code>/edge-checklist critique</code></p><h3>Judgement</h3><p>A reviewer\'s opinion from the same knowledge: '
-        'what is working, what to reconsider.</p><ul><li>✅ Cards keep one rhythm across all nine teasers</li>'
-        '<li>🤔 Two carousels on one page split attention</li><li>🤔 The footer repeats the header links</li></ul>',
+        '<h3>Point it at a page</h3><p>The preview URL Code Sync gives every branch, a live page, or localhost:3000 '
+        'from aem up. It reviews what renders, plus the repo when it has it.</p>',
+        '<h3>It matches the checklists</h3><p>Template metadata, the blocks in the DOM and the scripts on the page '
+        'select the checklists that apply. If nothing fits, it says so.</p>',
+        '<h3>It routes every check</h3><p>Machine checks run in the tool named on the check, agent checks go to '
+        'Adobe\'s skills and come back with evidence, and human checks come back as a list with the doc to read.</p>',
     ]])
     return page([
-        '<p><em>Concept</em></p><h1>Give your agent an Edge Delivery eye.</h1>'
-        '<p>Every checklist, bundled into one skill. Point it at a preview URL, a branch or a block, and it audits '
-        'against the checklists that match, running the machine checks itself.</p>'
-        '<pre><code>npx skills add &lt;your-org&gt;/edge-checklist</code></pre>' + section_style('hero'),
-        chat,
-        '<h2>How it works</h2>' + steps + modes + section_style('intro'),
-        f'<h2>Built on checkers you already run.</h2><p>The skill writes no new rules. It routes each item to the tool '
-        f'named on it. These are the ones the {len(lists)} checklists lean on most.</p>'
+        '<p><em>Concept, not published</em></p><h1>Give your agent an Edge Delivery eye.</h1>'
+        f'<p>One skill that runs these {len(lists)} checklists against a preview URL, a branch or a repo. It writes '
+        'no rules of its own: every check routes to an Adobe agent skill, a Helix admin tool or a public tool, and '
+        'you only see what needs a person.</p>'
+        '<pre><code>/edge-checklist audit https://feat-hero--site--org.aem.page/</code></pre>' + section_style('hero'),
+        f'<h2>{items_total} checks, three owners.</h2><p>Every check is tagged with who can settle it. A tool runs '
+        f'{totals["machine"]}, an agent judges {totals["agent"]}, and {totals["human"]} are yours.</p>'
+        + legend_block(lists, totals) + section_style('intro'),
+        '<h2>What you get back</h2><p>One comment on the pull request: what the tools settled, what the agent '
+        'found with its evidence, and the short list that needs you.</p>' + chat + section_style('intro'),
+        '<h2>How it works</h2>' + steps + section_style('intro'),
+        f'<h2>Built on what Adobe already ships.</h2><p>The checkers the {len(lists)} checklists route to most, all '
+        f'public: Adobe\'s <a href="{SKILLS_REPO}">agent skills for Edge Delivery</a>, the '
+        f'<a href="{HELIX_TOOLS}">Helix admin tools</a> and tools like PageSpeed Insights.</p>'
         + block('checkers', rows)
         + '<p><a href="/sources">Every source, skill and tool behind the checks</a></p>' + section_style('intro'),
+        '<h2>Status</h2><p>The checklists, their sources and the routing above are real and public on this site, '
+        'and the data the skill would bundle is in '
+        '<a href="https://github.com/somarc/edge-checklist/tree/main/tools/data">the site\'s repository</a>. '
+        'The skill itself is a concept and is not published yet.</p>' + section_style('intro'),
         kv_block('metadata', [
             ('title', 'Agent skill · Edge Checklist'),
-            ('description', 'Concept: every Edge Checklist bundled into one agent skill that audits a preview URL, '
-                            'branch or block and routes each check to the tool named on it.'),
+            ('description', f'Concept: one agent skill that runs {len(lists)} Edge Delivery checklists against a '
+                            'preview URL and routes every check to an Adobe skill, a Helix admin tool or a public '
+                            'tool.'),
         ]),
     ])
 
@@ -436,6 +461,7 @@ def nav_page():
         f'<ul><li><a href="/">Home</a></li><li><p>Browse</p><ul>{cats}<li><a href="/browse">All checklists</a></li></ul></li>'
         '<li><a href="/skill">Agent skill</a></li><li><a href="/sidekick">Sidekick</a></li></ul>',
         '<p><a href="/browse">Search</a></p>',
+        kv_block('metadata', [('robots', 'noindex')]),
     ])
 
 
@@ -453,6 +479,7 @@ def footer_page(lists, by_cat, items_total):
         '<p>Design idea after checklist.design by George Hatzis. Checks cite aem.live, Experience League, '
         '<a href="/sources">Adobe skills and tools.aem.live</a>. Not an Adobe product.</p>'
         f'<p>{len(lists)} checklists · {items_total} checks</p>',
+        kv_block('metadata', [('robots', 'noindex')]),
     ])
 
 
@@ -479,7 +506,7 @@ def main():
         'Every checklist, every category. The bar on each card shows the mix of machine, agent and human checks.',
         lists, lists, by_cat, 'All checklists · Edge Checklist')
     files['index.html'] = home_page(lists, by_cat, by_id, totals)
-    files['skill.html'] = skill_page(lists)
+    files['skill.html'] = skill_page(lists, by_id, totals)
     files['sidekick.html'] = sidekick_page()
     files['sources.html'] = sources_page(lists)
     files['nav.html'] = nav_page()

@@ -215,12 +215,12 @@
     ],
     "wild": [
       {
-        "label": "scripts.js \u00b7 Boilerplate",
+        "label": "scripts.js · Boilerplate",
         "url": "https://github.com/adobe/aem-boilerplate/blob/main/scripts/scripts.js",
         "note": "loadEager, loadLazy and loadDelayed"
       },
       {
-        "label": "consent-check.js \u00b7 Boilerplate",
+        "label": "consent-check.js · Boilerplate",
         "url": "https://github.com/adobe/aem-boilerplate/blob/main/scripts/consent-check.js",
         "note": "Dummy consent gate for the delayed phase"
       },
@@ -326,7 +326,7 @@
     ],
     "wild": [
       {
-        "label": "head.html \u00b7 Boilerplate",
+        "label": "head.html · Boilerplate",
         "url": "https://github.com/adobe/aem-boilerplate/blob/main/head.html",
         "note": "Reference head with CSP meta and nonces"
       },
@@ -437,12 +437,12 @@
     ],
     "wild": [
       {
-        "label": "fonts.css \u00b7 Boilerplate",
+        "label": "fonts.css · Boilerplate",
         "url": "https://github.com/adobe/aem-boilerplate/blob/main/styles/fonts.css",
         "note": "Self-hosted woff2 with font-display swap"
       },
       {
-        "label": "styles.css \u00b7 Boilerplate",
+        "label": "styles.css · Boilerplate",
         "url": "https://github.com/adobe/aem-boilerplate/blob/main/styles/styles.css",
         "note": "roboto-fallback with size-adjust"
       },
@@ -563,12 +563,12 @@
         "note": "Media Bus, image parameters and video"
       },
       {
-        "label": "aem.js \u00b7 Boilerplate",
+        "label": "aem.js · Boilerplate",
         "url": "https://github.com/adobe/aem-boilerplate/blob/main/scripts/aem.js",
         "note": "createOptimizedPicture and waitForFirstImage"
       },
       {
-        "label": "Images \u00b7 Block Collection",
+        "label": "Images · Block Collection",
         "url": "https://www.aem.live/developer/block-collection/images",
         "note": "How images behave in default content"
       }
@@ -680,7 +680,7 @@
     "wild": [
       {
         "label": "HTTP Headers Editor",
-        "url": "https://labs.aem.live/tools/headers-edit/index.html",
+        "url": "https://tools.aem.live/tools/headers-edit/index.html",
         "note": "Edit site headers in the browser"
       },
       {
@@ -689,7 +689,7 @@
         "note": "strict-dynamic with cached nonce"
       },
       {
-        "label": "head.html \u00b7 Boilerplate",
+        "label": "head.html · Boilerplate",
         "url": "https://github.com/adobe/aem-boilerplate/blob/main/head.html",
         "note": "Boilerplate CSP meta with move-to-http-header"
       }

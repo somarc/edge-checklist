@@ -231,7 +231,7 @@
     "wild": [
       {
         "label": "Hero · Block Collection",
-        "url": "https://www.aem.live/developer/block-collection/hero",
+        "url": "https://main--aem-block-collection--adobe.aem.live/block-collection/hero",
         "note": "Reference content model"
       },
       {
@@ -357,7 +357,7 @@
     "wild": [
       {
         "label": "Cards · Block Collection",
-        "url": "https://www.aem.live/developer/block-collection/cards",
+        "url": "https://main--aem-block-collection--adobe.aem.live/block-collection/cards",
         "note": "Reference content model"
       },
       {
@@ -467,7 +467,7 @@
     "wild": [
       {
         "label": "Columns · Block Collection",
-        "url": "https://www.aem.live/developer/block-collection/columns",
+        "url": "https://main--aem-block-collection--adobe.aem.live/block-collection/columns",
         "note": "Reference content model"
       },
       {
@@ -567,7 +567,7 @@
     "wild": [
       {
         "label": "Tabs · Block Collection",
-        "url": "https://www.aem.live/developer/block-collection/tabs",
+        "url": "https://main--aem-block-collection--adobe.aem.live/block-collection/tabs",
         "note": "Reference content model"
       },
       {
@@ -672,7 +672,7 @@
     "wild": [
       {
         "label": "Accordion · Block Collection",
-        "url": "https://www.aem.live/developer/block-collection/accordion",
+        "url": "https://main--aem-block-collection--adobe.aem.live/block-collection/accordion",
         "note": "Reference content model"
       },
       {
@@ -797,7 +797,7 @@
     "wild": [
       {
         "label": "Carousel · Block Collection",
-        "url": "https://www.aem.live/developer/block-collection/carousel",
+        "url": "https://main--aem-block-collection--adobe.aem.live/block-collection/carousel",
         "note": "Reference content model"
       },
       {
@@ -1128,7 +1128,7 @@
       },
       {
         "label": "Fragment · Block Collection",
-        "url": "https://www.aem.live/developer/block-collection/fragment",
+        "url": "https://main--aem-block-collection--adobe.aem.live/block-collection/fragment",
         "note": "Reference content model"
       },
       {
@@ -1238,12 +1238,12 @@
     "wild": [
       {
         "label": "Embed · Block Collection",
-        "url": "https://www.aem.live/developer/block-collection/embed",
+        "url": "https://main--aem-block-collection--adobe.aem.live/block-collection/embed",
         "note": "Reference content model"
       },
       {
         "label": "Video · Block Collection",
-        "url": "https://www.aem.live/developer/block-collection/video",
+        "url": "https://main--aem-block-collection--adobe.aem.live/block-collection/video",
         "note": "YouTube, Vimeo and .mp4"
       },
       {
@@ -1353,7 +1353,7 @@
     "wild": [
       {
         "label": "Table · Block Collection",
-        "url": "https://www.aem.live/developer/block-collection/table",
+        "url": "https://main--aem-block-collection--adobe.aem.live/block-collection/table",
         "note": "Reference content model"
       },
       {
