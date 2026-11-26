@@ -11,7 +11,7 @@ A concept by somarc. Not an Adobe product.
 | Surface | URL |
 |---|---|
 | Preview | https://main--edge-checklist--somarc.aem.page/ |
-| Live (not published yet) | https://main--edge-checklist--somarc.aem.live/ |
+| Live | https://main--edge-checklist--somarc.aem.live/ |
 | Content (DA / Experience Workspace) | https://da.live/#/somarc/edge-checklist |
 | Code | https://github.com/somarc/edge-checklist |
 
@@ -77,8 +77,7 @@ Metadata: `Title`, `Description`, `Template: checklist-page`, `Theme: cat-{categ
 ### Sources (`/sources`)
 
 - Generated from the data: documentation by host, Adobe agent skills (github.com/adobe/skills),
-  Helix admin tools (tools.aem.live), Adobe and public tools, and somarc's unpublished checkers,
-  each as a `checkers` table with check and checklist counts. `tools/checkers.py` holds the mapping.
+  Helix admin tools (tools.aem.live) and Adobe and public tools, each as a `checkers` table with check and checklist counts. `tools/checkers.py` holds the mapping.
 
 ### Fragments
 
@@ -95,5 +94,5 @@ Edit pages in DA after seeding; the generator is for the first seed and bulk rew
 ## Quality gates
 
 - `npm run lint`
-- `node ~/.agents/skills/eds-build-contract/scripts/eds-guard.mjs .` reports 0 errors
+- Canvas: open the page in Experience Workspace layout view; no modal, lock or page errors
 - PageSpeed Insights 100 on the preview URL of changed pages

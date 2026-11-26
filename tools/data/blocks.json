@@ -41,7 +41,7 @@
         "level": "must",
         "verify": {
           "by": "agent",
-          "how": "/sean-ready-eds-css"
+          "how": "/code-review"
         },
         "source": "https://www.aem.live/docs/dev-collab-and-good-practices#css-selector-block-isolation"
       },
@@ -302,10 +302,10 @@
         "detail": "If you replace authored pictures, keep data-image-index so Canvas can still select the image.",
         "level": "could",
         "verify": {
-          "by": "machine",
-          "how": "eds-guard"
+          "by": "agent",
+          "how": "Experience Workspace layout view"
         },
-        "source": null
+        "source": "https://www.aem.live/docs/ew/developing/layout-view#keep-image-attributes"
       },
       {
         "title": "Stable image ratio",
@@ -424,7 +424,7 @@
         "level": "should",
         "verify": {
           "by": "agent",
-          "how": "/css-audit"
+          "how": "read block CSS"
         },
         "source": "https://www.aem.live/docs/dev-collab-and-good-practices#mobile-first"
       },
@@ -554,7 +554,7 @@
         "level": "should",
         "verify": {
           "by": "agent",
-          "how": "/canvas-block-review"
+          "how": "Experience Workspace layout view"
         },
         "source": null
       }
@@ -628,8 +628,8 @@
         "detail": "Move the label's authored nodes into summary rather than copying HTML, as the block does.",
         "level": "should",
         "verify": {
-          "by": "machine",
-          "how": "eds-guard"
+          "by": "agent",
+          "how": "Experience Workspace layout view"
         },
         "source": "https://github.com/adobe/aem-block-collection/blob/main/blocks/accordion/accordion.js"
       },
@@ -659,7 +659,7 @@
         "level": "should",
         "verify": {
           "by": "agent",
-          "how": "/canvas-block-review"
+          "how": "Experience Workspace layout view"
         },
         "source": null
       }
@@ -784,7 +784,7 @@
         "level": "should",
         "verify": {
           "by": "agent",
-          "how": "/canvas-block-review"
+          "how": "Experience Workspace layout view"
         },
         "source": null
       }

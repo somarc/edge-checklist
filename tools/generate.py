@@ -63,7 +63,7 @@ FEATURED_TILES = ['performance', 'hero', 'going-live', 'commerce', 'content-mode
                   'page-404', 'in-context-editing', 'experimentation', 'product-detail', 'reviewing-a-pr', 'site-auth']
 KINDS = ['machine', 'agent', 'human']
 KIND_BLURB = {
-    'machine': 'A deterministic tool settles it: PageSpeed Insights, eds-guard, curl, the Admin API.',
+    'machine': 'A deterministic tool settles it: PageSpeed Insights, Lighthouse, curl, the Admin API.',
     'agent': 'An agent reads the rendered page, the markup or the repo and judges it.',
     'human': 'Needs business context or taste. The list tells you who to ask.',
 }
@@ -289,10 +289,10 @@ def skill_page(lists):
         ['You', 'Check <code>feat-hero--brand-site--acme.aem.page</code> before I merge.'],
         ['Steps', '<ul><li>Rendered the branch preview, mobile and desktop</li>'
                   '<li>Matched to Hero · Blocks, Homepage · Pages, Lighthouse 100 · Delivery</li>'
-                  '<li>Ran PageSpeed Insights and eds-guard on the branch</li></ul>'],
+                  '<li>Ran PageSpeed Insights and /code-review on the branch</li></ul>'],
         ['Edge Checklist', '<ul>'
          '<li>✅ Hero image sits in the first section and is the LCP; mobile Lighthouse is 100. <code>machine · PageSpeed Insights</code></li>'
-         '<li>✅ Block works from the authored table alone; no new dependencies. <code>machine · eds-guard</code></li>'
+         '<li>✅ Block works from the authored table alone; no new dependencies. <code>agent · /code-review</code></li>'
          '<li>🤔 The hero heading is an h2 and the page has no h1; authors will copy this. <code>agent · rendered DOM</code></li>'
          '<li>⛔ The analytics tag moved into the lazy phase; it belongs in delayed. <code>agent · scripts.js diff</code></li>'
          '</ul>'],
@@ -421,9 +421,6 @@ def sources_page(lists):
         f'<h2>Adobe and public tools</h2><p>{count("Adobe tool") + count("Public tool")} checks name a tool such as '
         'Sidekick, the OpTel explorer, PageSpeed Insights or axe.</p>'
         + table('Adobe tool', 'Adobe tool') + table('Public tool', 'Public tool') + section_style('intro'),
-        f'<h2>Not published yet</h2><p>{count("somarc (private)")} checks name a checker somarc runs locally and has '
-        'not published. Each of those checks still links its public source, such as the Experience Workspace '
-        'layout view rules.</p>' + table('somarc (private)', 'Checker') + section_style('intro'),
         kv_block('metadata', [
             ('title', 'Sources · Edge Checklist'),
             ('description', 'Where the Edge Checklist comes from: aem.live and Experience League documentation, '

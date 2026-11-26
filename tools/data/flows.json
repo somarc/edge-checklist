@@ -283,7 +283,7 @@
         "level": "must",
         "verify": {
           "by": "machine",
-          "how": "eds-guard"
+          "how": "ls blocks/<name>/"
         },
         "source": "https://www.aem.live/developer/markup-sections-blocks#blocks"
       },
@@ -302,8 +302,8 @@
         "detail": "Prefix every selector with the block class so styles cannot leak into other blocks.",
         "level": "must",
         "verify": {
-          "by": "machine",
-          "how": "eds-guard"
+          "by": "agent",
+          "how": "/code-review"
         },
         "source": "https://www.aem.live/docs/dev-collab-and-good-practices#css-selector-block-isolation"
       },
@@ -887,8 +887,8 @@
         "detail": "Block CSS selectors are scoped to the block and third-party scripts load in the block, not head.html.",
         "level": "must",
         "verify": {
-          "by": "machine",
-          "how": "eds-guard"
+          "by": "agent",
+          "how": "/code-review"
         },
         "source": "https://www.aem.live/docs/dev-collab-and-good-practices#css-selector-block-isolation"
       },
