@@ -44,11 +44,14 @@ Metadata: `Title`, `Description`, `Template: checklist-page`, `Theme: cat-{categ
      |---|---|---|---|
      | `### First section` + one sentence | Must / Should / Could | `Machine: PageSpeed Insights` | link |
 
-     `Verify` starts with `Machine`, `Agent` or `Human`, then `:` and the tool. The block adds
+     `Verify` starts with `Machine`, `Agent` or `Human`, then `:` and the tool, linked when the
+     tool is public (Adobe skill on github.com/adobe/skills, tools.aem.live tool, public tool). The block adds
      the progress header, checkboxes (saved per page in localStorage), the Must filter, Reset
      and the export bar (plain text, Markdown, GitHub, Jira, Slack, agent prompt).
-   - `related` block, one row, one cell: a list of links `:icon: Title` followed by the category
-     name, e.g. `[:gauge: Lighthouse 100](/delivery/performance) Delivery`.
+   - `related` block, one row per card: `## Related` + links `:icon: Title` followed by the
+     category name, e.g. `[:gauge: Lighthouse 100](/delivery/performance) Delivery`; then
+     `## Verify with` + links to the checkers this checklist uses and a closing link to
+     https://tools.aem.live/.
 3. **In the wild section**: `h2` + `references` block, rows `| [label](url) | note |`.
 
 ### Index pages (`/browse`, `/{category}`, home "Find exactly what you need")
@@ -70,6 +73,12 @@ Metadata: `Title`, `Description`, `Template: checklist-page`, `Theme: cat-{categ
 - `columns (steps)` and `columns (modes)`: boilerplate columns with variants.
 - `checkers`: rows `| checker | kind | checks | lists |` (generated from the data).
 - `sidekick-demo`: rows: URL, `| title | subtitle |`, `| 9 pass | 2 review | 1 missing |`, then `| emoji | finding |`.
+
+### Sources (`/sources`)
+
+- Generated from the data: documentation by host, Adobe agent skills (github.com/adobe/skills),
+  Helix admin tools (tools.aem.live), Adobe and public tools, and somarc's unpublished checkers,
+  each as a `checkers` table with check and checklist counts. `tools/checkers.py` holds the mapping.
 
 ### Fragments
 

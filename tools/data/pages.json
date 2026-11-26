@@ -838,7 +838,7 @@
         "level": "could",
         "verify": {
           "by": "agent",
-          "how": "/fragment"
+          "how": "curl /fragments/404.plain.html"
         },
         "source": "https://www.aem.live/docs/error-pages#customizing-404-content-with-fragments"
       },

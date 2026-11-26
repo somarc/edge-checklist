@@ -67,6 +67,15 @@
 .checkers [data-verify="agent"] { --kind-color: var(--color-agent); }
 .checkers [data-verify="human"] { --kind-color: var(--color-human); }
 
+.checkers .checkers-row a:any-link {
+  color: var(--color-ink);
+  text-decoration-color: var(--color-faint);
+}
+
+.checkers .checkers-row a:hover {
+  color: var(--color-accent);
+}
+
 @media (width >= 900px) {
   .checkers > div {
     padding-inline: var(--space-6);

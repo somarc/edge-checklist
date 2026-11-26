@@ -15,6 +15,8 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from urllib.parse import urlparse
 
+from checkers import HELIX_TOOLS, SKILLS_REPO, checker
+
 HERE = Path(__file__).resolve().parent
 DATA_FILES = ['blocks', 'pages', 'delivery-a', 'delivery-b', 'authoring', 'systems-a', 'systems-b', 'flows']
 
@@ -130,13 +132,35 @@ def host_label(url):
     return h
 
 
+def verify_cell(v):
+    found = checker(v['how'])
+    label = f"{e(v['by'].capitalize())}: "
+    if found and found[1]:
+        return f'{label}<a href="{e(found[1])}">{e(v["how"])}</a>'
+    return label + e(v['how'])
+
+
+def verify_with(c):
+    """Distinct linked checkers this checklist uses, most used first."""
+    seen = {}
+    for it in c['items']:
+        found = checker(it['verify']['how'])
+        if found and found[1]:
+            name, url, kind = found
+            seen.setdefault(url, [name, kind, 0])[2] += 1
+    rows = sorted(seen.items(), key=lambda kv: -kv[1][2])[:6]
+    links = ''.join(f'<li><a href="{e(url)}">{e(name)}</a> {e(kind)}</li>' for url, (name, kind, _) in rows)
+    return (f'<h2>Verify with</h2><ul>{links}</ul>' if links else '<h2>Verify with</h2>') + \
+        f'<p><a href="{HELIX_TOOLS}">All Helix admin tools on tools.aem.live</a></p>'
+
+
 def checklist_page(c, by_id):
     cat = c['category']
     items = []
     for it in c['items']:
-        verify = f"{it['verify']['by'].capitalize()}: {it['verify']['how']}"
+        verify = verify_cell(it['verify'])
         src = f'<a href="{e(it["source"])}">{e(host_label(it["source"]))}</a>' if it.get('source') else 'No public source'
-        items.append([f'<h3>{e(it["title"])}</h3><p>{e(it["detail"])}</p>', e(it['level'].capitalize()), e(verify), src])
+        items.append([f'<h3>{e(it["title"])}</h3><p>{e(it["detail"])}</p>', e(it['level'].capitalize()), verify, src])
     related = []
     for rid in c.get('related', []):
         r = by_id.get(rid)
@@ -146,7 +170,7 @@ def checklist_page(c, by_id):
         f'<p>:{ICON.get(c["id"], "list-checks")}:</p><h1>{e(c["title"])}</h1>'
         f'<p><a href="/{cat}">{e(CAT_NAME[cat])}</a></p><p>{e(c["summary"])}</p>{section_style("title")}',
         block('checklist', items)
-        + (block('related', [[f'<h2>Related</h2><ul>{"".join(related)}</ul>']]) if related else '')
+        + block('related', ([[f'<h2>Related</h2><ul>{"".join(related)}</ul>']] if related else []) + [[verify_with(c)]])
         + section_style('checklist-layout'),
     ]
     if c.get('wild'):
@@ -258,7 +282,9 @@ def skill_page(lists):
             t['lists'].add(c['id'])
     rows = [['Checker', 'Kind', 'Checks', 'Lists']]
     for how, t in sorted(tally.items(), key=lambda kv: -kv[1]['n'])[:14]:
-        rows.append([e(how), t['by'].capitalize(), str(t['n']), str(len(t['lists']))])
+        found = checker(how)
+        cell = f'<a href="{e(found[1])}">{e(how)}</a>' if found and found[1] else e(how)
+        rows.append([cell, t['by'].capitalize(), str(t['n']), str(len(t['lists']))])
     chat = block('chat', [
         ['You', 'Check <code>feat-hero--brand-site--acme.aem.page</code> before I merge.'],
         ['Steps', '<ul><li>Rendered the branch preview, mobile and desktop</li>'
@@ -296,7 +322,8 @@ def skill_page(lists):
         '<h2>How it works</h2>' + steps + modes + section_style('intro'),
         f'<h2>Built on checkers you already run.</h2><p>The skill writes no new rules. It routes each item to the tool '
         f'named on it. These are the ones the {len(lists)} checklists lean on most.</p>'
-        + block('checkers', [[e(x) if i == 0 else x for i, x in enumerate(r)] for r in rows]) + section_style('intro'),
+        + block('checkers', rows)
+        + '<p><a href="/sources">Every source, skill and tool behind the checks</a></p>' + section_style('intro'),
         kv_block('metadata', [
             ('title', 'Agent skill · Edge Checklist'),
             ('description', 'Concept: every Edge Checklist bundled into one agent skill that audits a preview URL, '
@@ -328,6 +355,82 @@ def sidekick_page():
     ])
 
 
+SOURCE_HOSTS = [
+    ('www.aem.live', 'aem.live documentation', 'https://www.aem.live/docs/'),
+    ('experienceleague.adobe.com', 'Experience League', 'https://experienceleague.adobe.com/'),
+    ('github.com', 'Adobe code on GitHub (aem-boilerplate, aem-block-collection, …)', 'https://github.com/adobe'),
+    ('raw.githubusercontent.com', 'Adobe code on GitHub (raw files)', 'https://github.com/adobe'),
+    ('docs.da.live', 'Experience Workspace documentation', 'https://docs.da.live/'),
+    ('w3.org', 'W3C (WCAG, ARIA practices)', 'https://www.w3.org/WAI/'),
+]
+
+
+def sources_page(lists):
+    items = [(c['id'], it) for c in lists for it in c['items']]
+    # documentation, grouped by host
+    by_host = defaultdict(lambda: [0, set()])
+    for cid, it in items:
+        if it.get('source'):
+            host = urlparse(it['source']).netloc
+            key = host if any(host == h for h, _, _ in SOURCE_HOSTS) else 'other'
+            by_host[key][0] += 1
+            by_host[key][1].add(cid)
+    doc_rows = [['Source', 'Kind', 'Checks', 'Lists']]
+    for host, label, url in SOURCE_HOSTS:
+        if host in by_host:
+            n, ids = by_host[host]
+            doc_rows.append([f'<a href="{url}">{e(label)}</a>', 'Documentation', str(n), str(len(ids))])
+    if 'other' in by_host:
+        n, ids = by_host['other']
+        doc_rows.append(['Other public pages (vendor and platform docs)', 'Documentation', str(n), str(len(ids))])
+    unsourced = sum(1 for _, it in items if not it.get('source'))
+
+    # checkers, grouped by provenance
+    groups = defaultdict(dict)
+    for cid, it in items:
+        found = checker(it['verify']['how'])
+        if not found:
+            continue
+        name, url, kind = found
+        row = groups[kind].setdefault(name, [url, 0, set()])
+        row[1] += 1
+        row[2].add(cid)
+
+    def table(kind, label):
+        rows = [[label, 'Kind', 'Checks', 'Lists']]
+        for name, (url, n, ids) in sorted(groups[kind].items(), key=lambda kv: -kv[1][1]):
+            cell = f'<a href="{e(url)}">{e(name)}</a>' if url else e(name)
+            rows.append([cell, e(kind), str(n), str(len(ids))])
+        return block('checkers', rows)
+
+    count = lambda kind: sum(v[1] for v in groups[kind].values())  # noqa: E731
+    return page([
+        '<h1>Sources</h1><p>What each check says comes from public documentation and Adobe code. How each check is '
+        'verified points to Adobe\'s agent skills, the Helix admin tools and other public tools. This page lists all '
+        'of them, with how many checks lean on each.</p>' + section_style('title'),
+        f'<h2>Documentation</h2><p>{len(items) - unsourced} of {len(items)} checks link the page or file that backs '
+        f'them. {unsourced} come from agent skills only and say so on the check.</p>' + block('checkers', doc_rows)
+        + section_style('intro'),
+        f'<h2>Adobe agent skills</h2><p>{count("Adobe skill")} checks name a skill from Adobe\'s open-source '
+        f'<a href="{SKILLS_REPO}">skills for Edge Delivery Services</a>, the edge-delivery-services and '
+        'edge-delivery-services-content-ops plugins.</p>' + table('Adobe skill', 'Skill') + section_style('intro'),
+        f'<h2>Helix admin tools</h2><p>{count("Helix tool")} checks are settled in the '
+        f'<a href="{HELIX_TOOLS}">admin tools at tools.aem.live</a>: index, page status, headers, CDN setup, '
+        'users and configuration.</p>' + table('Helix tool', 'Tool') + section_style('intro'),
+        f'<h2>Adobe and public tools</h2><p>{count("Adobe tool") + count("Public tool")} checks name a tool such as '
+        'Sidekick, the OpTel explorer, PageSpeed Insights or axe.</p>'
+        + table('Adobe tool', 'Adobe tool') + table('Public tool', 'Public tool') + section_style('intro'),
+        f'<h2>Not published yet</h2><p>{count("somarc (private)")} checks name a checker somarc runs locally and has '
+        'not published. Each of those checks still links its public source, such as the Experience Workspace '
+        'layout view rules.</p>' + table('somarc (private)', 'Checker') + section_style('intro'),
+        kv_block('metadata', [
+            ('title', 'Sources · Edge Checklist'),
+            ('description', 'Where the Edge Checklist comes from: aem.live and Experience League documentation, '
+                            'Adobe\'s agent skills, the Helix admin tools at tools.aem.live and public tools.'),
+        ]),
+    ])
+
+
 def nav_page():
     cats = ''.join(f'<li><a href="/{cid}">{e(name)}</a></li>' for cid, name, _ in CATEGORIES)
     return page([
@@ -349,7 +452,8 @@ def footer_page(lists, by_cat, items_total):
         'boilerplate code.</p>'
         '<ul><li><a href="/skill">Run it as an agent skill</a></li><li><a href="/sidekick">Use it in Sidekick</a></li></ul>',
         block('columns', [cols]),
-        '<p>Design idea after checklist.design by George Hatzis. Not an Adobe product.</p>'
+        '<p>Design idea after checklist.design by George Hatzis. Checks cite aem.live, Experience League, '
+        '<a href="/sources">Adobe skills and tools.aem.live</a>. Not an Adobe product.</p>'
         f'<p>{len(lists)} checklists · {items_total} checks</p>',
     ])
 
@@ -379,6 +483,7 @@ def main():
     files['index.html'] = home_page(lists, by_cat, by_id, totals)
     files['skill.html'] = skill_page(lists)
     files['sidekick.html'] = sidekick_page()
+    files['sources.html'] = sources_page(lists)
     files['nav.html'] = nav_page()
     files['footer.html'] = footer_page(lists, by_cat, items_total)
 

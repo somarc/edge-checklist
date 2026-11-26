@@ -202,6 +202,17 @@
   mask: url("../../icons/cpu.svg") center / contain no-repeat;
 }
 
+.checklist .checklist-verify a:any-link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentcolor 35%, transparent);
+  text-underline-offset: 0.2em;
+}
+
+.checklist .checklist-verify a:hover {
+  text-decoration-color: currentcolor;
+}
+
 .checklist [data-verify="agent"] .checklist-verify { color: var(--color-agent); }
 .checklist [data-verify="human"] .checklist-verify { color: var(--color-human); }
 .checklist [data-verify="agent"] .checklist-verify::before { mask-image: url("../../icons/sparkles.svg"); }
