@@ -1,0 +1,25 @@
+.metadata {
+  display: grid;
+  gap: 1px;
+  overflow: hidden;
+  border-radius: var(--radius-m);
+  background-color: var(--color-line);
+  font-size: var(--font-size-s);
+}
+
+.metadata .metadata-row {
+  display: grid;
+  grid-template-columns: 9rem minmax(0, 1fr);
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  background-color: var(--color-surface);
+}
+
+.metadata .metadata-row > div:first-child {
+  color: var(--color-muted);
+  font-family: var(--font-mono);
+}
+
+.metadata :is(p, .prosemirror-editor, .ProseMirror) {
+  margin: 0;
+}
