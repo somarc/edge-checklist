@@ -22,8 +22,9 @@ Local: `npx -y @adobe/aem-cli up` (local code, previewed content) on http://loca
 - 6 categories, 67 checklists, 569 checks. Each checklist is one DA page at `/{category}/{id}`.
 - Category index pages at `/blocks`, `/pages`, `/delivery`, `/authoring`, `/systems`, `/flows`,
   plus `/browse` (all), `/skill` and `/sidekick` (concept pages).
-- No query-index dependency while the site is preview-only: every list is authored link rows.
-  Search reads `/query-index.json` when it has rows and falls back to the footer's links.
+- Every list (browse, categories, related, footer) is authored link rows, so pages render
+  without the index. Search reads `/query-index.json` (title, category, icon and check titles as
+  `keywords`) and falls back to the footer's links when the index is unavailable.
 
 ## Content model
 
@@ -90,6 +91,26 @@ Metadata: `Title`, `Description`, `Template: checklist-page`, `Theme: cat-{categ
 The checklist content was researched from aem.live, Experience League and the boilerplate and
 block-collection code; `tools/` holds the generator that writes the DA pages from `tools/data/`.
 Edit pages in DA after seeding; the generator is for the first seed and bulk rewrites only.
+
+## Platform configuration
+
+- Query index `default` (Configuration Service, see Index Admin on tools.aem.live): `/**` minus
+  `/nav`, `/footer`, `/drafts/**`; fields title, description, image, category, icon, checks,
+  verify-mix, keywords, robots, template. Filled on publish.
+- Sitemap: generated from published pages at `/sitemap.xml`; fragments are not listed.
+- Social image: `default-meta-image.png` (1200×630) in the repo root; favicon in `favicon.ico`.
+- Search engines: `*.aem.live` sends `X-Robots-Tag: noindex` and a disallowing `robots.txt` by
+  design. Indexing starts with a production domain (`cdn.prod.host`, BYO or Adobe-managed CDN), a
+  custom robots.txt naming the sitemap, and Search Console. See `/delivery/robots` and
+  `/flows/going-live` on the site.
+
+## Release
+
+1. Code: merge to `main` (Code Sync deploys it).
+2. Content: edit in DA, or regenerate with `python3 tools/generate.py <dir>` and upload with
+   `da --org somarc --repo edge-checklist --commit content put-tree <dir> --yes`.
+3. `da ... --commit preview pages / --bulk --yes`, check `.aem.page`, then
+   `da ... --commit publish pages / --bulk --yes`.
 
 ## Quality gates
 

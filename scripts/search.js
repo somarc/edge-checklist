@@ -34,7 +34,10 @@ let indexPromise;
 let returnFocus;
 
 const categoryOf = (path) => (PATH_RE.exec(path) || [])[1] || '';
-const cleanTitle = (t = '') => t.replace(/\s*[|·–-]\s*Edge Checklist\s*$/i, '').trim();
+const cleanTitle = (t = '') => t
+  .replace(/\s*[|·–-]\s*Edge Checklist\s*$/i, '')
+  .replace(/\s*·\s*[^·]+ checklist\s*$/i, '')
+  .trim();
 const humanize = (path) => {
   const slug = path.split('/').filter(Boolean).pop() || '';
   return slug.replace(/-/g, ' ').replace(/^\w/, (c) => c.toUpperCase());
