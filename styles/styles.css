@@ -548,6 +548,12 @@ main > .section.promo .sidekick-demo-wrapper {
   font-size: var(--font-size-lede);
 }
 
+/* default content that follows a block in an intro section (e.g. a closing link) */
+.section.intro div[class$="-wrapper"] + .default-content-wrapper {
+  margin-block-start: var(--space-5);
+  text-align: center;
+}
+
 /* utility for chrome text that stays for assistive tech */
 .visually-hidden {
   position: absolute;
