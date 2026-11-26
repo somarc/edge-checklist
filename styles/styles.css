@@ -77,10 +77,26 @@
   --page-bg: var(--color-bg);
 }
 
+/* metric-matched fallbacks: Geist width / Arial width, measured per weight */
 @font-face {
   font-family: geist-fallback;
-  size-adjust: 102%;
+  font-weight: 400;
+  size-adjust: 102.46%;
   src: local("Arial");
+}
+
+@font-face {
+  font-family: geist-fallback;
+  font-weight: 500;
+  size-adjust: 104.91%;
+  src: local("Arial");
+}
+
+@font-face {
+  font-family: geist-fallback;
+  font-weight: 600 700;
+  size-adjust: 100.62%;
+  src: local("Arial Bold"), local("Arial-BoldMT");
 }
 
 @media (width >= 900px) {
