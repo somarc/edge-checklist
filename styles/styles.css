@@ -314,7 +314,7 @@ main > .section.hero {
 
 .section.hero h1 {
   margin-inline: auto;
-  max-inline-size: 15ch;
+  max-inline-size: 10.25em; /* 15ch of Geist 600; em keeps the width stable across the font swap */
   font-size: var(--font-size-display);
 }
 
