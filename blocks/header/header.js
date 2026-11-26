@@ -17,7 +17,7 @@ function iconImg(name) {
   img.alt = '';
   img.width = 16;
   img.height = 16;
-  img.loading = 'lazy';
+  img.loading = 'eager';
   return img;
 }
 
@@ -97,7 +97,8 @@ function decorateSections(navSections) {
   const topList = navSections.querySelector('.default-content-wrapper > ul');
   if (!topList) return;
   topList.classList.add('nav-list');
-  topList.querySelectorAll(':scope > li > a').forEach((a) => a.classList.add('nav-link'));
+  // DA wraps a lone link in <p>: match both shapes
+  topList.querySelectorAll(':scope > li > a, :scope > li > p > a').forEach((a) => a.classList.add('nav-link'));
   topList.querySelectorAll(':scope > li').forEach((navSection) => {
     const subList = navSection.querySelector(':scope > ul');
     if (!subList) return;

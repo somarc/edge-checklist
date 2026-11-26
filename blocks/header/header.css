@@ -157,6 +157,10 @@
   gap: var(--space-1);
 }
 
+.header .nav-list > li > p {
+  margin: 0;
+}
+
 .header .nav-link:any-link,
 .header .nav-drop-toggle {
   display: flex;
