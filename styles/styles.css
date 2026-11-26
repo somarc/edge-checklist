@@ -433,7 +433,7 @@ main > .section.title {
 }
 
 .section.title .title-category a:any-link {
-  color: color-mix(in srgb, var(--cat-ink, var(--color-muted)) 55%, var(--page-bg));
+  color: color-mix(in srgb, var(--cat-ink, var(--color-muted)) 85%, var(--page-bg));
   text-decoration: none;
 }
 

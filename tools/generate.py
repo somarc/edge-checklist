@@ -342,7 +342,7 @@ def footer_page(lists, by_cat, items_total):
     cols = []
     for cid, name, _ in CATEGORIES:
         links = ''.join(f'<li><a href="{path(c)}">{e(c["title"])}</a></li>' for c in by_cat[cid])
-        cols.append(f'<h3>{e(name)}</h3><ul>{links}</ul>')
+        cols.append(f'<h2>{e(name)}</h2><ul>{links}</ul>')
     return page([
         '<p><a href="/">:logo:Edge Checklist</a></p>'
         '<p>A concept for AEM Edge Delivery Services teams. Checks cite aem.live, Experience League and the '

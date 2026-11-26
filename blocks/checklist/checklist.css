@@ -87,7 +87,7 @@
 /* rows */
 .checklist .checklist-item {
   display: grid;
-  grid-template-columns: 1.5rem auto auto minmax(0, 1fr);
+  grid-template-columns: 1.5rem auto minmax(0, 1fr);
   gap: var(--space-3) var(--space-4);
   align-items: center;
   padding: var(--space-5);
@@ -208,8 +208,8 @@
 .checklist [data-verify="human"] .checklist-verify::before { mask-image: url("../../icons/user-round.svg"); }
 
 .checklist .checklist-source {
-  grid-column: 4;
-  grid-row: 2;
+  grid-column: 2 / -1;
+  grid-row: 3;
   min-inline-size: 0;
   overflow: hidden;
   font-size: var(--font-size-xs);
@@ -293,6 +293,17 @@ html[quick-edit] .checklist .checklist-item {
 
   .checklist [data-level] .checklist-level {
     border: 1px solid CanvasText;
+  }
+}
+
+@media (width >= 600px) {
+  .checklist .checklist-item {
+    grid-template-columns: 1.5rem auto auto minmax(0, 1fr);
+  }
+
+  .checklist .checklist-source {
+    grid-column: 4;
+    grid-row: 2;
   }
 }
 
