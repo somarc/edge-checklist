@@ -1,0 +1,1371 @@
+[
+  {
+    "id": "any-block",
+    "category": "blocks",
+    "title": "Every block",
+    "summary": "A block is an authored table that EDS renders as nested divs. The block loader fetches blocks/<name>/<name>.css and .js and runs the default export. This is the contract every block meets before it ships.",
+    "items": [
+      {
+        "title": "Intuitive table",
+        "detail": "Keep the authored table simple: an author can copy, paste and understand it, with no nested blocks.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "author walkthrough"
+        },
+        "source": "https://www.aem.live/developer/markup-sections-blocks#blocks"
+      },
+      {
+        "title": "Name matches folder",
+        "detail": "Use one name for the folder, the .js and .css files and the CSS class, e.g. blocks/cards/cards.js.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl /blocks/<name>/<name>.js"
+        },
+        "source": "https://www.aem.live/developer/markup-sections-blocks#blocks"
+      },
+      {
+        "title": "Default export",
+        "detail": "Export a default decorate(block) function from the ES module; the loader awaits it before showing the section.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/code-review"
+        },
+        "source": "https://www.aem.live/developer/markup-sections-blocks#blocks"
+      },
+      {
+        "title": "Scoped CSS",
+        "detail": "Prefix every selector in the block CSS with the block class so it never styles anything outside the block.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/sean-ready-eds-css"
+        },
+        "source": "https://www.aem.live/docs/dev-collab-and-good-practices#css-selector-block-isolation"
+      },
+      {
+        "title": "No build or framework",
+        "detail": "Ship plain JS and CSS with no framework, preprocessor or build step unless the whole team agreed to one.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "check package.json"
+        },
+        "source": "https://www.aem.live/docs/dev-collab-and-good-practices#build-tool-chain"
+      },
+      {
+        "title": "Libraries on demand",
+        "detail": "Load any third-party library from the block with loadScript(), ideally when it scrolls into view, never in head.html.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/code-review"
+        },
+        "source": "https://www.aem.live/docs/dev-collab-and-good-practices#loading-3rd-party-libraries"
+      },
+      {
+        "title": "No layout shift",
+        "detail": "Reserve space for content that arrives late, e.g. with aspect-ratio, so decoration and lazy media don't shift the page.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "PageSpeed Insights"
+        },
+        "source": null
+      },
+      {
+        "title": "Accessible by default",
+        "detail": "Use native elements and ARIA states so the block works by keyboard and screen reader at every breakpoint.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "axe DevTools"
+        },
+        "source": "https://www.aem.live/developer/block-collection"
+      },
+      {
+        "title": "Lint and PSI green",
+        "detail": "Pass eslint and stylelint, and keep the PR's PageSpeed Insights score green, ideally 100 on mobile and desktop.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "npm run lint + PSI"
+        },
+        "source": "https://www.aem.live/docs/dev-collab-and-good-practices#pagespeed-insights"
+      }
+    ],
+    "related": [
+      "adding-a-block",
+      "content-model",
+      "performance",
+      "reviewing-a-pr"
+    ],
+    "wild": [
+      {
+        "label": "Block Collection",
+        "url": "https://www.aem.live/developer/block-collection",
+        "note": "Principles every collection block follows"
+      },
+      {
+        "label": "Markup, sections, blocks",
+        "url": "https://www.aem.live/developer/markup-sections-blocks",
+        "note": "How authored tables become block DOM"
+      },
+      {
+        "label": "aem-boilerplate blocks",
+        "url": "https://github.com/adobe/aem-boilerplate/tree/main/blocks",
+        "note": "Reference block code"
+      },
+      {
+        "label": "Good practices",
+        "url": "https://www.aem.live/docs/dev-collab-and-good-practices",
+        "note": "CSS isolation, lint, PSI and build rules"
+      }
+    ]
+  },
+  {
+    "id": "hero",
+    "category": "blocks",
+    "title": "Hero",
+    "summary": "Hero is the boilerplate block for the image and heading at the top of a page. It usually holds the LCP image, so its content, CSS and place in the first section decide how fast the page paints.",
+    "items": [
+      {
+        "title": "First section",
+        "detail": "Put the hero in the first section; EDS loads that section eagerly and treats its first image as the LCP candidate.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "PageSpeed Insights"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#phase-e-eager"
+      },
+      {
+        "title": "Image plus h1",
+        "detail": "Author the hero as a picture and the page's h1, as in the boilerplate content model.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "view .plain.html"
+        },
+        "source": "https://main--aem-block-collection--adobe.aem.live/block-collection/hero"
+      },
+      {
+        "title": "Alt text",
+        "detail": "Describe the hero image in its alt text, or leave alt empty when the image is purely decorative.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/accessibility-fix"
+        },
+        "source": "https://www.w3.org/WAI/WCAG21/Understanding/non-text-content.html"
+      },
+      {
+        "title": "Small payload to LCP",
+        "detail": "Keep everything loaded before the hero image (markup, CSS, JS) under roughly 100 KB.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "PageSpeed Insights"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#lcp"
+      },
+      {
+        "title": "Same origin",
+        "detail": "Serve the hero image and code from the site's own origin; a second connection before LCP adds delay.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "PSI network requests"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#lcp"
+      },
+      {
+        "title": "No preload hints",
+        "detail": "Skip rel=preload and fetchpriority=high on the hero image; they hurt LCP as measured by PageSpeed Insights.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl page | grep preload"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#early-hints--h2-push--pre-connect-are-part-of-the-network-budget"
+      },
+      {
+        "title": "One image per device",
+        "detail": "When authors give desktop and mobile images, remove the unused one so it never loads or becomes the LCP.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "PSI LCP element"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#lcp"
+      },
+      {
+        "title": "Reserved height",
+        "detail": "Give the hero a min-height and an object-fit: cover image so it holds its shape while the image loads.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "PSI CLS"
+        },
+        "source": "https://github.com/adobe/aem-boilerplate/blob/main/blocks/hero/hero.css"
+      },
+      {
+        "title": "Readable heading",
+        "detail": "Check heading contrast over the image at each breakpoint; the boilerplate puts text on top of the picture.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "visual review"
+        },
+        "source": "https://github.com/adobe/aem-boilerplate/blob/main/blocks/hero/hero.css"
+      }
+    ],
+    "related": [
+      "homepage",
+      "performance",
+      "images",
+      "loading-phases"
+    ],
+    "wild": [
+      {
+        "label": "Hero · Block Collection",
+        "url": "https://www.aem.live/developer/block-collection/hero",
+        "note": "Reference content model"
+      },
+      {
+        "label": "Hero live example",
+        "url": "https://main--aem-block-collection--adobe.aem.live/block-collection/hero",
+        "note": "Rendered boilerplate hero"
+      },
+      {
+        "label": "Boilerplate hero CSS",
+        "url": "https://github.com/adobe/aem-boilerplate/blob/main/blocks/hero/hero.css",
+        "note": "CSS-only block, no JS"
+      },
+      {
+        "label": "LCP guidance",
+        "url": "https://www.aem.live/developer/keeping-it-100#lcp",
+        "note": "Why the hero decides LCP"
+      }
+    ]
+  },
+  {
+    "id": "cards",
+    "category": "blocks",
+    "title": "Cards",
+    "summary": "Cards is the boilerplate block for a list of cards with or without images and links. Each authored row becomes an li in a ul, and the JS tells image cells from body cells by their content.",
+    "items": [
+      {
+        "title": "One row per card",
+        "detail": "Author each card as one row: an image cell and a body cell with heading, text and link.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "author walkthrough"
+        },
+        "source": "https://main--aem-block-collection--adobe.aem.live/block-collection/cards"
+      },
+      {
+        "title": "List semantics",
+        "detail": "Render the cards as ul and li so screen readers announce how many cards there are.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "inspect DOM"
+        },
+        "source": "https://github.com/adobe/aem-boilerplate/blob/main/blocks/cards/cards.js"
+      },
+      {
+        "title": "Image cell by content",
+        "detail": "Detect the image cell by content (a lone picture), so cards without images still render.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/code-review"
+        },
+        "source": "https://github.com/adobe/aem-boilerplate/blob/main/blocks/cards/cards.js"
+      },
+      {
+        "title": "Right-sized images",
+        "detail": "Render card images at a width that fits the card, lazy-loaded, as the boilerplate does with createOptimizedPicture.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "PageSpeed Insights"
+        },
+        "source": "https://github.com/adobe/aem-boilerplate/blob/main/blocks/cards/cards.js"
+      },
+      {
+        "title": "Canvas image identity",
+        "detail": "If you replace authored pictures, keep data-image-index so Canvas can still select the image.",
+        "level": "could",
+        "verify": {
+          "by": "machine",
+          "how": "eds-guard"
+        },
+        "source": null
+      },
+      {
+        "title": "Stable image ratio",
+        "detail": "Set a fixed aspect ratio on card images so the grid doesn't jump as images load.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "PSI CLS"
+        },
+        "source": "https://github.com/adobe/aem-boilerplate/blob/main/blocks/cards/cards.css"
+      },
+      {
+        "title": "Alt text",
+        "detail": "Give every informative card image alt text in the document; leave it empty when the heading says it all.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/accessibility-fix"
+        },
+        "source": "https://www.w3.org/WAI/WCAG21/Understanding/non-text-content.html"
+      },
+      {
+        "title": "Clear link text",
+        "detail": "Make each card link make sense on its own; avoid a row of identical \"Read more\" links.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/accessibility-fix"
+        },
+        "source": "https://www.w3.org/WAI/WCAG21/Understanding/link-purpose-in-context.html"
+      },
+      {
+        "title": "Heading levels fit",
+        "detail": "Use the card heading level that follows the section heading above, not one picked for its size.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/heading-optimizer"
+        },
+        "source": "https://www.w3.org/WAI/tutorials/page-structure/headings/"
+      }
+    ],
+    "related": [
+      "columns",
+      "images",
+      "content-model",
+      "article-index"
+    ],
+    "wild": [
+      {
+        "label": "Cards · Block Collection",
+        "url": "https://www.aem.live/developer/block-collection/cards",
+        "note": "Reference content model"
+      },
+      {
+        "label": "Cards live example",
+        "url": "https://main--aem-block-collection--adobe.aem.live/block-collection/cards",
+        "note": "Rendered boilerplate cards"
+      },
+      {
+        "label": "Boilerplate cards.js",
+        "url": "https://github.com/adobe/aem-boilerplate/blob/main/blocks/cards/cards.js",
+        "note": "ul/li conversion and image handling"
+      }
+    ]
+  },
+  {
+    "id": "columns",
+    "category": "blocks",
+    "title": "Columns",
+    "summary": "Columns is the boilerplate block for responsive multi-column layouts. Its JS adds a columns-N-cols class from the cell count and marks image-only cells, so CSS can stack on mobile and sit side by side on desktop.",
+    "items": [
+      {
+        "title": "Even rows",
+        "detail": "Give every row the same number of cells; merged cells come through as empty divs that break the grid.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "view .plain.html"
+        },
+        "source": "https://www.aem.live/docs/exploring-blocks#how-they-work"
+      },
+      {
+        "title": "Few columns",
+        "detail": "Keep to about four columns or fewer; more usually means content split into tiny values.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "author walkthrough"
+        },
+        "source": null
+      },
+      {
+        "title": "Count class",
+        "detail": "Style layouts from the columns-2-cols or columns-3-cols class the block adds from the first row.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "inspect DOM"
+        },
+        "source": "https://github.com/adobe/aem-boilerplate/blob/main/blocks/columns/columns.js"
+      },
+      {
+        "title": "Mobile reading order",
+        "detail": "Check the stacked order reads well; the boilerplate moves image-only cells first on mobile.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/accessibility-fix"
+        },
+        "source": "https://github.com/adobe/aem-boilerplate/blob/main/blocks/columns/columns.css"
+      },
+      {
+        "title": "Mobile first CSS",
+        "detail": "Write the stacked layout without a media query, then go side by side at min-width breakpoints.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/css-audit"
+        },
+        "source": "https://www.aem.live/docs/dev-collab-and-good-practices#mobile-first"
+      },
+      {
+        "title": "Options, not copies",
+        "detail": "Offer variations like Columns (wide) as block options, which become classes, instead of new blocks.",
+        "level": "could",
+        "verify": {
+          "by": "agent",
+          "how": "/content-modeling"
+        },
+        "source": "https://www.aem.live/developer/markup-sections-blocks#block-options"
+      },
+      {
+        "title": "Sections for styling",
+        "detail": "Use section breaks and Section Metadata for backgrounds and spacing; keep Columns for side-by-side content.",
+        "level": "could",
+        "verify": {
+          "by": "human",
+          "how": "author walkthrough"
+        },
+        "source": "https://www.aem.live/developer/markup-sections-blocks#sections"
+      },
+      {
+        "title": "Alt text",
+        "detail": "Give column images alt text in the document, or empty alt when they are decorative.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/accessibility-fix"
+        },
+        "source": "https://www.w3.org/WAI/WCAG21/Understanding/non-text-content.html"
+      }
+    ],
+    "related": [
+      "cards",
+      "content-model",
+      "landing-page"
+    ],
+    "wild": [
+      {
+        "label": "Columns · Block Collection",
+        "url": "https://www.aem.live/developer/block-collection/columns",
+        "note": "Reference content model"
+      },
+      {
+        "label": "Columns live example",
+        "url": "https://main--aem-block-collection--adobe.aem.live/block-collection/columns",
+        "note": "Two- and three-column variants"
+      },
+      {
+        "label": "Boilerplate columns.js",
+        "url": "https://github.com/adobe/aem-boilerplate/blob/main/blocks/columns/columns.js",
+        "note": "Count class and image-column marking"
+      }
+    ]
+  },
+  {
+    "id": "tabs",
+    "category": "blocks",
+    "title": "Tabs",
+    "summary": "Tabs is a Block Collection block that splits content into labeled panels. Each row is a tab: the label in the first cell, the panel in the second. The JS builds a tablist of buttons with tab ARIA roles.",
+    "items": [
+      {
+        "title": "Label and panel rows",
+        "detail": "Author one row per tab: the tab label in the first cell, the panel content in the second.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "author walkthrough"
+        },
+        "source": "https://main--aem-block-collection--adobe.aem.live/block-collection/tabs"
+      },
+      {
+        "title": "Unique labels",
+        "detail": "Keep tab labels unique on the page; the block builds tab and panel ids from the label text.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/code-review"
+        },
+        "source": "https://github.com/adobe/aem-block-collection/blob/main/blocks/tabs/tabs.js"
+      },
+      {
+        "title": "Full ARIA pattern",
+        "detail": "Use tablist, tab and tabpanel roles with aria-selected, aria-controls and aria-labelledby.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "axe DevTools"
+        },
+        "source": "https://github.com/adobe/aem-block-collection/blob/main/blocks/tabs/tabs.js"
+      },
+      {
+        "title": "Arrow-key support",
+        "detail": "Add Left and Right arrow keys between tabs; the Block Collection version only handles clicks.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "keyboard walkthrough"
+        },
+        "source": "https://www.w3.org/WAI/ARIA/apg/patterns/tabs/#keyboard_interaction"
+      },
+      {
+        "title": "Inactive panels hidden",
+        "detail": "Hide inactive panels for everyone (display: none on aria-hidden=true), not just visually.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "inspect DOM"
+        },
+        "source": "https://github.com/adobe/aem-block-collection/blob/main/blocks/tabs/tabs.css"
+      },
+      {
+        "title": "Scrolling tab list",
+        "detail": "Let the tab list scroll sideways on small screens instead of clipping labels.",
+        "level": "could",
+        "verify": {
+          "by": "agent",
+          "how": "mobile viewport check"
+        },
+        "source": "https://github.com/adobe/aem-block-collection/blob/main/blocks/tabs/tabs.css"
+      },
+      {
+        "title": "All panels in authoring",
+        "detail": "Show every panel in Canvas or quick edit so authors can reach content in hidden tabs.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/canvas-block-review"
+        },
+        "source": null
+      }
+    ],
+    "related": [
+      "accordion",
+      "carousel",
+      "in-context-editing"
+    ],
+    "wild": [
+      {
+        "label": "Tabs · Block Collection",
+        "url": "https://www.aem.live/developer/block-collection/tabs",
+        "note": "Reference content model"
+      },
+      {
+        "label": "Tabs live example",
+        "url": "https://main--aem-block-collection--adobe.aem.live/block-collection/tabs",
+        "note": "Rendered tabs"
+      },
+      {
+        "label": "tabs.js",
+        "url": "https://github.com/adobe/aem-block-collection/blob/main/blocks/tabs/tabs.js",
+        "note": "Tablist and ARIA wiring"
+      },
+      {
+        "label": "APG tabs pattern",
+        "url": "https://www.w3.org/WAI/ARIA/apg/patterns/tabs/",
+        "note": "Keyboard and ARIA reference"
+      }
+    ]
+  },
+  {
+    "id": "accordion",
+    "category": "blocks",
+    "title": "Accordion",
+    "summary": "Accordion is a Block Collection block: a stack of labels that toggle related content. Each row becomes a native details and summary pair, so items open by keyboard with no extra script.",
+    "items": [
+      {
+        "title": "Label and body rows",
+        "detail": "Author one row per item: the label in the first cell, the content in the second.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "author walkthrough"
+        },
+        "source": "https://main--aem-block-collection--adobe.aem.live/block-collection/accordion"
+      },
+      {
+        "title": "Descriptive labels",
+        "detail": "Write short, specific labels so a reader scanning closed items knows what each one holds.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "content review"
+        },
+        "source": "https://www.aem.live/developer/block-collection"
+      },
+      {
+        "title": "Native details",
+        "detail": "Build items as details and summary so Enter and Space toggle them without custom ARIA.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/code-review"
+        },
+        "source": "https://github.com/adobe/aem-block-collection/blob/main/blocks/accordion/accordion.js"
+      },
+      {
+        "title": "Move, don't copy",
+        "detail": "Move the label's authored nodes into summary rather than copying HTML, as the block does.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "eds-guard"
+        },
+        "source": "https://github.com/adobe/aem-block-collection/blob/main/blocks/accordion/accordion.js"
+      },
+      {
+        "title": "Visible focus",
+        "detail": "Style a clear focus state on summary; the Block Collection CSS styles focus alongside hover.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "keyboard walkthrough"
+        },
+        "source": "https://github.com/adobe/aem-block-collection/blob/main/blocks/accordion/accordion.css"
+      },
+      {
+        "title": "Own marker",
+        "detail": "Hide the default disclosure marker only when you draw your own open and closed indicator.",
+        "level": "could",
+        "verify": {
+          "by": "agent",
+          "how": "visual review"
+        },
+        "source": "https://github.com/adobe/aem-block-collection/blob/main/blocks/accordion/accordion.css"
+      },
+      {
+        "title": "Open in authoring",
+        "detail": "Render items open in Canvas or quick edit so authors can edit collapsed content.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/canvas-block-review"
+        },
+        "source": null
+      }
+    ],
+    "related": [
+      "tabs",
+      "in-context-editing",
+      "content-model"
+    ],
+    "wild": [
+      {
+        "label": "Accordion · Block Collection",
+        "url": "https://www.aem.live/developer/block-collection/accordion",
+        "note": "Reference content model"
+      },
+      {
+        "label": "Accordion live example",
+        "url": "https://main--aem-block-collection--adobe.aem.live/block-collection/accordion",
+        "note": "Rendered accordion"
+      },
+      {
+        "label": "accordion.js",
+        "url": "https://github.com/adobe/aem-block-collection/blob/main/blocks/accordion/accordion.js",
+        "note": "details/summary decoration"
+      },
+      {
+        "label": "APG accordion pattern",
+        "url": "https://www.w3.org/WAI/ARIA/apg/patterns/accordion/",
+        "note": "Accessibility reference"
+      }
+    ]
+  },
+  {
+    "id": "carousel",
+    "category": "blocks",
+    "title": "Carousel",
+    "summary": "Carousel is a Block Collection block that moves through slides of an image with optional text. It uses scroll snapping, previous and next buttons and slide indicators, with control labels taken from placeholders.",
+    "items": [
+      {
+        "title": "One row per slide",
+        "detail": "Author each slide as a row: the image in the first cell, optional text in the second.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "author walkthrough"
+        },
+        "source": "https://main--aem-block-collection--adobe.aem.live/block-collection/carousel"
+      },
+      {
+        "title": "Named region",
+        "detail": "Mark the block as a region with aria-roledescription and give every button an accessible name.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "axe DevTools"
+        },
+        "source": "https://github.com/adobe/aem-block-collection/blob/main/blocks/carousel/carousel.js"
+      },
+      {
+        "title": "Labels from placeholders",
+        "detail": "Take button and indicator labels from the placeholders sheet so they can be translated.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/code-review"
+        },
+        "source": "https://github.com/adobe/aem-block-collection/blob/main/blocks/carousel/carousel.js"
+      },
+      {
+        "title": "Hidden slides inert",
+        "detail": "Set aria-hidden on off-screen slides and take their links out of the tab order.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "keyboard walkthrough"
+        },
+        "source": "https://github.com/adobe/aem-block-collection/blob/main/blocks/carousel/carousel.js"
+      },
+      {
+        "title": "Keyboard controls",
+        "detail": "Make previous, next and indicator buttons reachable and usable by keyboard.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "keyboard walkthrough"
+        },
+        "source": "https://www.w3.org/WAI/ARIA/apg/patterns/carousel/"
+      },
+      {
+        "title": "Pause any autoplay",
+        "detail": "The collection carousel doesn't autoplay; if you add it, give visitors a way to pause it.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "manual test"
+        },
+        "source": "https://www.w3.org/WAI/WCAG21/Understanding/pause-stop-hide.html"
+      },
+      {
+        "title": "First slide only eager",
+        "detail": "At the top of a page, let only the first slide image load eagerly as the LCP candidate.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "PageSpeed Insights"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#phase-e-eager"
+      },
+      {
+        "title": "Single slide",
+        "detail": "With one row, show no controls; the block skips buttons and indicators for a single slide.",
+        "level": "could",
+        "verify": {
+          "by": "agent",
+          "how": "view one-slide page"
+        },
+        "source": "https://github.com/adobe/aem-block-collection/blob/main/blocks/carousel/carousel.js"
+      },
+      {
+        "title": "Static in authoring",
+        "detail": "In Canvas, show slides static and visible with no timers, so authors edit the slide they see.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/canvas-block-review"
+        },
+        "source": null
+      }
+    ],
+    "related": [
+      "hero",
+      "images",
+      "performance"
+    ],
+    "wild": [
+      {
+        "label": "Carousel · Block Collection",
+        "url": "https://www.aem.live/developer/block-collection/carousel",
+        "note": "Reference content model"
+      },
+      {
+        "label": "Carousel live example",
+        "url": "https://main--aem-block-collection--adobe.aem.live/block-collection/carousel",
+        "note": "Rendered carousel"
+      },
+      {
+        "label": "carousel.js",
+        "url": "https://github.com/adobe/aem-block-collection/blob/main/blocks/carousel/carousel.js",
+        "note": "ARIA, placeholders and slide logic"
+      },
+      {
+        "label": "APG carousel pattern",
+        "url": "https://www.w3.org/WAI/ARIA/apg/patterns/carousel/",
+        "note": "Accessibility reference"
+      }
+    ]
+  },
+  {
+    "id": "header",
+    "category": "blocks",
+    "title": "Header & nav",
+    "summary": "Header is the boilerplate block loaded into <header> on every page. Its content is the nav fragment (/nav by default), split into brand, sections and tools, and it loads in the lazy phase, outside the LCP path.",
+    "items": [
+      {
+        "title": "Nav document",
+        "detail": "Author navigation in the nav document as three sections: brand, nested ul sections and tools.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "author walkthrough"
+        },
+        "source": "https://www.aem.live/developer/block-collection/header#notes"
+      },
+      {
+        "title": "nav metadata",
+        "detail": "Point a locale or site area at its own nav with the nav metadata; without it the header loads /nav.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl page | grep 'name=\"nav\"'"
+        },
+        "source": "https://github.com/adobe/aem-boilerplate/blob/main/blocks/header/header.js"
+      },
+      {
+        "title": "Publish nav separately",
+        "detail": "Preview and publish the nav document on its own; its changes apply to every page using it.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "Sidekick"
+        },
+        "source": "https://www.aem.live/developer/block-collection/header#notes"
+      },
+      {
+        "title": "Reserved height",
+        "detail": "Hold the header's space with --nav-height so the page doesn't shift when the nav loads.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "PSI CLS"
+        },
+        "source": "https://github.com/adobe/aem-boilerplate/blob/main/styles/styles.css"
+      },
+      {
+        "title": "Off the LCP path",
+        "detail": "Keep header code light and non-blocking; it loads after the first section, not before LCP.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "PageSpeed Insights"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#header-and-footer"
+      },
+      {
+        "title": "Nav landmark",
+        "detail": "Wrap navigation in a nav element and expose dropdown state with aria-expanded on buttons.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "axe DevTools"
+        },
+        "source": "https://github.com/adobe/aem-boilerplate/blob/main/blocks/header/header.js"
+      },
+      {
+        "title": "Keyboard and Escape",
+        "detail": "Open and close menus by keyboard; Escape or moving focus out of the nav closes them.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "keyboard walkthrough"
+        },
+        "source": "https://github.com/adobe/aem-boilerplate/blob/main/blocks/header/header.js"
+      },
+      {
+        "title": "Menu button name",
+        "detail": "Give the mobile menu button a label that switches between open and close navigation.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "axe DevTools"
+        },
+        "source": "https://github.com/adobe/aem-boilerplate/blob/main/blocks/header/header.js"
+      },
+      {
+        "title": "Skip link",
+        "detail": "Offer a skip-to-main-content link from the header for keyboard users.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/accessibility-fix"
+        },
+        "source": null
+      }
+    ],
+    "related": [
+      "footer",
+      "fragment",
+      "translation"
+    ],
+    "wild": [
+      {
+        "label": "Header · Block Collection",
+        "url": "https://www.aem.live/developer/block-collection/header",
+        "note": "Notes on the nav document"
+      },
+      {
+        "label": "Boilerplate header.js",
+        "url": "https://github.com/adobe/aem-boilerplate/blob/main/blocks/header/header.js",
+        "note": "Nav fragment, dropdowns and hamburger"
+      },
+      {
+        "label": "APG disclosure navigation",
+        "url": "https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/examples/disclosure-navigation/",
+        "note": "Dropdown nav accessibility reference"
+      }
+    ]
+  },
+  {
+    "id": "footer",
+    "category": "blocks",
+    "title": "Footer",
+    "summary": "Footer is the boilerplate block loaded into <footer> on every page from the footer fragment (/footer by default). It loads after the page sections and has its own preview and publish lifecycle.",
+    "items": [
+      {
+        "title": "Footer document",
+        "detail": "Author footer content in the footer document, split into sections that CSS styles by order.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "author walkthrough"
+        },
+        "source": "https://www.aem.live/developer/block-collection/footer#notes"
+      },
+      {
+        "title": "footer metadata",
+        "detail": "Point a locale or site area at its own footer with the footer metadata; the default is /footer.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl page | grep 'name=\"footer\"'"
+        },
+        "source": "https://github.com/adobe/aem-boilerplate/blob/main/blocks/footer/footer.js"
+      },
+      {
+        "title": "Publish footer separately",
+        "detail": "Preview and publish the footer document on its own; its changes apply to every page using it.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "Sidekick"
+        },
+        "source": "https://www.aem.live/developer/block-collection/footer#notes"
+      },
+      {
+        "title": "Loads last",
+        "detail": "Keep footer code out of the critical path; the boilerplate loads it after all sections.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "PageSpeed Insights"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#header-and-footer"
+      },
+      {
+        "title": "Hidden until loaded",
+        "detail": "Keep the footer hidden until its block reports loaded, as boilerplate styles.css does.",
+        "level": "could",
+        "verify": {
+          "by": "agent",
+          "how": "inspect DOM"
+        },
+        "source": "https://github.com/adobe/aem-boilerplate/blob/main/styles/styles.css"
+      },
+      {
+        "title": "Text from content",
+        "detail": "Keep copyright and legal text in the footer document, not hard-coded in footer.js.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/code-review"
+        },
+        "source": "https://www.aem.live/docs/dev-collab-and-good-practices#use-content-for-stringsliterals"
+      },
+      {
+        "title": "Clear link text",
+        "detail": "Make every footer link make sense on its own, including icon-only social links.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/accessibility-fix"
+        },
+        "source": "https://www.w3.org/WAI/WCAG21/Understanding/link-purpose-in-context.html"
+      }
+    ],
+    "related": [
+      "header",
+      "fragment",
+      "translation"
+    ],
+    "wild": [
+      {
+        "label": "Footer · Block Collection",
+        "url": "https://www.aem.live/developer/block-collection/footer",
+        "note": "Notes on the footer document"
+      },
+      {
+        "label": "Boilerplate footer.js",
+        "url": "https://github.com/adobe/aem-boilerplate/blob/main/blocks/footer/footer.js",
+        "note": "Loads the footer fragment"
+      },
+      {
+        "label": "Header and footer loading",
+        "url": "https://www.aem.live/developer/keeping-it-100#header-and-footer",
+        "note": "Why they stay off the LCP path"
+      }
+    ]
+  },
+  {
+    "id": "fragment",
+    "category": "blocks",
+    "title": "Fragment",
+    "summary": "A fragment is a document reused across pages and inserted on the client from its .plain.html. Authors add it with the Fragment block or a link to /fragments/; the header and footer are fragments too.",
+    "items": [
+      {
+        "title": "Clear reason",
+        "detail": "Use a fragment only when content repeats across pages or isolating it clearly helps authors.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "content review"
+        },
+        "source": "https://www.aem.live/docs/fragments#when-to-use-fragments"
+      },
+      {
+        "title": "Main content inline",
+        "detail": "Keep the page's primary content in the page; fragments load client-side and may not be indexed with it.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/content-audit"
+        },
+        "source": "https://www.aem.live/docs/fragments#when-to-avoid-fragments"
+      },
+      {
+        "title": "/fragments/ folder",
+        "detail": "Keep fragments under /fragments/ so a plain link to one is auto-blocked into the page.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl /fragments/<name>.plain.html"
+        },
+        "source": "https://www.aem.live/docs/fragments#referencing-fragments"
+      },
+      {
+        "title": "Same-site path",
+        "detail": "Reference fragments by a same-site path; loadFragment only fetches paths that start with a single /.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/code-review"
+        },
+        "source": "https://github.com/adobe/aem-boilerplate/blob/main/blocks/fragment/fragment.js"
+      },
+      {
+        "title": "Publish the fragment",
+        "detail": "Preview and publish the fragment itself; it goes live separately from the pages that use it.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "Sidekick"
+        },
+        "source": "https://www.aem.live/docs/fragments#when-to-avoid-fragments"
+      },
+      {
+        "title": "Noindex fragments",
+        "detail": "Set robots to noindex for /fragments/* in the fragment's metadata or the bulk metadata sheet.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl fragment | grep robots"
+        },
+        "source": "https://www.aem.live/docs/fragments#fragments-and-indexing"
+      },
+      {
+        "title": "Not the LCP",
+        "detail": "Keep the LCP element out of fragments; the extra lookup delays it and needs special handling.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "PageSpeed Insights"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#lcp"
+      }
+    ],
+    "related": [
+      "header",
+      "footer",
+      "content-model",
+      "performance"
+    ],
+    "wild": [
+      {
+        "label": "Fragments docs",
+        "url": "https://www.aem.live/docs/fragments",
+        "note": "When to use and avoid fragments"
+      },
+      {
+        "label": "Fragment · Block Collection",
+        "url": "https://www.aem.live/developer/block-collection/fragment",
+        "note": "Reference content model"
+      },
+      {
+        "label": "Fragment live example",
+        "url": "https://main--aem-block-collection--adobe.aem.live/block-collection/fragment",
+        "note": "A page including a fragment"
+      },
+      {
+        "label": "Boilerplate fragment.js",
+        "url": "https://github.com/adobe/aem-boilerplate/blob/main/blocks/fragment/fragment.js",
+        "note": "loadFragment implementation"
+      }
+    ]
+  },
+  {
+    "id": "embed",
+    "category": "blocks",
+    "title": "Embed & video",
+    "summary": "Embed and Video are Block Collection blocks that turn a YouTube, Vimeo or other URL (and, for Video, an .mp4) into a player. Both load the player only on view or click, keeping third-party code off the LCP path.",
+    "items": [
+      {
+        "title": "URL plus poster",
+        "detail": "Author the video or post URL in the block, optionally with a poster image above it.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "author walkthrough"
+        },
+        "source": "https://main--aem-block-collection--adobe.aem.live/block-collection/embed"
+      },
+      {
+        "title": "Auto-block plain links",
+        "detail": "Consider turning plain video links into embed blocks in buildAutoBlocks so authors only paste a link.",
+        "level": "could",
+        "verify": {
+          "by": "agent",
+          "how": "/code-review"
+        },
+        "source": "https://www.aem.live/developer/markup-sections-blocks#auto-blocking"
+      },
+      {
+        "title": "Lazy player load",
+        "detail": "Create iframes when the block scrolls into view, or on click when a poster is shown.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/code-review"
+        },
+        "source": "https://github.com/adobe/aem-block-collection/blob/main/blocks/embed/embed.js"
+      },
+      {
+        "title": "Reserved 16:9 frame",
+        "detail": "Reserve the player's box with aspect-ratio or padding so it doesn't shift the page as it loads.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "PSI CLS"
+        },
+        "source": "https://github.com/adobe/aem-block-collection/blob/main/blocks/embed/embed.css"
+      },
+      {
+        "title": "Iframe title",
+        "detail": "Give every iframe a title naming its source, as the blocks do with \"Content from …\".",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "axe DevTools"
+        },
+        "source": "https://github.com/adobe/aem-block-collection/blob/main/blocks/embed/embed.js"
+      },
+      {
+        "title": "Play button name",
+        "detail": "Label the poster's play button with what it plays, such as \"Play YouTube video\".",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "axe DevTools"
+        },
+        "source": "https://github.com/adobe/aem-block-collection/blob/main/blocks/video/video.js"
+      },
+      {
+        "title": "Careful autoplay",
+        "detail": "Autoplay only muted, and skip it when the visitor prefers reduced motion, as the Video block does.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/code-review"
+        },
+        "source": "https://github.com/adobe/aem-block-collection/blob/main/blocks/video/video.js"
+      },
+      {
+        "title": "Consent for third parties",
+        "detail": "Check whether social or video embeds need consent before they load third-party code.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "privacy review"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#phase-d-delayed"
+      }
+    ],
+    "related": [
+      "images",
+      "consent",
+      "performance"
+    ],
+    "wild": [
+      {
+        "label": "Embed · Block Collection",
+        "url": "https://www.aem.live/developer/block-collection/embed",
+        "note": "Reference content model"
+      },
+      {
+        "label": "Video · Block Collection",
+        "url": "https://www.aem.live/developer/block-collection/video",
+        "note": "YouTube, Vimeo and .mp4"
+      },
+      {
+        "label": "Embed live example",
+        "url": "https://main--aem-block-collection--adobe.aem.live/block-collection/embed",
+        "note": "Vimeo, YouTube and social embeds"
+      },
+      {
+        "label": "video.js",
+        "url": "https://github.com/adobe/aem-block-collection/blob/main/blocks/video/video.js",
+        "note": "Lazy loading and reduced motion"
+      }
+    ]
+  },
+  {
+    "id": "table",
+    "category": "blocks",
+    "title": "Table",
+    "summary": "Table is a Block Collection block for small tabular data on one page. Each authored row becomes a table row, and the first row becomes the header unless the no-header option is used.",
+    "items": [
+      {
+        "title": "Small data only",
+        "detail": "Use the table block for small one-page data; put large or reused data in a spreadsheet served as JSON.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "content review"
+        },
+        "source": null
+      },
+      {
+        "title": "Not for layout",
+        "detail": "Use Columns or sections for layout; tables are for data with rows and columns.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "content review"
+        },
+        "source": "https://www.w3.org/WAI/tutorials/tables/"
+      },
+      {
+        "title": "Header row first",
+        "detail": "Author column headers in the first row; the block renders them as th with scope=col.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "inspect DOM"
+        },
+        "source": "https://github.com/adobe/aem-block-collection/blob/main/blocks/table/table.js"
+      },
+      {
+        "title": "No-header option",
+        "detail": "Use Table (no header) when the data has no header row, so no th cells are created.",
+        "level": "could",
+        "verify": {
+          "by": "agent",
+          "how": "inspect DOM"
+        },
+        "source": "https://github.com/adobe/aem-block-collection/blob/main/blocks/table/table.js"
+      },
+      {
+        "title": "Real table markup",
+        "detail": "Render a real table with thead and tbody so screen readers announce rows and columns.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "axe DevTools"
+        },
+        "source": "https://github.com/adobe/aem-block-collection/blob/main/blocks/table/table.js"
+      },
+      {
+        "title": "Scroll when wide",
+        "detail": "Let wide tables scroll sideways on small screens instead of overflowing the page.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "mobile viewport check"
+        },
+        "source": "https://github.com/adobe/aem-block-collection/blob/main/blocks/table/table.css"
+      },
+      {
+        "title": "Styles as options",
+        "detail": "Offer looks such as striped or bordered as block options, not as separate blocks.",
+        "level": "could",
+        "verify": {
+          "by": "agent",
+          "how": "/content-modeling"
+        },
+        "source": "https://main--aem-block-collection--adobe.aem.live/block-collection/table"
+      },
+      {
+        "title": "Keep alignment",
+        "detail": "Keep authored cell alignment; the block copies data-align and data-valign onto the cells.",
+        "level": "could",
+        "verify": {
+          "by": "agent",
+          "how": "inspect DOM"
+        },
+        "source": "https://github.com/adobe/aem-block-collection/blob/main/blocks/table/table.js"
+      }
+    ],
+    "related": [
+      "spreadsheets",
+      "content-model",
+      "columns"
+    ],
+    "wild": [
+      {
+        "label": "Table · Block Collection",
+        "url": "https://www.aem.live/developer/block-collection/table",
+        "note": "Reference content model"
+      },
+      {
+        "label": "Table live example",
+        "url": "https://main--aem-block-collection--adobe.aem.live/block-collection/table",
+        "note": "Plain, striped and bordered tables"
+      },
+      {
+        "label": "table.js",
+        "url": "https://github.com/adobe/aem-block-collection/blob/main/blocks/table/table.js",
+        "note": "Header row and alignment handling"
+      }
+    ]
+  }
+]

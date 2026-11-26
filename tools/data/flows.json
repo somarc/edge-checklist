@@ -1,0 +1,1051 @@
+[
+  {
+    "id": "going-live",
+    "category": "flows",
+    "title": "Going live",
+    "summary": "Going live points your production CDN at the aem.live origin of the main branch. The checklist covers the checks before the switch, the CDN and invalidation setup, and what to watch in the weeks after launch.",
+    "items": [
+      {
+        "title": "Content and design QA",
+        "detail": "Sign off content, design, accessibility and SEO on the .aem.live site, then freeze code and content location changes.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "stakeholder review on .aem.live"
+        },
+        "source": "https://www.aem.live/docs/go-live-checklist#content-and-design-qa"
+      },
+      {
+        "title": "Lighthouse 100",
+        "detail": "Score 100 on mobile and desktop in PageSpeed Insights on the .aem.live site before launch.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "PageSpeed Insights"
+        },
+        "source": "https://www.aem.live/docs/go-live-checklist#performance-validation"
+      },
+      {
+        "title": "Telemetry early",
+        "detail": "Add Operational Telemetry before launch so you can compare before and after metrics.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "check page for OpTel script"
+        },
+        "source": "https://www.aem.live/docs/go-live-checklist#operational-telemetry-instrumentation"
+      },
+      {
+        "title": "Analytics baseline",
+        "detail": "Confirm martech tags fire and tell analysts that baselines like pageviews and bounce rate may shift.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "analytics dashboard review"
+        },
+        "source": "https://www.aem.live/docs/go-live-checklist#analytics-validation"
+      },
+      {
+        "title": "Legacy redirects",
+        "detail": "Add retired URLs to the redirects sheet, starting with the backlinks that matter most in Search Console.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl -sI old URLs"
+        },
+        "source": "https://www.aem.live/docs/go-live-checklist#legacy-redirects"
+      },
+      {
+        "title": "Sitemap, robots, canonicals",
+        "detail": "Serve a sitemap from the query index, check robots.txt, and make every canonical URL return 2xx.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl /robots.txt /sitemap.xml"
+        },
+        "source": "https://www.aem.live/docs/go-live-checklist#sitemap--robots"
+      },
+      {
+        "title": "CDN on main",
+        "detail": "Point the production CDN at the main branch origin and 301 HTTP to HTTPS on apex and www.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl -sI http://<domain>/path?x=1"
+        },
+        "source": "https://www.aem.live/docs/go-live-checklist#cdn-configuration"
+      },
+      {
+        "title": "Push invalidation tested",
+        "detail": "Set up push invalidation for your CDN, publish a small change and see it on the production domain.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "publish test edit, check prod"
+        },
+        "source": "https://www.aem.live/docs/go-live-checklist#push-invalidation-setup"
+      },
+      {
+        "title": "After launch",
+        "detail": "Rerun PageSpeed Insights on production and watch Search Console and 404 reports for the following weeks.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "PageSpeed Insights on prod"
+        },
+        "source": "https://www.aem.live/docs/go-live-checklist#post-go-live-validation"
+      }
+    ],
+    "related": [
+      "byo-cdn",
+      "redirects",
+      "performance",
+      "robots"
+    ],
+    "wild": [
+      {
+        "label": "Go-Live Checklist · aem.live",
+        "url": "https://www.aem.live/docs/go-live-checklist",
+        "note": "Adobe's full launch checklist"
+      },
+      {
+        "label": "Push invalidation setup",
+        "url": "https://www.aem.live/docs/setup-byo-cdn-push-invalidation",
+        "note": "Per-CDN purge configuration"
+      },
+      {
+        "label": "PageSpeed Insights",
+        "url": "https://pagespeed.web.dev/",
+        "note": "The lab test the docs use for the 100 target"
+      }
+    ]
+  },
+  {
+    "id": "migrating-a-page",
+    "category": "flows",
+    "title": "Migrating a page",
+    "summary": "Migrating turns an existing web page into content authors edit in EDS: docx, DA HTML or a JCR package. Getting the structure right on one page per type saves rework across every page you import after it.",
+    "items": [
+      {
+        "title": "One page per type",
+        "detail": "Make an example import of each page type first and confirm authors find the structure intuitive.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "author walkthrough"
+        },
+        "source": "https://www.aem.live/developer/importer#getting-started"
+      },
+      {
+        "title": "Main content only",
+        "detail": "Strip header, footer and other chrome; they come from nav and footer documents, not the page.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/page-import"
+        },
+        "source": "https://www.aem.live/developer/importer#what-do-i-do-with-these-docx-filesjcr-packagehtml"
+      },
+      {
+        "title": "Simple for authors",
+        "detail": "Use default content where it works and blocks only where needed, so authors can copy and understand them.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/content-modeling"
+        },
+        "source": "https://www.aem.live/developer/markup-sections-blocks#blocks"
+      },
+      {
+        "title": "Rules in import.js",
+        "detail": "Keep transformation rules in tools/importer/import.js so the same import repeats across many pages.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "read tools/importer/import.js"
+        },
+        "source": "https://www.aem.live/developer/importer#import---workbench--general-features"
+      },
+      {
+        "title": "Right output format",
+        "detail": "Save docx for Word or Google Docs, HTML for Document Authoring, or a JCR package for Universal Editor.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "check importer options"
+        },
+        "source": "https://www.aem.live/developer/importer#document-authoring"
+      },
+      {
+        "title": "Import into drafts",
+        "detail": "Import into a drafts folder first, since Experience Workspace import overwrites the destination.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "check destination path"
+        },
+        "source": "https://www.aem.live/docs/ew/administering/import#import"
+      },
+      {
+        "title": "Compare with original",
+        "detail": "Preview the imported page locally and compare it with the source screenshot, with no console errors.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/preview-import"
+        },
+        "source": null
+      },
+      {
+        "title": "Read the report",
+        "detail": "Check the bulk import report for 404s, 301s and failed pages before previewing them.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "importer Excel report"
+        },
+        "source": "https://www.aem.live/developer/importer#report"
+      },
+      {
+        "title": "Redirect changed URLs",
+        "detail": "Map the old URL 1-to-1 to the new one in the redirects sheet when the path changes.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl -sI old URL"
+        },
+        "source": "https://www.aem.live/docs/redirects#site-migrations-and-seo"
+      }
+    ],
+    "related": [
+      "content-model",
+      "redirects",
+      "document-authoring",
+      "metadata"
+    ],
+    "wild": [
+      {
+        "label": "AEM Importer docs",
+        "url": "https://www.aem.live/developer/importer",
+        "note": "Workbench, bulk import, crawl and report"
+      },
+      {
+        "label": "helix-importer-ui guidelines",
+        "url": "https://github.com/adobe/helix-importer-ui/blob/main/importer-guidelines.md",
+        "note": "How to write import.js rules"
+      },
+      {
+        "label": "Experience Workspace import",
+        "url": "https://www.aem.live/docs/ew/administering/import",
+        "note": "Import an EDS site by query index or URL"
+      }
+    ]
+  },
+  {
+    "id": "adding-a-block",
+    "category": "flows",
+    "title": "Adding a block",
+    "summary": "A block is a folder of JS and CSS named after the table authors type. Content-driven development means writing the test content first, then the code, then a PR with preview URLs the reviewer can open.",
+    "items": [
+      {
+        "title": "Check the collection",
+        "detail": "Look in the Block Collection before building; reuse or extend an existing block when it fits.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/block-collection-and-party"
+        },
+        "source": "https://www.aem.live/developer/block-collection"
+      },
+      {
+        "title": "Content first",
+        "detail": "Write sample content before any code and have someone who supports authors review the structure.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "author walkthrough"
+        },
+        "source": "https://www.aem.live/docs/dev-collab-and-good-practices#start-your-development-with-content"
+      },
+      {
+        "title": "Work in drafts",
+        "detail": "Put test pages in /drafts/<yourname>/ rather than editing live pages.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "check test page path"
+        },
+        "source": "https://www.aem.live/docs/dev-collab-and-good-practices#use-drafts"
+      },
+      {
+        "title": "Name matches folder",
+        "detail": "Use the block name for the folder, the JS and CSS file names and the CSS class.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "eds-guard"
+        },
+        "source": "https://www.aem.live/developer/markup-sections-blocks#blocks"
+      },
+      {
+        "title": "Variants as options",
+        "detail": "Offer variations as block options in parentheses, which become extra classes on the block.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "read block JS for variant classes"
+        },
+        "source": "https://www.aem.live/developer/markup-sections-blocks#block-options"
+      },
+      {
+        "title": "Scoped CSS",
+        "detail": "Prefix every selector with the block class so styles cannot leak into other blocks.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "eds-guard"
+        },
+        "source": "https://www.aem.live/docs/dev-collab-and-good-practices#css-selector-block-isolation"
+      },
+      {
+        "title": "Backwards compatible",
+        "detail": "Existing pages keep working after merge; new behavior appears only when authors republish content.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/find-test-content"
+        },
+        "source": "https://www.aem.live/docs/dev-collab-and-good-practices#backwards-compatibility-of-new-features"
+      },
+      {
+        "title": "Checked in a browser",
+        "detail": "View the block at mobile, tablet and desktop widths with no console errors.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/testing-blocks"
+        },
+        "source": null
+      },
+      {
+        "title": "PR with test URLs",
+        "detail": "Open a PR with before and after test URLs; draft it while the content is still local.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "Code Sync PSI check"
+        },
+        "source": "https://github.com/adobe/aem-boilerplate/blob/main/.github/pull_request_template.md"
+      }
+    ],
+    "related": [
+      "any-block",
+      "content-model",
+      "block-library",
+      "reviewing-a-pr"
+    ],
+    "wild": [
+      {
+        "label": "Block Collection",
+        "url": "https://www.aem.live/developer/block-collection",
+        "note": "Reference blocks and content models"
+      },
+      {
+        "label": "aem-block-collection repo",
+        "url": "https://github.com/adobe/aem-block-collection",
+        "note": "Source code for the reference blocks"
+      },
+      {
+        "label": "Markup, sections, blocks",
+        "url": "https://www.aem.live/developer/markup-sections-blocks",
+        "note": "How authored tables become block markup"
+      }
+    ]
+  },
+  {
+    "id": "preview-to-publish",
+    "category": "flows",
+    "title": "Previewing & publishing",
+    "summary": "Preview renders a page to .aem.page for review; publish copies that preview to .aem.live and production. Visitors only see what was published, so the checks happen on preview.",
+    "items": [
+      {
+        "title": "Preview from source",
+        "detail": "Preview from the editor or Sidekick so .aem.page renders the latest version of the document.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "Sidekick"
+        },
+        "source": "https://www.aem.live/docs/sidekick#source-mode"
+      },
+      {
+        "title": "Review on .aem.page",
+        "detail": "Share the preview URL with stakeholders; it is not on your domain and search engines do not see it.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "stakeholder review on .aem.page"
+        },
+        "source": "https://www.aem.live/docs/authoring#preview"
+      },
+      {
+        "title": "Run Preflight",
+        "detail": "Run Preflight in Experience Workspace and fix failed checks before publishing.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "Experience Workspace Preflight"
+        },
+        "source": "https://www.aem.live/docs/ew/administering/preflight#using-preflight"
+      },
+      {
+        "title": "Assets publishable",
+        "detail": "Give images a file extension and supported type within size limits, and keep one valid JSON-LD block.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "Universal Editor publish errors"
+        },
+        "source": "https://www.aem.live/docs/publishing-from-authoring#pre-publish-validations"
+      },
+      {
+        "title": "Know what changes",
+        "detail": "Check Versions when the Send button shows an orange badge for previewed but unpublished changes.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "Experience Workspace Versions"
+        },
+        "source": "https://www.aem.live/docs/ew/authoring/publishing#unpublished-previewed-changes"
+      },
+      {
+        "title": "Sheets published too",
+        "detail": "Preview and publish changed redirects, placeholders or metadata sheets along with the pages.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "Sidekick status per sheet"
+        },
+        "source": "https://www.aem.live/docs/redirects#redirects"
+      },
+      {
+        "title": "Batch launches",
+        "detail": "Group a launch's pages in a snapshot, review on .aem.reviews and publish them together.",
+        "level": "could",
+        "verify": {
+          "by": "human",
+          "how": "Sidekick review plugin"
+        },
+        "source": "https://www.aem.live/docs/snapshots-reviews#lifecycle-of-a-snapshot"
+      },
+      {
+        "title": "Check production",
+        "detail": "After publishing, open the page on the production domain to confirm the CDN serves the change.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl production URL"
+        },
+        "source": "https://www.aem.live/docs/sidekick#production-mode"
+      }
+    ],
+    "related": [
+      "sidekick",
+      "document-authoring",
+      "universal-editor",
+      "rolling-back"
+    ],
+    "wild": [
+      {
+        "label": "Using AEM Sidekick",
+        "url": "https://www.aem.live/docs/sidekick",
+        "note": "Environments, preview, publish and bulk actions"
+      },
+      {
+        "label": "Publishing in Experience Workspace",
+        "url": "https://www.aem.live/docs/ew/authoring/publishing",
+        "note": "Preview and publish from the editor or browser"
+      },
+      {
+        "label": "Snapshots and reviews",
+        "url": "https://www.aem.live/docs/snapshots-reviews",
+        "note": "Publish a set of pages for a launch"
+      }
+    ]
+  },
+  {
+    "id": "adding-a-locale",
+    "category": "flows",
+    "title": "Adding a locale",
+    "summary": "A locale in EDS is a content folder, such as /fr/ or /en/uk/, with its own nav, footer and placeholders. Getting the URL structure, language markup and hreflang right up front avoids duplicate content and wrong-language links.",
+    "items": [
+      {
+        "title": "Language-first URLs",
+        "detail": "Put language first and market second, such as /en/ and /en/uk/, unless markets share little content.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "IA review"
+        },
+        "source": "https://www.aem.live/docs/translation-and-localization#url-and-content-structure"
+      },
+      {
+        "title": "Only localized content",
+        "detail": "Keep only pages that are actually localized in the market folder and fall back to the language folder.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "content inventory review"
+        },
+        "source": "https://www.aem.live/docs/translation-and-localization#handling-localization"
+      },
+      {
+        "title": "Local nav and footer",
+        "detail": "Copy nav and footer into the locale folder and make the code load the copy for that locale.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "open locale page, check nav links"
+        },
+        "source": "https://www.aem.live/docs/translation-and-localization#link-rewriting-for-localization-in-practice"
+      },
+      {
+        "title": "Locale placeholders",
+        "detail": "Keep a placeholders sheet in the locale root so UI strings are translated, not hard-coded.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl /<locale>/placeholders.json"
+        },
+        "source": "https://www.aem.live/docs/placeholders#placeholders"
+      },
+      {
+        "title": "Correct html lang",
+        "detail": "Set the html lang per locale; the boilerplate scripts.js hard-codes 'en'.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "Lighthouse html-has-lang"
+        },
+        "source": "https://github.com/adobe/aem-boilerplate/blob/main/scripts/scripts.js"
+      },
+      {
+        "title": "hreflang in sitemap",
+        "detail": "Configure the sitemap with each language's hreflang and alternate path.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl /sitemap.xml"
+        },
+        "source": "https://www.aem.live/developer/sitemap#multiple-sitemaps"
+      },
+      {
+        "title": "Links stay in locale",
+        "detail": "Rewrite links in content and code to the locale's version when that page exists.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/link-rot-scanner"
+        },
+        "source": "https://www.aem.live/docs/translation-and-localization#link-rewriting-for-localization-in-practice"
+      },
+      {
+        "title": "Visitor can switch",
+        "detail": "Let visitors choose a market and language and keep that choice on their device.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "manual locale switch test"
+        },
+        "source": "https://www.aem.live/docs/translation-and-localization#language-and-market-detection"
+      },
+      {
+        "title": "Translation workflow",
+        "detail": "Use Experience Workspace translation projects or a connector rather than in-browser translation.",
+        "level": "could",
+        "verify": {
+          "by": "human",
+          "how": "translation project review"
+        },
+        "source": "https://www.aem.live/docs/ew/administering/translation-strategy#introduction-to-experience-workspace-localization"
+      }
+    ],
+    "related": [
+      "translation",
+      "locale-root",
+      "sitemap",
+      "placeholders"
+    ],
+    "wild": [
+      {
+        "label": "Translation and Localization",
+        "url": "https://www.aem.live/docs/translation-and-localization",
+        "note": "Adobe's URL and content structure advice"
+      },
+      {
+        "label": "blog.adobe.com · German",
+        "url": "https://blog.adobe.com/de/",
+        "note": "Live multi-locale EDS site"
+      },
+      {
+        "label": "Translation strategies",
+        "url": "https://www.aem.live/docs/ew/administering/translation-strategy",
+        "note": "Language, region and locale folder patterns"
+      }
+    ]
+  },
+  {
+    "id": "going-repoless",
+    "category": "flows",
+    "title": "Going repoless",
+    "summary": "Repoless lets many sites run off one GitHub repository, each with its own content source and configuration in the Configuration Service. Every code change reaches every site, so setup and testing need care.",
+    "items": [
+      {
+        "title": "Canonical site",
+        "detail": "Keep one site whose org and site names match the GitHub owner and repo synced by AEM Code Sync.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "Admin API config read"
+        },
+        "source": "https://www.aem.live/docs/config-service-setup#prerequisites"
+      },
+      {
+        "title": "Admin API access",
+        "detail": "Get an Admin API access token before creating or changing site configurations.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "Admin API auth check"
+        },
+        "source": "https://www.aem.live/docs/repoless#pre-requisites-1"
+      },
+      {
+        "title": "Create site config",
+        "detail": "Create each new site with the Admin API, pointing code at the shared repo and content at its own source.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "Admin API site config"
+        },
+        "source": "https://www.aem.live/docs/repoless#create-your-first-repoless-site"
+      },
+      {
+        "title": "Shared settings in profile",
+        "detail": "Put shared headers, indexes and metadata in a profile; site settings win on conflict.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "compare site and profile config"
+        },
+        "source": "https://www.aem.live/docs/repoless#profile"
+      },
+      {
+        "title": "Config off files",
+        "detail": "Move robots, headers, index and sitemap settings to the Configuration Service and remove the old files.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "check repo for fstab.yaml"
+        },
+        "source": "https://www.aem.live/docs/config-service-setup#remove-unused-configuration-files"
+      },
+      {
+        "title": "Preview new site",
+        "detail": "Preview content on main--{site}--{org}.aem.page; it shows a 404 until something is previewed.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl main--{site}--{org}.aem.page"
+        },
+        "source": "https://www.aem.live/docs/repoless#create-your-first-repoless-site"
+      },
+      {
+        "title": "Local dev per site",
+        "detail": "Run aem up --url with the site's preview URL to develop against its content.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "aem up --url"
+        },
+        "source": "https://www.aem.live/docs/repoless#create-your-first-repoless-site"
+      },
+      {
+        "title": "Test across sites",
+        "detail": "Check code changes on every site that shares the codebase, since a push applies to all of them.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "branch preview per site"
+        },
+        "source": "https://www.aem.live/docs/repoless#github-repository"
+      },
+      {
+        "title": "Don't swap live code",
+        "detail": "Never change code settings on a production site; create a new site and switch the CDN origin.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "change review"
+        },
+        "source": "https://www.aem.live/docs/config-service-setup#update-code-location"
+      }
+    ],
+    "related": [
+      "site-config",
+      "github",
+      "byo-cdn",
+      "cloud-manager"
+    ],
+    "wild": [
+      {
+        "label": "Repoless docs",
+        "url": "https://www.aem.live/docs/repoless",
+        "note": "One codebase, many sites"
+      },
+      {
+        "label": "Configuration Service setup",
+        "url": "https://www.aem.live/docs/config-service-setup",
+        "note": "Admin API calls for site config"
+      },
+      {
+        "label": "AEM tools",
+        "url": "https://tools.aem.live/",
+        "note": "UIs for site configuration"
+      }
+    ]
+  },
+  {
+    "id": "retiring-a-page",
+    "category": "flows",
+    "title": "Retiring a page",
+    "summary": "Retiring a page means unpublishing or deleting it and sending its traffic somewhere useful. Inbound links from search, social and bookmarks outlive the page, and unpublish and delete cannot be undone from Sidekick.",
+    "items": [
+      {
+        "title": "Pick next best page",
+        "detail": "Choose a relevant replacement and avoid sending retired URLs to the homepage.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "editorial decision"
+        },
+        "source": "https://www.aem.live/docs/redirects#site-migrations-and-seo"
+      },
+      {
+        "title": "Add a redirect",
+        "detail": "Add a Source and Destination row to the redirects sheet, check it on .aem.page, then publish.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl -sI retired URL"
+        },
+        "source": "https://www.aem.live/docs/redirects#redirects"
+      },
+      {
+        "title": "Fix internal links",
+        "detail": "Update nav, fragments and pages that link to the retired URL.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/link-rot-scanner"
+        },
+        "source": null
+      },
+      {
+        "title": "Unpublish",
+        "detail": "Unpublish from Sidekick to remove the page from live and production; it needs the publish role.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "Admin API status"
+        },
+        "source": "https://www.aem.live/docs/sidekick#unpublishing-and-deleting-content"
+      },
+      {
+        "title": "Delete or archive source",
+        "detail": "Delete the source document or move it to drafts, then delete the preview if it is not needed.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "content tree review"
+        },
+        "source": "https://www.aem.live/docs/authoring#delete"
+      },
+      {
+        "title": "Gone from index",
+        "detail": "Confirm the page left query-index.json and the sitemap, which list published pages only.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl /query-index.json"
+        },
+        "source": "https://www.aem.live/developer/indexing#reindexing"
+      },
+      {
+        "title": "Double-check first",
+        "detail": "Confirm the URL before unpublish or delete; neither can be undone from Sidekick.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "URL check before action"
+        },
+        "source": "https://www.aem.live/docs/sidekick#unpublishing-and-deleting-content"
+      },
+      {
+        "title": "Watch 404s",
+        "detail": "Monitor 404s in Operational Telemetry after retiring pages and add redirects as needed.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "OpTel 404 report"
+        },
+        "source": "https://www.aem.live/docs/redirects#site-migrations-and-seo"
+      }
+    ],
+    "related": [
+      "redirects",
+      "sitemap",
+      "query-index",
+      "sidekick"
+    ],
+    "wild": [
+      {
+        "label": "Redirects",
+        "url": "https://www.aem.live/docs/redirects",
+        "note": "Redirect sheet and migration SEO advice"
+      },
+      {
+        "label": "Unpublishing and deleting",
+        "url": "https://www.aem.live/docs/sidekick",
+        "note": "Sidekick roles and actions"
+      },
+      {
+        "label": "Google: site moves",
+        "url": "https://developers.google.com/search/docs/crawling-indexing/site-move-with-url-changes",
+        "note": "Avoid irrelevant redirects"
+      }
+    ]
+  },
+  {
+    "id": "reviewing-a-pr",
+    "category": "flows",
+    "title": "Reviewing a pull request",
+    "summary": "Merging to main deploys to production through AEM Code Sync, so the pull request is the release gate. The reviewer opens the branch preview, checks the PageSpeed and lint results, and reads the diff against EDS conventions.",
+    "items": [
+      {
+        "title": "Issue and test URLs",
+        "detail": "The description links the issue and gives before and after test URLs on main and the branch.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "read PR description"
+        },
+        "source": "https://github.com/adobe/aem-boilerplate/blob/main/.github/pull_request_template.md"
+      },
+      {
+        "title": "Branch preview loads",
+        "detail": "Open {branch}--{repo}--{owner}.aem.page; the whole host part has to fit in 63 characters.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl branch preview URL"
+        },
+        "source": "https://www.aem.live/docs/limits#aem-code-syncgithub-limits"
+      },
+      {
+        "title": "PSI check green",
+        "detail": "The Code Sync PageSpeed Insights check passes on mobile and desktop, ideally at 100.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "Code Sync PSI check"
+        },
+        "source": "https://www.aem.live/docs/dev-collab-and-good-practices#pagespeed-insights"
+      },
+      {
+        "title": "Lint passes",
+        "detail": "ESLint and Stylelint pass in the PR check, without loosened lint rules.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "npm run lint"
+        },
+        "source": "https://www.aem.live/docs/dev-collab-and-good-practices#linting"
+      },
+      {
+        "title": "Scope matches title",
+        "detail": "The diff covers only what the title says, with no reformatting noise; unfinished work stays draft.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/code-review"
+        },
+        "source": "https://www.aem.live/docs/dev-collab-and-good-practices#pull-request-etiquette"
+      },
+      {
+        "title": "Block code isolated",
+        "detail": "Block CSS selectors are scoped to the block and third-party scripts load in the block, not head.html.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "eds-guard"
+        },
+        "source": "https://www.aem.live/docs/dev-collab-and-good-practices#css-selector-block-isolation"
+      },
+      {
+        "title": "Existing content safe",
+        "detail": "Existing pages render as before; new behavior only appears with new content.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/find-test-content"
+        },
+        "source": "https://www.aem.live/docs/dev-collab-and-good-practices#backwards-compatibility-of-new-features"
+      },
+      {
+        "title": "Author merges",
+        "detail": "Approve, then let the author merge when ready, since merging to main deploys to production.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "PR conversation"
+        },
+        "source": "https://www.aem.live/docs/dev-collab-and-good-practices#merging-pull-requests-deploying-to-production"
+      }
+    ],
+    "related": [
+      "github",
+      "performance",
+      "adding-a-block",
+      "rolling-back"
+    ],
+    "wild": [
+      {
+        "label": "Boilerplate PR template",
+        "url": "https://github.com/adobe/aem-boilerplate/blob/main/.github/pull_request_template.md",
+        "note": "Issue link and before/after test URLs"
+      },
+      {
+        "label": "Dev collaboration practices",
+        "url": "https://www.aem.live/docs/dev-collab-and-good-practices",
+        "note": "Adobe's PR, lint and review guidance"
+      },
+      {
+        "label": "Testing your pull requests",
+        "url": "https://www.aem.live/developer/keeping-it-100#testing-your-pull-requests",
+        "note": "How the bot scores test URLs"
+      }
+    ]
+  },
+  {
+    "id": "rolling-back",
+    "category": "flows",
+    "title": "Rolling back",
+    "summary": "Rolling back in EDS means reverting code in git or restoring a content version and republishing it. Code merges to main and publishes purge the caches; a manual purge exists for when they don't.",
+    "items": [
+      {
+        "title": "Code or content",
+        "detail": "Decide if the regression came from a merge to main or from a publish, and roll back that side only.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "compare deploy and publish times"
+        },
+        "source": null
+      },
+      {
+        "title": "Revert in git",
+        "detail": "Revert the merge on main through a PR; Code Sync deploys main to production.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "git revert"
+        },
+        "source": "https://www.aem.live/docs/dev-collab-and-good-practices#merging-pull-requests-deploying-to-production"
+      },
+      {
+        "title": "Keep site config",
+        "detail": "Do not repoint a production site's code config; create a new site and switch the CDN origin.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "change review"
+        },
+        "source": "https://www.aem.live/docs/config-service-setup#update-code-location"
+      },
+      {
+        "title": "Restore a version",
+        "detail": "In Experience Workspace, restore the last good version from Versions, then preview and publish it.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "Experience Workspace Versions"
+        },
+        "source": "https://www.aem.live/docs/ew/authoring/version-history#restoring-a-version"
+      },
+      {
+        "title": "Bring back a page",
+        "detail": "Restore the deleted source document, then preview and publish it again.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "Sidekick"
+        },
+        "source": "https://www.aem.live/docs/authoring#delete"
+      },
+      {
+        "title": "Republish sheets",
+        "detail": "Restore and republish redirects, placeholders or metadata sheets if they caused the issue.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "Sidekick status per sheet"
+        },
+        "source": "https://www.aem.live/docs/redirects#redirects"
+      },
+      {
+        "title": "Purge if stale",
+        "detail": "If production still serves old content, purge it with the Admin API cache endpoint.",
+        "level": "could",
+        "verify": {
+          "by": "machine",
+          "how": "Admin API cache purge"
+        },
+        "source": "https://www.aem.live/docs/admin.html#tag/cache/operation/purgeCache"
+      },
+      {
+        "title": "Confirm on production",
+        "detail": "Check the fix on the production domain as well as .aem.live, since a BYO CDN relies on push invalidation.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl production URL"
+        },
+        "source": "https://www.aem.live/docs/setup-byo-cdn-push-invalidation"
+      }
+    ],
+    "related": [
+      "github",
+      "preview-to-publish",
+      "byo-cdn",
+      "reviewing-a-pr"
+    ],
+    "wild": [
+      {
+        "label": "Version history",
+        "url": "https://www.aem.live/docs/ew/authoring/version-history",
+        "note": "Compare and restore content versions"
+      },
+      {
+        "label": "Admin API · cache",
+        "url": "https://www.aem.live/docs/admin.html#tag/cache/operation/purgeCache",
+        "note": "Purge the live cache for a path"
+      },
+      {
+        "label": "git revert",
+        "url": "https://git-scm.com/docs/git-revert",
+        "note": "Undo a merged commit"
+      }
+    ]
+  }
+]

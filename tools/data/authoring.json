@@ -1,0 +1,1318 @@
+[
+  {
+    "id": "content-model",
+    "category": "authoring",
+    "title": "Content model",
+    "summary": "The content model is the block tables and default content authors type in Word, Docs or Experience Workspace. The same structure becomes the delivered markup, so a good model keeps authoring simple and the HTML meaningful.",
+    "items": [
+      {
+        "title": "Default content first",
+        "detail": "Use plain headings, paragraphs, images and lists; never make a text, heading or image block.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/content-modeling"
+        },
+        "source": "https://www.aem.live/docs/davidsmodel#rule-1-blocks-are-not-great-for-authoring"
+      },
+      {
+        "title": "No nested blocks",
+        "detail": "Never put a table inside a block cell; use a fragment or an auto-blocked link instead.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/content-modeling"
+        },
+        "source": "https://www.aem.live/docs/davidsmodel#rule-2-no-nested-blocks-for-authors"
+      },
+      {
+        "title": "Simple table shape",
+        "detail": "Merge cells only for the block-name header row and keep the number of columns small.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/content-modeling"
+        },
+        "source": "https://www.aem.live/docs/davidsmodel#rule-3-limit-row-and-column-spans"
+      },
+      {
+        "title": "Block Collection models",
+        "detail": "When a block does the same job as a Block Collection block, reuse that content model.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/block-collection-and-party"
+        },
+        "source": "https://www.aem.live/docs/davidsmodel#rule-11-use-the-block-collection-content-models"
+      },
+      {
+        "title": "Few blocks and variants",
+        "detail": "Infer variants from the content where possible and retire blocks and variants authors rarely use.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "content usage report"
+        },
+        "source": "https://www.aem.live/docs/davidsmodel#rule-9-number-of-blocks-and-variants"
+      },
+      {
+        "title": "Buttons from context",
+        "detail": "A link alone on a line is a button; bold marks a primary button and italic a secondary one.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/content-modeling"
+        },
+        "source": "https://www.aem.live/docs/davidsmodel#rule-6-buttons-need-to-inherit-from-context"
+      },
+      {
+        "title": "Full URLs",
+        "detail": "Let authors paste fully qualified URLs and let code extract the path it needs.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "author walkthrough"
+        },
+        "source": "https://www.aem.live/docs/davidsmodel#rule-4-fully-qualified-urls-only"
+      },
+      {
+        "title": "Key/value for settings",
+        "detail": "Use name/value rows only for settings that are not displayed, never for headings, images or text.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/content-modeling"
+        },
+        "source": "https://www.aem.live/docs/davidsmodel#rule-14-use-namevalue-pairs-only-for-configuration"
+      },
+      {
+        "title": "No code in documents",
+        "detail": "Authors never type HTML, CSS or JSON; tags or curly braces in a document mean the model is wrong.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "grep source docs for < and {"
+        },
+        "source": "https://www.aem.live/docs/davidsmodel#rule-15-no-html-css-or-json-in-content-documents"
+      }
+    ],
+    "related": [
+      "any-block",
+      "adding-a-block",
+      "universal-editor",
+      "block-library"
+    ],
+    "wild": [
+      {
+        "label": "David's Model, Second take",
+        "url": "https://www.aem.live/docs/davidsmodel",
+        "note": "The fifteen content modeling rules"
+      },
+      {
+        "label": "Block Collection",
+        "url": "https://www.aem.live/developer/block-collection",
+        "note": "Reference content models for common blocks"
+      },
+      {
+        "label": "Markup, sections, blocks",
+        "url": "https://www.aem.live/developer/markup-sections-blocks",
+        "note": "How tables become block markup and auto-blocking"
+      },
+      {
+        "label": "Content modeling · Experience League",
+        "url": "https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/edge-delivery/wysiwyg-authoring/content-modeling",
+        "note": "The same rules for AEM authoring"
+      }
+    ]
+  },
+  {
+    "id": "document-authoring",
+    "category": "authoring",
+    "title": "Experience Workspace",
+    "summary": "Experience Workspace, formerly Document Authoring (da.live), is the browser editor for EDS document-based content, with layout and content views, sheets and its own configs. Check it before authors start working in it.",
+    "items": [
+      {
+        "title": "Two kinds of config",
+        "detail": "Keep permissions and library in Experience Workspace configs; CDN, headers and publish roles go in Edge Delivery config.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "da.live/config review"
+        },
+        "source": "https://www.aem.live/docs/ew/administering/configs#types-of-configs"
+      },
+      {
+        "title": "Authoring locked down",
+        "detail": "Content is public by default, so set Experience Workspace permissions before inviting authors.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "da.live/config permissions tab"
+        },
+        "source": "https://www.aem.live/docs/ew/developing/upgrading#keep-in-mind"
+      },
+      {
+        "title": "Publishing protected",
+        "detail": "Preview and publish are open by default; enable author authentication in tools.aem.live.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "Admin API config"
+        },
+        "source": "https://www.aem.live/docs/ew/developing/upgrading#keep-in-mind"
+      },
+      {
+        "title": "Layout view loads",
+        "detail": "head.html loads /scripts/scripts.js and scripts.js defines a top-level loadPage function.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "eds-guard"
+        },
+        "source": "https://www.aem.live/docs/ew/developing/layout-view#requirements"
+      },
+      {
+        "title": "CORS for preview.da.live",
+        "detail": "Off-origin APIs, fragments and fonts allow the {branch}--{site}--{org}.preview.da.live origin.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl -H Origin"
+        },
+        "source": "https://www.aem.live/docs/ew/developing/layout-view#requirements"
+      },
+      {
+        "title": "Nested list markup",
+        "detail": "Experience Workspace adds a paragraph inside nested list items; check block code and CSS handle it.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/canvas-block-review"
+        },
+        "source": "https://www.aem.live/docs/ew/developing/upgrading#keep-in-mind"
+      },
+      {
+        "title": "Preflight enforced",
+        "detail": "Set editor.enforcePreflight to true when content must pass Preflight before publishing.",
+        "level": "could",
+        "verify": {
+          "by": "machine",
+          "how": "da.live/config"
+        },
+        "source": "https://www.aem.live/docs/ew/administering/preflight#require-preflight-before-publishing"
+      },
+      {
+        "title": "Dot folders by URL",
+        "detail": "Folders like /.da and /.helix are hidden in the list view; open them by typing the path.",
+        "level": "could",
+        "verify": {
+          "by": "human",
+          "how": "author walkthrough"
+        },
+        "source": "https://www.aem.live/docs/ew/developing/upgrading#keep-in-mind"
+      }
+    ],
+    "related": [
+      "access-roles",
+      "in-context-editing",
+      "block-library",
+      "preview-to-publish"
+    ],
+    "wild": [
+      {
+        "label": "Experience Workspace",
+        "url": "https://da.live",
+        "note": "The editor itself"
+      },
+      {
+        "label": "DA is now Experience Workspace",
+        "url": "https://www.aem.live/docs/ew/da-is-ew",
+        "note": "What changed and what did not"
+      },
+      {
+        "label": "adobe/da-live",
+        "url": "https://github.com/adobe/da-live",
+        "note": "Open source editor code"
+      },
+      {
+        "label": "Authoring pages",
+        "url": "https://www.aem.live/docs/ew/authoring/editing-docs",
+        "note": "Layout, content and split views"
+      }
+    ]
+  },
+  {
+    "id": "universal-editor",
+    "category": "authoring",
+    "title": "Universal Editor",
+    "summary": "With AEM authoring (xwalk) or Experience Workspace, the Universal Editor edits EDS pages through component definitions, models and filters in JSON. They decide which blocks authors can add and how form fields become block tables.",
+    "items": [
+      {
+        "title": "Three JSON files",
+        "detail": "Keep the component definitions, models and filters JSON in the repo root, generated with npm run build:json.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl /component-models.json"
+        },
+        "source": "https://www.aem.live/docs/ew/developing/universal-editor#building-the-component-definition-files"
+      },
+      {
+        "title": "Block resource and name",
+        "detail": "Each xwalk block uses core/franklin/components/block/v1/block and a block name, or it will not render.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "lint component-definition"
+        },
+        "source": "https://www.aem.live/developer/component-model-definitions#block-model-definition"
+      },
+      {
+        "title": "No custom components",
+        "detail": "Never change or replace the AEM components for EDS; their markup is a fixed contract.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/ue-component-model"
+        },
+        "source": "https://www.aem.live/developer/component-model-definitions#block-model-definition"
+      },
+      {
+        "title": "Block in section filter",
+        "detail": "Add each new block id to the section filter, or authors cannot insert it.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "grep component-filters.json"
+        },
+        "source": "https://www.aem.live/developer/universal-editor-blocks#create-block-definition-and-model"
+      },
+      {
+        "title": "Semantic field names",
+        "detail": "Use Alt, Text, Title and Type suffixes and group_field names so fields collapse into semantic markup.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/ue-component-model"
+        },
+        "source": "https://www.aem.live/developer/component-model-definitions#field-collapse"
+      },
+      {
+        "title": "Options as classes",
+        "detail": "Model block options with a classes field or classes_ group instead of new blocks.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/ue-component-model"
+        },
+        "source": "https://www.aem.live/developer/component-model-definitions#element-grouping-for-block-options"
+      },
+      {
+        "title": "Instrumentation kept",
+        "detail": "When decoration moves content, carry data-aue-* attributes over with moveInstrumentation().",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "Universal Editor click test"
+        },
+        "source": "https://www.aem.live/developer/universal-editor-blocks#preserving-universal-editor-instrumentation-for-dom-mutations"
+      },
+      {
+        "title": "Multi-field flag reviewed",
+        "detail": "Turn on xwalk multi-field rendering only after checking blocks, since it changes existing markup.",
+        "level": "could",
+        "verify": {
+          "by": "human",
+          "how": "config review"
+        },
+        "source": "https://www.aem.live/developer/component-model-definitions#multi-fields-and-composite-multi-fields"
+      },
+      {
+        "title": "Branch tested",
+        "detail": "Load the feature branch in the editor with ?ref=<branch> before merging to main.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "Universal Editor"
+        },
+        "source": "https://www.aem.live/developer/universal-editor-blocks#using-other-working-branches"
+      }
+    ],
+    "related": [
+      "content-model",
+      "adding-a-block",
+      "in-context-editing",
+      "any-block"
+    ],
+    "wild": [
+      {
+        "label": "aem-boilerplate-xwalk",
+        "url": "https://github.com/adobe-rnd/aem-boilerplate-xwalk",
+        "note": "Boilerplate for AEM authoring projects"
+      },
+      {
+        "label": "da-block-collection ue models",
+        "url": "https://github.com/aemsites/da-block-collection/blob/main/ue/models/blocks/accordion.json",
+        "note": "Definitions, models and filters per block"
+      },
+      {
+        "label": "Content modeling for AEM authoring",
+        "url": "https://www.aem.live/developer/component-model-definitions",
+        "note": "Type inference, field collapse, grouping"
+      }
+    ]
+  },
+  {
+    "id": "sidekick",
+    "category": "authoring",
+    "title": "Sidekick",
+    "summary": "AEM Sidekick is the browser extension authors use to preview, publish, unpublish and switch environments from documents and pages. Set it up so authors sign in, see the right project and only the tools they need.",
+    "items": [
+      {
+        "title": "Extension installed",
+        "detail": "Authors install AEM Sidekick from the Chrome Web Store; Edge needs extensions from other stores allowed.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "author walkthrough"
+        },
+        "source": "https://www.aem.live/docs/sidekick#installation"
+      },
+      {
+        "title": "Project added",
+        "detail": "Add the project in Sidekick so it recognizes the production and custom preview domains.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "Sidekick"
+        },
+        "source": "https://www.aem.live/docs/sidekick#adding-your-project"
+      },
+      {
+        "title": "Sign-in works",
+        "detail": "With roles configured, authors sign in through Sidekick before they can preview or publish.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "Sidekick"
+        },
+        "source": "https://www.aem.live/docs/authentication-setup-authoring#step-2-login-via-sidekick"
+      },
+      {
+        "title": "Unpublish and delete roles",
+        "detail": "Unpublish needs the publish role and delete needs author or publish; check who holds them.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "Admin API config"
+        },
+        "source": "https://www.aem.live/docs/sidekick#unpublishing-and-deleting-content"
+      },
+      {
+        "title": "Plugins in site config",
+        "detail": "Add custom plugins in the sidekick object of the site configuration, each with a unique id.",
+        "level": "could",
+        "verify": {
+          "by": "machine",
+          "how": "Admin API config"
+        },
+        "source": "https://www.aem.live/developer/sidekick-development#customizing-the-sidekick"
+      },
+      {
+        "title": "Plugins scoped",
+        "detail": "Use environments, includePaths and excludePaths so each plugin shows only where it applies.",
+        "level": "could",
+        "verify": {
+          "by": "agent",
+          "how": "config review"
+        },
+        "source": "https://www.aem.live/developer/sidekick-development#common-plugin-properties"
+      },
+      {
+        "title": "Bulk actions sized",
+        "detail": "Use bulk preview and publish from SharePoint or Drive; split SharePoint selections above 60 files.",
+        "level": "could",
+        "verify": {
+          "by": "human",
+          "how": "Sidekick"
+        },
+        "source": "https://www.aem.live/docs/sidekick#bulk-actions"
+      },
+      {
+        "title": "Enterprise host policy",
+        "detail": "Limit where the extension runs with runtime_blocked_hosts and runtime_allowed_hosts in managed Chrome.",
+        "level": "could",
+        "verify": {
+          "by": "human",
+          "how": "Chrome policy review"
+        },
+        "source": "https://www.aem.live/docs/sidekick-security#restricting-access"
+      }
+    ],
+    "related": [
+      "preview-to-publish",
+      "access-roles",
+      "document-authoring",
+      "site-config"
+    ],
+    "wild": [
+      {
+        "label": "AEM Sidekick · Chrome Web Store",
+        "url": "https://chromewebstore.google.com/detail/aem-sidekick/igkmdomcgoebiipaifhmpfjhbjccggml",
+        "note": "Install page"
+      },
+      {
+        "label": "adobe/aem-sidekick",
+        "url": "https://github.com/adobe/aem-sidekick",
+        "note": "Open source extension"
+      },
+      {
+        "label": "Extending the Sidekick",
+        "url": "https://www.aem.live/developer/sidekick-development",
+        "note": "Plugin types and config"
+      }
+    ]
+  },
+  {
+    "id": "placeholders",
+    "category": "authoring",
+    "title": "Placeholders",
+    "summary": "Placeholders are a Key/Text sheet of shared UI strings that block code reads as JSON. They keep labels out of code and let each language or locale carry its own wording.",
+    "items": [
+      {
+        "title": "Sheet named placeholders",
+        "detail": "Create a placeholders sheet in the site root or each locale root (placeholders.xlsx in SharePoint).",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl /placeholders.json"
+        },
+        "source": "https://www.aem.live/docs/placeholders#placeholders"
+      },
+      {
+        "title": "Key and Text columns",
+        "detail": "The sheet has at least a Key column and a Text column.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl /placeholders.json"
+        },
+        "source": "https://www.aem.live/docs/placeholders#placeholders"
+      },
+      {
+        "title": "Helper copied",
+        "detail": "placeholders.js lives in the Block Collection, not the boilerplate; copy it into scripts/.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl /scripts/placeholders.js"
+        },
+        "source": "https://www.aem.live/developer/placeholders#using-placeholders"
+      },
+      {
+        "title": "Locale folder passed",
+        "detail": "Call fetchPlaceholders with the page's locale folder; with no argument it loads the root sheet.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "code review"
+        },
+        "source": "https://www.aem.live/developer/placeholders#using-placeholders"
+      },
+      {
+        "title": "Keys camel-cased",
+        "detail": "Keys become camelCase in code, so about us is aboutUs; avoid keys that collide after conversion.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "code review"
+        },
+        "source": "https://www.aem.live/developer/placeholders#key-formatting"
+      },
+      {
+        "title": "No hard-coded labels",
+        "detail": "Move repeated UI strings such as button labels out of block code into placeholders.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "grep blocks/ for literals"
+        },
+        "source": "https://www.aem.live/developer/placeholders#using-placeholders"
+      },
+      {
+        "title": "Market overrides",
+        "detail": "Keep most strings in the language folder and override only what differs in a market folder.",
+        "level": "could",
+        "verify": {
+          "by": "human",
+          "how": "content review"
+        },
+        "source": "https://www.aem.live/docs/translation-and-localization#url-and-content-structure"
+      },
+      {
+        "title": "Previewed before publish",
+        "detail": "Preview the sheet and check the strings on .aem.page before publishing it.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "Sidekick"
+        },
+        "source": "https://www.aem.live/docs/placeholders#placeholders"
+      }
+    ],
+    "related": [
+      "spreadsheets",
+      "translation",
+      "locale-root",
+      "block-library"
+    ],
+    "wild": [
+      {
+        "label": "placeholders.js · Block Collection",
+        "url": "https://github.com/adobe/aem-block-collection/blob/main/scripts/placeholders.js",
+        "note": "Reference fetchPlaceholders helper"
+      },
+      {
+        "label": "Placeholders (authoring)",
+        "url": "https://www.aem.live/docs/placeholders",
+        "note": "Sheet setup"
+      },
+      {
+        "label": "Using placeholders (developer)",
+        "url": "https://www.aem.live/developer/placeholders",
+        "note": "Reading them in code"
+      }
+    ]
+  },
+  {
+    "id": "bulk-metadata",
+    "category": "authoring",
+    "title": "Bulk metadata",
+    "summary": "Bulk metadata is a metadata sheet that applies meta tags to many pages by URL pattern, such as a default image, a template or noindex for a folder. Row order and precedence decide what each page ends up with.",
+    "items": [
+      {
+        "title": "Sheet at content root",
+        "detail": "Name it metadata (metadata.xlsx in SharePoint) in the content root, with a single sheet.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl /metadata.json"
+        },
+        "source": "https://www.aem.live/docs/bulk-metadata#bulk-metadata"
+      },
+      {
+        "title": "URL patterns",
+        "detail": "A URL column holds path patterns with * wildcards, such as /docs/** or **/docs/**.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl /metadata.json"
+        },
+        "source": "https://www.aem.live/docs/bulk-metadata#bulk-metadata"
+      },
+      {
+        "title": "Broad rows first",
+        "detail": "Rows apply top to bottom, so site-wide ** entries come before more specific ones.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/bulk-metadata"
+        },
+        "source": "https://www.aem.live/docs/bulk-metadata#bulk-metadata"
+      },
+      {
+        "title": "One column per property",
+        "detail": "Name each column after its property, such as template, theme or robots; names are lower-cased.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/bulk-metadata"
+        },
+        "source": "https://www.aem.live/docs/bulk-metadata#bulk-metadata"
+      },
+      {
+        "title": "Default share image",
+        "detail": "Set a site-wide image so every page has one for social sharing.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl page | grep og:image"
+        },
+        "source": "https://www.aem.live/docs/bulk-metadata#bulk-metadata"
+      },
+      {
+        "title": "Page block wins",
+        "detail": "A page's metadata block overrides the sheet, so check pages that should inherit the bulk value.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/bulk-metadata"
+        },
+        "source": "https://www.aem.live/docs/bulk-metadata#metadata-source-hierarchy"
+      },
+      {
+        "title": "Removal with quotes",
+        "detail": "Use \"\" as a value to remove a tag for a path, such as the canonical link.",
+        "level": "could",
+        "verify": {
+          "by": "machine",
+          "how": "curl page head"
+        },
+        "source": "https://www.aem.live/docs/bulk-metadata#omitting-metadata-values"
+      },
+      {
+        "title": "Sheet published",
+        "detail": "Preview and publish the metadata sheet; pages do not change until it is published.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "Sidekick"
+        },
+        "source": "https://www.aem.live/docs/bulk-metadata#bulk-metadata"
+      },
+      {
+        "title": "Extra sheets ordered",
+        "detail": "For several teams, list extra metadata sources in site config; later ones overwrite but never delete.",
+        "level": "could",
+        "verify": {
+          "by": "machine",
+          "how": "Admin API config"
+        },
+        "source": "https://www.aem.live/docs/bulk-metadata#additional-metadata"
+      }
+    ],
+    "related": [
+      "metadata",
+      "robots",
+      "site-config",
+      "spreadsheets"
+    ],
+    "wild": [
+      {
+        "label": "aem.live metadata.json",
+        "url": "https://www.aem.live/metadata.json",
+        "note": "A live bulk metadata sheet"
+      },
+      {
+        "label": "Bulk metadata docs",
+        "url": "https://www.aem.live/docs/bulk-metadata",
+        "note": "Patterns, precedence, extra sources"
+      },
+      {
+        "label": "Metadata docs",
+        "url": "https://www.aem.live/docs/metadata",
+        "note": "Page-level metadata block"
+      }
+    ]
+  },
+  {
+    "id": "spreadsheets",
+    "category": "authoring",
+    "title": "Spreadsheets & JSON",
+    "summary": "Any sheet previewed from the content source is served as JSON at its .json path, which powers redirects, placeholders, metadata and custom data. Check which tabs are exposed and how big the payload gets.",
+    "items": [
+      {
+        "title": "Previewed to JSON",
+        "detail": "A sheet is served at its .json path only after preview, and on .aem.live only after publish.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl /<sheet>.json"
+        },
+        "source": "https://www.aem.live/developer/spreadsheets#spreadsheets-and-json"
+      },
+      {
+        "title": "Header row",
+        "detail": "The first row holds column names; each later row becomes one object in data.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl /<sheet>.json"
+        },
+        "source": "https://www.aem.live/developer/spreadsheets#single-sheet-format"
+      },
+      {
+        "title": "Exposed tabs chosen",
+        "detail": "In multi-sheet workbooks only shared- tabs are delivered; keep internal tabs unprefixed.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl /<sheet>.json"
+        },
+        "source": "https://www.aem.live/developer/spreadsheets#spreadsheets-and-json"
+      },
+      {
+        "title": "Private tabs in EW",
+        "detail": "Experience Workspace sheet tabs are public unless the tab name starts with private-.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "sheet tab review"
+        },
+        "source": "https://www.aem.live/docs/ew/authoring/editing-sheets#creating-sheets"
+      },
+      {
+        "title": "Paginated reads",
+        "detail": "Without limit only 1000 rows come back; use limit and offset in code that reads large sheets.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "code review"
+        },
+        "source": "https://www.aem.live/developer/spreadsheets#offset-and-limit"
+      },
+      {
+        "title": "Payload under limit",
+        "detail": "Keep each JSON response under the 6MB compressed limit by paging large sheets.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl -w size_download"
+        },
+        "source": "https://www.aem.live/docs/limits#response-payloads"
+      },
+      {
+        "title": "No named single sheet",
+        "detail": "EDS rejects a single named sheet from Experience Workspace; add an empty second sheet or adjust code.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl /<sheet>.json"
+        },
+        "source": "https://www.aem.live/docs/ew/developing/upgrading#keep-in-mind"
+      },
+      {
+        "title": "Arrays parsed",
+        "detail": "Arrays in cells arrive as strings, so JSON.parse them in code.",
+        "level": "could",
+        "verify": {
+          "by": "agent",
+          "how": "code review"
+        },
+        "source": "https://www.aem.live/developer/spreadsheets#arrays"
+      },
+      {
+        "title": "Big sheets stay external",
+        "detail": "Keep sheets with formulas or very many rows in SharePoint or Drive through content overlay.",
+        "level": "could",
+        "verify": {
+          "by": "human",
+          "how": "content review"
+        },
+        "source": "https://www.aem.live/docs/ew/authoring/editing-sheets#editing-sheets"
+      }
+    ],
+    "related": [
+      "placeholders",
+      "bulk-metadata",
+      "redirects",
+      "query-index"
+    ],
+    "wild": [
+      {
+        "label": "aem.live redirects.json",
+        "url": "https://www.aem.live/redirects.json",
+        "note": "Single-sheet JSON in the wild"
+      },
+      {
+        "label": "Spreadsheets and JSON",
+        "url": "https://www.aem.live/developer/spreadsheets",
+        "note": "Formats and query parameters"
+      },
+      {
+        "label": "Limits",
+        "url": "https://www.aem.live/docs/limits",
+        "note": "Payload and spreadsheet limits"
+      }
+    ]
+  },
+  {
+    "id": "in-context-editing",
+    "category": "authoring",
+    "title": "In-context editing",
+    "summary": "Experience Workspace layout view (Canvas, quick edit) renders the page with your real block code and lets authors edit text and images in place. Blocks must keep the markers it adds, or fields stop being editable.",
+    "items": [
+      {
+        "title": "Entry script found",
+        "detail": "head.html loads /scripts/scripts.js and scripts.js defines a top-level loadPage function.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "eds-guard"
+        },
+        "source": "https://www.aem.live/docs/ew/developing/layout-view#requirements"
+      },
+      {
+        "title": "Block element kept",
+        "detail": "Change a block's children and add classes, but never replace the block or overwrite its classes.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/canvas-block-review"
+        },
+        "source": "https://www.aem.live/docs/ew/developing/layout-view#keep-the-block-element"
+      },
+      {
+        "title": "Authored text moved",
+        "detail": "Move original elements so data-prose-index survives; never copy text into new elements.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/canvas-block-review"
+        },
+        "source": "https://www.aem.live/docs/ew/developing/layout-view#move-authored-text-dont-recreate-it"
+      },
+      {
+        "title": "No decoration inside text",
+        "detail": "Put icons and classes on a wrapper or ancestor CSS, not on headings, paragraphs or list items.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/canvas-block-review"
+        },
+        "source": "https://www.aem.live/docs/ew/developing/layout-view#dont-decorate-inside-text-elements"
+      },
+      {
+        "title": "Descendant selectors",
+        "detail": "Style text with descendant selectors and JS-marked cells, not child or sibling combinators.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/canvas-block-review"
+        },
+        "source": "https://www.aem.live/docs/ew/developing/layout-view#avoid-position-based-css-on-text-elements"
+      },
+      {
+        "title": "Image attributes kept",
+        "detail": "Copy data-image-* to optimized images and keep authored images as pictures, not CSS backgrounds.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/canvas-block-review"
+        },
+        "source": "https://www.aem.live/docs/ew/developing/layout-view#keep-image-attributes"
+      },
+      {
+        "title": "Safe to re-run",
+        "detail": "Scope timers and listeners to the block and guard global handlers, since loadPage runs again.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/canvas-block-review"
+        },
+        "source": "https://www.aem.live/docs/ew/developing/layout-view#make-your-code-safe-to-re-run"
+      },
+      {
+        "title": "Idempotent auto-blocks",
+        "detail": "buildAutoBlocks checks for an existing block before adding one.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "code review"
+        },
+        "source": "https://www.aem.live/docs/ew/developing/layout-view#make-auto-blocking-idempotent"
+      },
+      {
+        "title": "Layout view edit test",
+        "detail": "Type in each text field, replace each image and move the block in layout view before merging.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "author walkthrough"
+        },
+        "source": "https://www.aem.live/docs/ew/developing/layout-view#testing-your-changes"
+      }
+    ],
+    "related": [
+      "any-block",
+      "document-authoring",
+      "universal-editor",
+      "reviewing-a-pr"
+    ],
+    "wild": [
+      {
+        "label": "Developing for layout view",
+        "url": "https://www.aem.live/docs/ew/developing/layout-view",
+        "note": "Do and don't patterns for blocks"
+      },
+      {
+        "label": "adobe/da-nx",
+        "url": "https://github.com/adobe/da-nx",
+        "note": "Quick-edit overlay code"
+      },
+      {
+        "label": "adobe/da-live",
+        "url": "https://github.com/adobe/da-live",
+        "note": "Canvas editor code"
+      }
+    ]
+  },
+  {
+    "id": "block-library",
+    "category": "authoring",
+    "title": "Block library",
+    "summary": "The library is the set of blocks, templates, icons and placeholders authors insert from Experience Workspace, built from example documents and sheets and wired up in the site config. A tidy library is how authors learn the content model.",
+    "items": [
+      {
+        "title": "One document per block",
+        "detail": "Create a document per block under library/blocks, its header row holding the block name.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "library folder review"
+        },
+        "source": "https://www.aem.live/docs/ew/administering/set-up-library#create-block-documents"
+      },
+      {
+        "title": "Variants labeled",
+        "detail": "Show visual variants as block (variant) and label content variants with a heading above the table.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "library folder review"
+        },
+        "source": "https://www.aem.live/docs/ew/administering/set-up-library#create-block-documents"
+      },
+      {
+        "title": "Descriptions added",
+        "detail": "Add a library-metadata block with a description where blocks are easy to confuse.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "author walkthrough"
+        },
+        "source": "https://www.aem.live/docs/ew/administering/set-up-library#block-library-metadata"
+      },
+      {
+        "title": "Blocks sheet",
+        "detail": "A blocks sheet in the library folder lists name and path for every block document.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl blocks.json"
+        },
+        "source": "https://www.aem.live/docs/ew/administering/set-up-library#create-a-blocks-sheet"
+      },
+      {
+        "title": "Library tab in config",
+        "detail": "The site config has a library tab pointing to the blocks, templates, placeholders and icons JSON.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "da.live/config"
+        },
+        "source": "https://www.aem.live/docs/ew/administering/set-up-library#update-project-config-sheet"
+      },
+      {
+        "title": "Authors read CONFIG",
+        "detail": "Grant authors read on /{site}/CONFIG, or the block library will not load for them.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "da.live/config permissions tab"
+        },
+        "source": "https://www.aem.live/docs/ew/administering/permissions#block-library-access"
+      },
+      {
+        "title": "Metadata options",
+        "detail": "Predefine section-metadata and metadata values in block options so authors pick instead of type.",
+        "level": "could",
+        "verify": {
+          "by": "agent",
+          "how": "config review"
+        },
+        "source": "https://www.aem.live/docs/ew/administering/set-up-library#block-options"
+      },
+      {
+        "title": "Rare blocks hidden",
+        "detail": "Keep developer-placed or rarely used blocks out of the main library.",
+        "level": "could",
+        "verify": {
+          "by": "human",
+          "how": "content usage report"
+        },
+        "source": "https://www.aem.live/docs/davidsmodel#rule-9-number-of-blocks-and-variants"
+      },
+      {
+        "title": "Author walkthrough",
+        "detail": "As an author, insert each block from the library and check it renders.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "author walkthrough"
+        },
+        "source": "https://www.aem.live/docs/ew/administering/set-up-library#validate-library-setup"
+      }
+    ],
+    "related": [
+      "content-model",
+      "document-authoring",
+      "access-roles",
+      "adding-a-block"
+    ],
+    "wild": [
+      {
+        "label": "Set up library",
+        "url": "https://www.aem.live/docs/ew/administering/set-up-library",
+        "note": "Blocks, templates, icons and config"
+      },
+      {
+        "label": "Set up library · docs.da.live",
+        "url": "https://docs.da.live/administrators/guides/setup-library",
+        "note": "Earlier DA version of the guide"
+      },
+      {
+        "label": "Sidekick Library",
+        "url": "https://www.aem.live/docs/sidekick-library",
+        "note": "Library for SharePoint and Drive projects"
+      }
+    ]
+  },
+  {
+    "id": "translation",
+    "category": "authoring",
+    "title": "Translation & locales",
+    "summary": "EDS favors language-first folders with market folders only where content differs. Experience Workspace's Translate app sends pages to Google Translate or a connector and rolls them out to locales, driven by a translate config sheet.",
+    "items": [
+      {
+        "title": "Strategy chosen",
+        "detail": "Pick language-, region-, locale-based or hybrid structure before setting up translation.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "architecture review"
+        },
+        "source": "https://www.aem.live/docs/ew/administering/translation-strategy#choosing-a-strategy"
+      },
+      {
+        "title": "Language-first URLs",
+        "detail": "Put language first and market second, such as /en/ and /en/uk/, to limit duplicate content.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "URL plan review"
+        },
+        "source": "https://www.aem.live/docs/translation-and-localization#url-and-content-structure"
+      },
+      {
+        "title": "Translate config sheet",
+        "detail": "Set service, languages and rules in /.da/translate; without it Google Translate defaults apply.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "da.live /.da/translate"
+        },
+        "source": "https://www.aem.live/docs/ew/administering/translation-config#config-sheet-structure"
+      },
+      {
+        "title": "Do-not-translate rules",
+        "detail": "Protect product names, paths and settings blocks with do-not-translate rules.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "config review"
+        },
+        "source": "https://www.aem.live/docs/ew/administering/translation-config#do-not-translate-tabs"
+      },
+      {
+        "title": "Merge for local edits",
+        "detail": "Use merge for rollouts when regional teams edit their own pages, so edits survive updates.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "config review"
+        },
+        "source": "https://www.aem.live/docs/ew/administering/translation-strategy#recommendation"
+      },
+      {
+        "title": "Secrets kept apart",
+        "detail": "Store connector credentials in a separate translate-keys sheet with tighter access.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "config review"
+        },
+        "source": "https://www.aem.live/docs/ew/administering/translation-config#protect-service-credentials"
+      },
+      {
+        "title": "Sources previewed",
+        "detail": "Pages in a translation project must be previewed or published and in the same site.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "Admin API status"
+        },
+        "source": "https://www.aem.live/docs/ew/authoring/translation-projects#create-a-translation-project"
+      },
+      {
+        "title": "Hreflang alternates",
+        "detail": "List each page's language versions with hreflang alternates in the sitemap.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl /sitemap.xml"
+        },
+        "source": "https://www.aem.live/docs/translation-and-localization#detailed-example"
+      },
+      {
+        "title": "Visitor chooses market",
+        "detail": "Let visitors pick language and market and remember it, instead of relying on detection.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "UX review"
+        },
+        "source": "https://www.aem.live/docs/translation-and-localization#language-and-market-detection"
+      }
+    ],
+    "related": [
+      "locale-root",
+      "adding-a-locale",
+      "placeholders",
+      "sitemap"
+    ],
+    "wild": [
+      {
+        "label": "blog.adobe.com /de/",
+        "url": "https://blog.adobe.com/de/",
+        "note": "Language-first site on EDS"
+      },
+      {
+        "label": "Translation strategies",
+        "url": "https://www.aem.live/docs/ew/administering/translation-strategy",
+        "note": "Language, region, locale, hybrid"
+      },
+      {
+        "label": "Translation config samples",
+        "url": "https://www.aem.live/docs/ew/administering/translation-config-samples",
+        "note": "Ready-made translate sheets"
+      },
+      {
+        "label": "Translation and localization",
+        "url": "https://www.aem.live/docs/translation-and-localization",
+        "note": "Adobe's URL and locale guidance"
+      }
+    ]
+  },
+  {
+    "id": "access-roles",
+    "category": "authoring",
+    "title": "Access & roles",
+    "summary": "Who can edit is set in Experience Workspace permissions; who can preview, publish or read origin content is set by Edge Delivery roles in the site config. Set both on purpose before authors and integrations get access.",
+    "items": [
+      {
+        "title": "Both layers set",
+        "detail": "Set edit rights in Experience Workspace and preview and publish rights in Edge Delivery config.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "access review"
+        },
+        "source": "https://www.aem.live/docs/ew/administering/permissions#the-ecosystem-of-access-control"
+      },
+      {
+        "title": "CONFIG row present",
+        "detail": "Always include a CONFIG write row for admins so nobody is locked out of the config.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "da.live/config permissions tab"
+        },
+        "source": "https://www.aem.live/docs/ew/administering/access-control#getting-started"
+      },
+      {
+        "title": "Groups over emails",
+        "detail": "Grant access to IMS orgs and groups where you have Admin Console, not individual emails.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "access review"
+        },
+        "source": "https://www.aem.live/docs/ew/administering/permissions#introduction-and-concepts"
+      },
+      {
+        "title": "Path rules tested",
+        "detail": "Rules match the longest path per group and union across groups; test drafts and locked folders.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "ACLTRACE header"
+        },
+        "source": "https://www.aem.live/docs/ew/administering/access-control#process"
+      },
+      {
+        "title": "Roles mapped",
+        "detail": "Map author and publish roles to users or *@domain in the site's access.admin config.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "Admin API config"
+        },
+        "source": "https://www.aem.live/docs/authentication-setup-authoring#step-1-add-access-allow-to-configuration"
+      },
+      {
+        "title": "requireAuth decided",
+        "detail": "Choose auto, true or false on purpose; mapping roles under auto forces sign-in.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "Admin API config"
+        },
+        "source": "https://www.aem.live/docs/authentication-setup-authoring#define-user-roles-without-enforcing-authentication"
+      },
+      {
+        "title": "Least privilege",
+        "detail": "Give publish only to people who ship; keep develop, config_admin and admin to a few.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "tools.aem.live user admin"
+        },
+        "source": "https://www.aem.live/docs/authentication-setup-authoring#admin-roles"
+      },
+      {
+        "title": "API keys scoped",
+        "detail": "Create Admin API keys with only the roles they need, store them safely and rotate before expiry.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "Admin API apiKeys.json"
+        },
+        "source": "https://www.aem.live/docs/admin-apikeys#key-expiration-and-rotation"
+      },
+      {
+        "title": "Sensitive folders locked",
+        "detail": "None hides content but not names in lists; stage sensitive work in a fully locked folder.",
+        "level": "could",
+        "verify": {
+          "by": "human",
+          "how": "access review"
+        },
+        "source": "https://www.aem.live/docs/ew/administering/permissions#i-locked-a-specific-file-w-none---but-people-can-still-see-it-in-the-content-browser-why"
+      }
+    ],
+    "related": [
+      "site-auth",
+      "sidekick",
+      "document-authoring",
+      "site-config"
+    ],
+    "wild": [
+      {
+        "label": "User admin · tools.aem.live",
+        "url": "https://tools.aem.live/tools/user-admin/index.html",
+        "note": "Manage preview and publish roles"
+      },
+      {
+        "label": "Configuring authentication for authors",
+        "url": "https://www.aem.live/docs/authentication-setup-authoring",
+        "note": "Roles and permissions table"
+      },
+      {
+        "label": "Permissions and security",
+        "url": "https://www.aem.live/docs/ew/administering/permissions",
+        "note": "Experience Workspace permissions"
+      }
+    ]
+  }
+]

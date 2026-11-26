@@ -4,7 +4,7 @@
 }
 
 .columns img {
-  width: 100%;
+  inline-size: 100%;
 }
 
 .columns > div > div {
@@ -23,11 +23,95 @@
   .columns > div {
     align-items: center;
     flex-direction: unset;
-    gap: 24px;
+    gap: var(--space-5);
   }
 
   .columns > div > div {
     flex: 1;
     order: unset;
+  }
+}
+
+/* variants: steps (numbered cards) and modes (two command cards) */
+.columns.steps > div,
+.columns.modes > div {
+  gap: var(--space-4);
+}
+
+.columns.steps > div {
+  counter-reset: step;
+}
+
+.columns.steps > div > div {
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  counter-increment: step;
+}
+
+.columns.steps > div > div::before {
+  content: counter(step);
+  display: grid;
+  place-items: center;
+  inline-size: 1.875rem;
+  block-size: 1.875rem;
+  margin-block-end: var(--space-5);
+  border-radius: 50%;
+  background-color: var(--color-accent-soft);
+  color: var(--color-accent);
+  font-size: var(--font-size-s);
+  font-weight: 600;
+}
+
+.columns.steps :is(h2, h3) {
+  font-size: 1.3125rem;
+  letter-spacing: -0.02em;
+}
+
+.columns.steps p {
+  color: var(--color-muted);
+  font-size: 0.9375rem;
+}
+
+.columns.modes > div > div {
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.columns.modes code {
+  display: inline-block;
+  padding: var(--space-1) var(--space-3);
+  border-radius: 0.5rem;
+  background-color: var(--color-ink);
+  color: #e9e8e3;
+}
+
+.columns.modes :is(h2, h3) {
+  margin-block-start: var(--space-4);
+  font-size: 1.5rem;
+}
+
+.columns.modes p {
+  color: var(--color-muted);
+}
+
+.columns.modes ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  border-radius: var(--radius-m);
+  background-color: var(--color-bg);
+  font-size: var(--font-size-s);
+  list-style: none;
+}
+
+@media (width >= 900px) {
+  .columns.steps > div,
+  .columns.modes > div {
+    align-items: stretch;
   }
 }

@@ -1,0 +1,68 @@
+.references {
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  background-color: var(--color-surface);
+}
+
+.references .references-item {
+  position: relative;
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-5);
+  padding-inline-end: var(--space-8);
+  border-block-end: 1px solid var(--color-line);
+}
+
+.references .references-item:last-child {
+  border-block-end: 0;
+}
+
+.references .references-item:hover {
+  background-color: #fcfcfa;
+}
+
+.references .references-item::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-end: var(--space-5);
+  inline-size: 1.1rem;
+  block-size: 1.1rem;
+  translate: 0 -50%;
+  background-color: var(--color-muted);
+  mask: url("../../icons/arrow-up-right.svg") center / contain no-repeat;
+}
+
+.references :is(p, .prosemirror-editor, .ProseMirror) {
+  margin: 0;
+}
+
+.references .references-link a:any-link {
+  color: var(--color-ink);
+  font-size: 1.125rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+
+.references .references-link a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.references .references-link a:hover {
+  color: var(--color-accent);
+}
+
+.references .references-note {
+  color: var(--color-muted);
+}
+
+.references .references-item[data-host]::before {
+  content: attr(data-host);
+  order: 3;
+  color: var(--color-muted);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+}

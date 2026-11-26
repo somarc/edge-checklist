@@ -1,3 +1,9 @@
 {
-  "extends": ["stylelint-config-standard"]
+  "extends": ["stylelint-config-standard"],
+  "rules": {
+    "selector-class-pattern": [
+      "^([a-z][a-z0-9]*)(-[a-z0-9]+)*$|^ProseMirror$",
+      { "message": "Use kebab-case classes (ProseMirror is the DA Canvas editor class the build contract requires)" }
+    ]
+  }
 }

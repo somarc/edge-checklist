@@ -1,0 +1,713 @@
+[
+  {
+    "id": "martech",
+    "category": "systems",
+    "title": "Analytics & tags",
+    "summary": "Analytics and tag managers on EDS are split across the loading phases instead of one monolithic container, and they wait for consent. Get this wrong and Lighthouse drops from 100 on the first tag.",
+    "items": [
+      {
+        "title": "Pick one stack",
+        "detail": "Use the aem-martech plugin for Adobe Analytics, Web SDK and Tags, or aem-gtm-martech for Google Analytics and GTM.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "architecture review"
+        },
+        "source": "https://www.aem.live/developer/martech-integration#choosing-the-right-integration"
+      },
+      {
+        "title": "Plugin, not one container",
+        "detail": "Load Web SDK and the data layer from the plugin instead of a single Launch or GTM script in head.html.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "curl head.html"
+        },
+        "source": "https://www.aem.live/developer/martech-integration#rationale"
+      },
+      {
+        "title": "No duplicate extensions",
+        "detail": "Leave the Web SDK, Analytics and Target extensions out of the Tags property; the plugin adds them itself.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "Tags property review"
+        },
+        "source": "https://www.aem.live/developer/martech-integration#pre-requisites"
+      },
+      {
+        "title": "Data layer name matches",
+        "detail": "Set dataLayerInstanceName to the same name as the ACDL extension in Launch (adobeDataLayer on both by default).",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "read scripts.js config"
+        },
+        "source": "https://www.aem.live/developer/martech-integration#step-1-install-the-plugin"
+      },
+      {
+        "title": "Tags load delayed",
+        "detail": "Run the tag container in the delayed phase so its rules never compete with LCP.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "PageSpeed Insights"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#phase-d-delayed"
+      },
+      {
+        "title": "Consent gates tracking",
+        "detail": "Keep the plugin's default consent of pending and update it from your CMP; never grant consent by default.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "Network tab before consent"
+        },
+        "source": "https://www.aem.live/developer/martech-integration#step-2-configure-consent-management"
+      },
+      {
+        "title": "Prerender aware",
+        "detail": "Use the plugin's speculative prerender handling so prerendered pages do not count as page views.",
+        "level": "could",
+        "verify": {
+          "by": "agent",
+          "how": "read plugin config"
+        },
+        "source": "https://github.com/adobe-rnd/aem-martech#features"
+      },
+      {
+        "title": "Calls verified",
+        "detail": "Confirm edge.adobedc.net interact and collect calls (or google-analytics.com collect) fire once consented.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "Adobe Experience Platform Debugger"
+        },
+        "source": "https://www.aem.live/developer/martech-integration#expected-network-calls"
+      },
+      {
+        "title": "Score still 100",
+        "detail": "Run PageSpeed Insights on mobile with and without consent and keep the score at 100.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "PageSpeed Insights"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#testing-your-pull-requests"
+      }
+    ],
+    "related": [
+      "consent",
+      "target",
+      "performance",
+      "loading-phases"
+    ],
+    "wild": [
+      {
+        "label": "aem-martech \u00b7 GitHub",
+        "url": "https://github.com/adobe-rnd/aem-martech",
+        "note": "Adobe Experience Cloud plugin with phased loading"
+      },
+      {
+        "label": "aem-gtm-martech \u00b7 GitHub",
+        "url": "https://github.com/adobe-rnd/aem-gtm-martech",
+        "note": "Google Analytics and GTM plugin"
+      },
+      {
+        "label": "GTM martech demo",
+        "url": "https://www.aem.live/developer/gtm-martech-integration/demo",
+        "note": "Demo site running the GTM plugin"
+      },
+      {
+        "label": "Experience League tutorial",
+        "url": "https://experienceleague.adobe.com/en/docs/platform-learn/tutorial-one-adobe/assetmgmt/assetm1/ex5",
+        "note": "Step-by-step martech setup on EDS"
+      }
+    ]
+  },
+  {
+    "id": "target",
+    "category": "systems",
+    "title": "Target & personalization",
+    "summary": "Adobe Target or Journey Optimizer personalizes EDS pages by fetching page modifications in the eager phase and applying them after blocks decorate. It costs LCP, so turn it on only where you personalize.",
+    "items": [
+      {
+        "title": "Try native first",
+        "detail": "Check whether the built-in experimentation plugin covers the test before adding Target.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "use-case review"
+        },
+        "source": "https://www.aem.live/developer/target-integration#configuring-adobe-target-integration"
+      },
+      {
+        "title": "Web SDK path",
+        "detail": "Integrate through the AEP Web SDK; keep at.js only for legacy setups.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "read scripts.js"
+        },
+        "source": "https://www.aem.live/developer/target-integration#adobe-experience-platform-websdk"
+      },
+      {
+        "title": "Page-level flag",
+        "detail": "Enable Target only on pages with metadata such as Target: on, not site-wide.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "curl page metadata"
+        },
+        "source": "https://www.aem.live/developer/target-integration#considerations"
+      },
+      {
+        "title": "Datastream and org ID",
+        "detail": "Configure the correct datastreamId and IMS orgId for each environment.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "Data Collection UI"
+        },
+        "source": "https://www.aem.live/developer/target-integration#adobe-experience-platform-websdk"
+      },
+      {
+        "title": "Apply after decoration",
+        "detail": "Apply propositions once blocks report loaded, using a MutationObserver on block and section status.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "read scripts.js"
+        },
+        "source": "https://www.aem.live/developer/target-integration#considerations"
+      },
+      {
+        "title": "Keep offers light",
+        "detail": "Avoid heavy custom JavaScript in offers; it adds flicker and LCP on top of the baseline cost.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "Target activity review"
+        },
+        "source": "https://www.aem.live/developer/target-integration#considerations"
+      },
+      {
+        "title": "Consent before decisions",
+        "detail": "Request personalization only when the visitor's consent allows it.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "Network tab before consent"
+        },
+        "source": "https://github.com/adobe-rnd/aem-martech#3-configure-the-plugin"
+      },
+      {
+        "title": "Interact call fires",
+        "detail": "Confirm a call to edge.adobedc.net/ee/v1/interact on flagged pages and none on others.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "DevTools Network tab"
+        },
+        "source": "https://www.aem.live/developer/target-integration#adobe-experience-platform-websdk"
+      },
+      {
+        "title": "LCP cost measured",
+        "detail": "Compare LCP with and without the Target flag on mobile and desktop before rollout.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "PageSpeed Insights"
+        },
+        "source": "https://www.aem.live/developer/martech-integration#performance-considerations"
+      }
+    ],
+    "related": [
+      "martech",
+      "experimentation",
+      "consent",
+      "performance"
+    ],
+    "wild": [
+      {
+        "label": "Target integration \u00b7 aem.live",
+        "url": "https://www.aem.live/developer/target-integration",
+        "note": "Web SDK and at.js code for scripts.js"
+      },
+      {
+        "label": "Target with Web SDK",
+        "url": "https://experienceleague.adobe.com/docs/experience-platform/web-sdk/personalization/adobe-target/target-overview.html",
+        "note": "Experience League setup guide"
+      },
+      {
+        "label": "Top and bottom of page events",
+        "url": "https://experienceleague.adobe.com/en/docs/experience-platform/web-sdk/use-cases/top-bottom-page-events",
+        "note": "Pattern behind early personalization"
+      }
+    ]
+  },
+  {
+    "id": "experimentation",
+    "category": "systems",
+    "title": "Experimentation",
+    "summary": "The EDS experimentation plugin runs A/B tests, audiences and campaigns from page metadata, measured with operational telemetry. Authors set up a test in minutes; the checklist keeps it measurable and out of search.",
+    "items": [
+      {
+        "title": "Plugin installed",
+        "detail": "Add the plugin under plugins/experimentation and call it from loadEager and loadLazy.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "read scripts.js"
+        },
+        "source": "https://github.com/adobe/aem-experimentation#project-instrumentation"
+      },
+      {
+        "title": "Experiment ID",
+        "detail": "Give every test a unique ID such as OPT-0134 and reuse it across pages in the same test.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "author walkthrough"
+        },
+        "source": "https://www.aem.live/docs/experimentation#experiment-identifier"
+      },
+      {
+        "title": "Challengers in a folder",
+        "detail": "Put challenger pages in /experiments/<experiment-id>/ and publish them with the control.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "Sidekick"
+        },
+        "source": "https://www.aem.live/docs/experimentation#create-your-challenger-page"
+      },
+      {
+        "title": "Metadata rows",
+        "detail": "Add Experiment and Experiment Variants to the control page metadata; set Experiment Split only to change the even split.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "curl page metadata"
+        },
+        "source": "https://www.aem.live/docs/experimentation#set-up-your-experiment"
+      },
+      {
+        "title": "Variants not indexed",
+        "detail": "Mark challengers noindex,nofollow via bulk metadata on /experiments/** or page metadata.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl robots meta"
+        },
+        "source": "https://www.aem.live/docs/experimentation#make-sure-experiment-variants-are-not-indexed"
+      },
+      {
+        "title": "Audiences defined in code",
+        "detail": "Define each audience as a function in experimentationConfig before authors reference it.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "read scripts.js"
+        },
+        "source": "https://github.com/adobe/aem-experimentation#step-2-update-scriptsscriptsjs"
+      },
+      {
+        "title": "Preview the variants",
+        "detail": "Check every variant on the .page preview with the simulation panel before publishing.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "Sidekick"
+        },
+        "source": "https://www.aem.live/docs/experimentation#preview-and-stage-your-experiment-variants"
+      },
+      {
+        "title": "Enough traffic",
+        "detail": "Raise RUM sampling on low-traffic test pages so results can reach significance.",
+        "level": "could",
+        "verify": {
+          "by": "human",
+          "how": "OpTel explorer"
+        },
+        "source": "https://github.com/adobe/aem-experimentation#increasing-sampling-rate-for-low-traffic-pages"
+      },
+      {
+        "title": "Conversion defined",
+        "detail": "Decide what counts as a conversion before launch; by default any click counts.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "conversion review"
+        },
+        "source": "https://github.com/adobe/aem-experimentation/blob/main/documentation/experiments.md#tracking-custom-conversion-events"
+      }
+    ],
+    "related": [
+      "target",
+      "rum",
+      "bulk-metadata",
+      "robots"
+    ],
+    "wild": [
+      {
+        "label": "aem-experimentation \u00b7 GitHub",
+        "url": "https://github.com/adobe/aem-experimentation",
+        "note": "Plugin install and configuration"
+      },
+      {
+        "label": "Experiments authoring",
+        "url": "https://github.com/adobe/aem-experimentation/blob/main/documentation/experiments.md",
+        "note": "Split, dates, audiences and consent metadata"
+      },
+      {
+        "label": "Experimentation \u00b7 aem.live",
+        "url": "https://www.aem.live/docs/experimentation",
+        "note": "Author guide to variants"
+      },
+      {
+        "label": "Set up in Experience Workspace",
+        "url": "https://www.aem.live/docs/ew/developing/set-up-experimentation",
+        "note": "Experimentation UI wiring"
+      }
+    ]
+  },
+  {
+    "id": "rum",
+    "category": "systems",
+    "title": "Operational telemetry",
+    "summary": "Operational telemetry (RUM) is EDS's built-in, sampled, cookie-free field data: Core Web Vitals, errors, 404s and clicks per page view. It is how you prove a change worked in the field.",
+    "items": [
+      {
+        "title": "Sampling left on",
+        "detail": "Keep the boilerplate's sampleRUM in aem.js; it collects about one in a hundred page views by default.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "read scripts/aem.js"
+        },
+        "source": "https://www.aem.live/docs/operational-telemetry#operational-telemetry-data-is-sampled"
+      },
+      {
+        "title": "No personal data",
+        "detail": "Never add personal data to custom checkpoints or source and target values.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "code review"
+        },
+        "source": "https://www.aem.live/docs/operational-telemetry#privacy"
+      },
+      {
+        "title": "Domain key access",
+        "detail": "Get a domain key so the team can open the OpTel explorer for the production domain.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "OpTel explorer"
+        },
+        "source": "https://www.aem.live/docs/optel-explorer#user-interface-overview"
+      },
+      {
+        "title": "CWV green",
+        "detail": "Check LCP, CLS and INP are green in the explorer; treat needs improvement as a problem.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "OpTel explorer"
+        },
+        "source": "https://www.aem.live/docs/optel-explorer#performance-focus"
+      },
+      {
+        "title": "Errors and 404s",
+        "detail": "Review the error and 404 checkpoints after each release for new JavaScript errors and broken links.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "OpTel explorer"
+        },
+        "source": "https://www.aem.live/docs/optel-explorer#facet-error"
+      },
+      {
+        "title": "Slow API calls",
+        "detail": "Use the loadresource checkpoint to spot slow fragments and JSON endpoints.",
+        "level": "could",
+        "verify": {
+          "by": "agent",
+          "how": "OpTel explorer"
+        },
+        "source": "https://www.aem.live/developer/operational-telemetry#checkpoints"
+      },
+      {
+        "title": "Conversion defined",
+        "detail": "Set a conversion definition in the explorer from the clicks that matter to the business.",
+        "level": "could",
+        "verify": {
+          "by": "human",
+          "how": "OpTel explorer"
+        },
+        "source": "https://www.aem.live/docs/optel-explorer#conversion-definition"
+      },
+      {
+        "title": "Filter out bots",
+        "detail": "Exclude bot traffic in the explorer before judging engagement or conversion numbers.",
+        "level": "could",
+        "verify": {
+          "by": "human",
+          "how": "OpTel explorer"
+        },
+        "source": "https://www.aem.live/docs/optel-explorer#device-type-and-operating-system"
+      }
+    ],
+    "related": [
+      "performance",
+      "experimentation",
+      "headers",
+      "page-404"
+    ],
+    "wild": [
+      {
+        "label": "OpTel explorer (open demo)",
+        "url": "https://www.aem.live/tools/oversight/explorer.html?domain=emigrationbrewing.com&view=month&domainkey=open",
+        "note": "Live explorer on an open domain"
+      },
+      {
+        "label": "helix-rum-js \u00b7 GitHub",
+        "url": "https://github.com/adobe/helix-rum-js",
+        "note": "The client-side collection library"
+      },
+      {
+        "label": "rum-distiller \u00b7 GitHub",
+        "url": "https://github.com/adobe/rum-distiller",
+        "note": "Library behind the explorer, for scripted analysis"
+      }
+    ]
+  },
+  {
+    "id": "consent",
+    "category": "systems",
+    "title": "Consent management",
+    "summary": "The EDS boilerplate gates all martech behind scripts/consent-check.js, which imports consented.js only after consent. Wiring a CMP such as OneTrust or Cookiebot into that gate keeps tracking legal and off the LCP path.",
+    "items": [
+      {
+        "title": "Replace the dummy",
+        "detail": "Swap the boilerplate's decline-by-default consent-check.js for your real CMP wiring.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "read consent-check.js"
+        },
+        "source": "https://www.aem.live/developer/cmp-integration#how-consent-gating-works"
+      },
+      {
+        "title": "CMP loads delayed",
+        "detail": "Inject the CMP script from consent-check.js, not head.html, to keep it off the critical path.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "PageSpeed Insights"
+        },
+        "source": "https://www.aem.live/developer/cmp-integration#wiring-up-a-real-cmp"
+      },
+      {
+        "title": "Martech in consented.js",
+        "detail": "Put analytics, tag managers, personalization, pixels and chat widgets in consented.js only.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "read consented.js"
+        },
+        "source": "https://www.aem.live/developer/cmp-integration#what-belongs-in-consentedjs"
+      },
+      {
+        "title": "Essentials stay out",
+        "detail": "Load login, cart and security code outside the consent gate; they are not martech.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "read scripts.js"
+        },
+        "source": "https://www.aem.live/developer/cmp-integration#what-belongs-in-consentedjs"
+      },
+      {
+        "title": "Categories in tags",
+        "detail": "Handle per-category consent in your tag manager or consented.js, not consent-check.js.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "read consented.js"
+        },
+        "source": "https://www.aem.live/developer/cmp-integration#what-belongs-in-consentedjs"
+      },
+      {
+        "title": "Banner timing agreed",
+        "detail": "Agree with legal whether a banner that appears after load is acceptable before moving it earlier.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "legal sign-off"
+        },
+        "source": "https://www.aem.live/developer/cmp-integration#wiring-up-a-real-cmp"
+      },
+      {
+        "title": "No layout shift",
+        "detail": "Reserve space for the late banner or pin it to the bottom so it does not add CLS.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "PageSpeed Insights"
+        },
+        "source": null
+      },
+      {
+        "title": "Nothing before consent",
+        "detail": "Confirm consented.js and martech calls are absent until consent and consent.update fires both ways.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "DevTools Network tab"
+        },
+        "source": "https://www.aem.live/developer/cmp-integration#testing"
+      }
+    ],
+    "related": [
+      "martech",
+      "loading-phases",
+      "performance",
+      "target"
+    ],
+    "wild": [
+      {
+        "label": "CMP integration \u00b7 aem.live",
+        "url": "https://www.aem.live/developer/cmp-integration",
+        "note": "OneTrust and Cookiebot examples"
+      },
+      {
+        "label": "consent-check.js \u00b7 boilerplate",
+        "url": "https://github.com/adobe/aem-boilerplate/blob/main/scripts/consent-check.js",
+        "note": "The default consent gate"
+      },
+      {
+        "label": "aem-martech consent",
+        "url": "https://github.com/adobe-rnd/aem-martech#consent-management",
+        "note": "Mapping CMP categories to Web SDK consent"
+      }
+    ]
+  },
+  {
+    "id": "app-builder",
+    "category": "systems",
+    "title": "App Builder & APIs",
+    "summary": "Most EDS integrations are blocks calling an API from the browser. Live traffic belongs on CDN edge workers, while App Builder suits author-side and background jobs. Choosing the right runtime keeps pages fast and secrets hidden.",
+    "items": [
+      {
+        "title": "Right runtime",
+        "detail": "Call APIs from blocks for live traffic, use edge workers for middleware, and App Builder for author-side jobs.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "architecture review"
+        },
+        "source": "https://www.aem.live/developer/integrations#building-integrations-with-aem-edge-delivery-services"
+      },
+      {
+        "title": "No live App Builder",
+        "detail": "Keep App Builder actions and AEM publish servlets out of the request path of live page views.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "architecture review"
+        },
+        "source": "https://www.aem.live/developer/integrations#adobe-app-builder"
+      },
+      {
+        "title": "Secrets server-side",
+        "detail": "Keep API keys in an edge worker or CDN header injection, never in block JavaScript.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "grep blocks for keys"
+        },
+        "source": "https://www.aem.live/developer/integrations#api-gateway-pattern"
+      },
+      {
+        "title": "Fetch after LCP",
+        "detail": "Call APIs from blocks outside the first section so no second origin delays LCP.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "PageSpeed Insights"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#lcp"
+      },
+      {
+        "title": "Real pages via BYOM",
+        "detail": "Render data-driven pages through a BYOM overlay or json2html so they are indexed and cached.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "curl overlay page"
+        },
+        "source": "https://www.aem.live/developer/integrations#bring-your-own-markup-byom-overlay"
+      },
+      {
+        "title": "Actions secured",
+        "detail": "Keep require-adobe-auth on App Builder actions that call Adobe APIs and add your own checks for third-party APIs.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "read app.config.yaml"
+        },
+        "source": "https://developer.adobe.com/app-builder/docs/guides/app_builder_guides/security/"
+      },
+      {
+        "title": "Publish triggers polled",
+        "detail": "Trigger downstream jobs on publish by polling the Audit Log API with an Admin API key.",
+        "level": "could",
+        "verify": {
+          "by": "agent",
+          "how": "Admin API logs"
+        },
+        "source": "https://www.aem.live/developer/integrations#integrations-based-on-content-publish-trigger"
+      },
+      {
+        "title": "API calls monitored",
+        "detail": "Watch the loadresource checkpoint for slow or failing JSON endpoints after launch.",
+        "level": "could",
+        "verify": {
+          "by": "machine",
+          "how": "OpTel explorer"
+        },
+        "source": "https://www.aem.live/developer/operational-telemetry#checkpoints"
+      }
+    ],
+    "related": [
+      "performance",
+      "site-auth",
+      "byo-cdn",
+      "headers"
+    ],
+    "wild": [
+      {
+        "label": "Building integrations \u00b7 aem.live",
+        "url": "https://www.aem.live/developer/integrations",
+        "note": "Runtime choices and patterns"
+      },
+      {
+        "label": "JSON2HTML \u00b7 aem.live",
+        "url": "https://www.aem.live/developer/json2html",
+        "note": "Turn JSON endpoints into EDS pages"
+      },
+      {
+        "label": "Securing web actions",
+        "url": "https://developer.adobe.com/app-builder/docs/guides/runtime_guides/securing-web-actions",
+        "note": "App Builder action authentication"
+      },
+      {
+        "label": "Publish tracking workflow",
+        "url": "https://github.com/adobe/helix-website/blob/main/.github/workflows/track-publishes.yml",
+        "note": "Audit Log polling via GitHub Actions"
+      }
+    ]
+  }
+]

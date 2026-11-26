@@ -1,0 +1,1001 @@
+[
+  {
+    "id": "homepage",
+    "category": "pages",
+    "title": "Homepage",
+    "summary": "The homepage is the root document (index) of the site and usually its most visited page. It sets the bar for LCP, metadata and the shared nav and footer every other page reuses.",
+    "items": [
+      {
+        "title": "Hero in first section",
+        "detail": "Put the hero image in the first section so EDS loads that section eagerly and treats its first image as the LCP candidate.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "PageSpeed Insights"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#phase-e-eager"
+      },
+      {
+        "title": "Lean first section",
+        "detail": "Keep the first section to few blocks, and the payload before LCP under about 100kb from a single origin.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "PageSpeed Insights"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#lcp"
+      },
+      {
+        "title": "No root redirect chain",
+        "detail": "Serve the homepage at / without hops like / to /en to /en/home; each redirect costs field performance.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl -sIL /"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#redirects-for-paths-resolution"
+      },
+      {
+        "title": "Title and description",
+        "detail": "Set title and description in the metadata block; otherwise AEM falls back to the first H1 and first long paragraph.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl / | grep meta"
+        },
+        "source": "https://www.aem.live/docs/special-metadata-properties#title"
+      },
+      {
+        "title": "Share image",
+        "detail": "Set the image metadata or add /default-meta-image.png so og:image is a deliberate picture when the URL is shared.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "curl / | grep og:image"
+        },
+        "source": "https://www.aem.live/docs/special-metadata-properties#image"
+      },
+      {
+        "title": "Nav and footer fragments",
+        "detail": "Load nav and footer from their own documents asynchronously instead of copying them into the homepage content.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/content-audit"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#header-and-footer"
+      },
+      {
+        "title": "Canonical returns 200",
+        "detail": "Make sure the homepage canonical URL answers with a 2xx status, not a redirect or a 404.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl -sI <canonical>"
+        },
+        "source": "https://www.aem.live/docs/go-live-checklist#canonical-urls"
+      },
+      {
+        "title": "Organization schema",
+        "detail": "Add site-wide Organization or WebSite JSON-LD from code (head.html or scripts.js) rather than per-page metadata.",
+        "level": "could",
+        "verify": {
+          "by": "machine",
+          "how": "Rich Results Test"
+        },
+        "source": "https://www.aem.live/docs/special-metadata-properties#json-ld"
+      },
+      {
+        "title": "Lighthouse 100",
+        "detail": "Score 100 on mobile and desktop in PageSpeed Insights on the .aem.live URL and again on production.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "PageSpeed Insights"
+        },
+        "source": "https://www.aem.live/docs/go-live-checklist#performance-validation"
+      }
+    ],
+    "related": [
+      "hero",
+      "performance",
+      "metadata",
+      "header"
+    ],
+    "wild": [
+      {
+        "label": "www.aem.live",
+        "url": "https://www.aem.live/",
+        "note": "An EDS homepage with canonical, og:image and JSON-LD in the head"
+      },
+      {
+        "label": "AEM Boilerplate",
+        "url": "https://github.com/adobe/aem-boilerplate",
+        "note": "Starter repo that scores 100 out of the box"
+      },
+      {
+        "label": "Boilerplate live site",
+        "url": "https://main--aem-boilerplate--adobe.aem.live/",
+        "note": "The boilerplate homepage rendered on aem.live"
+      }
+    ]
+  },
+  {
+    "id": "landing-page",
+    "category": "pages",
+    "title": "Landing page",
+    "summary": "A campaign or product landing page is a normal EDS document with a template and a few strong sections. It often runs experiments, so it needs a fast hero, delayed martech and variants kept out of the index.",
+    "items": [
+      {
+        "title": "Template metadata",
+        "detail": "Set a template value in metadata so the body gets that class and auto blocking can build the page design.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "curl page | grep template"
+        },
+        "source": "https://www.aem.live/developer/markup-sections-blocks#auto-blocking"
+      },
+      {
+        "title": "One clear H1",
+        "detail": "Give the page a single H1 that names the offer; it also becomes the title when none is set.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/heading-optimizer"
+        },
+        "source": "https://www.aem.live/docs/special-metadata-properties#title"
+      },
+      {
+        "title": "Hero is LCP",
+        "detail": "Keep the hero in the first section with as few blocks as possible so the LCP image loads first.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "PageSpeed Insights"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#phase-e-eager"
+      },
+      {
+        "title": "Sections for layout",
+        "detail": "Use section breaks and Section Metadata style for bands and backgrounds instead of nesting blocks.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/content-audit"
+        },
+        "source": "https://www.aem.live/developer/markup-sections-blocks#sections"
+      },
+      {
+        "title": "Description and image",
+        "detail": "Write a description and set the share image so campaign links unfurl with the right copy.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl page | grep og:"
+        },
+        "source": "https://www.aem.live/docs/special-metadata-properties#description"
+      },
+      {
+        "title": "Campaign tags delayed",
+        "detail": "Load campaign pixels and tag managers from consented.js in the delayed phase, never in head.html.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/cwv-optimizer"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#phase-d-delayed"
+      },
+      {
+        "title": "Experiment metadata",
+        "detail": "For a test, add Experiment and Experiment Variants rows to the control page metadata with a unique ID.",
+        "level": "could",
+        "verify": {
+          "by": "agent",
+          "how": "Sidekick preview overlay"
+        },
+        "source": "https://www.aem.live/docs/experimentation#set-up-your-experiment"
+      },
+      {
+        "title": "Variants not indexed",
+        "detail": "Set robots noindex,nofollow on challenger pages, for example on /experiments/** in bulk metadata.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl variant | grep robots"
+        },
+        "source": "https://www.aem.live/docs/experimentation#make-sure-experiment-variants-are-not-indexed"
+      }
+    ],
+    "related": [
+      "hero",
+      "experimentation",
+      "martech",
+      "metadata"
+    ],
+    "wild": [
+      {
+        "label": "Experimentation docs",
+        "url": "https://www.aem.live/docs/experimentation",
+        "note": "Running control and challenger landing pages"
+      },
+      {
+        "label": "aem-experimentation plugin",
+        "url": "https://github.com/adobe/aem-experimentation",
+        "note": "Plugin code for experiments, audiences and campaigns"
+      },
+      {
+        "label": "Markup, sections, blocks",
+        "url": "https://www.aem.live/developer/markup-sections-blocks",
+        "note": "How sections, template and auto blocking shape a page"
+      }
+    ]
+  },
+  {
+    "id": "article",
+    "category": "pages",
+    "title": "Article",
+    "summary": "An article (blog post, news, story) is default content with a title, hero image and byline taken from metadata. Its body must be in the initial HTML so search engines and LLM agents can read it.",
+    "items": [
+      {
+        "title": "H1 is the headline",
+        "detail": "Author the headline as the only Heading 1; AEM uses it as the page title when no title metadata is set.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/heading-optimizer"
+        },
+        "source": "https://www.aem.live/docs/special-metadata-properties#title"
+      },
+      {
+        "title": "Body in initial HTML",
+        "detail": "Keep the article text as authored content, not fetched by JavaScript, so the first crawl and LLM agents see it.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl page.plain.html"
+        },
+        "source": "https://www.aem.live/docs/seo-geo#google-and-other-search-engines"
+      },
+      {
+        "title": "Hero image as LCP",
+        "detail": "Place the lead image at the top of the first section so it is the LCP candidate.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "PageSpeed Insights"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#lcp"
+      },
+      {
+        "title": "Auto-blocked header",
+        "detail": "Build the article header from the H1, first image and author and date metadata instead of an authored block.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/building-blocks"
+        },
+        "source": "https://www.aem.live/developer/markup-sections-blocks#auto-blocking"
+      },
+      {
+        "title": "Author and date",
+        "detail": "Add author and publication-date metadata so the query index can pick them up for lists.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl page | grep meta"
+        },
+        "source": "https://www.aem.live/developer/indexing#setting-up-an-initial-index-with-the-index-admin-tool"
+      },
+      {
+        "title": "Description and tags",
+        "detail": "Write a description and list tags in metadata; tags render as article:tag meta tags.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl page | grep meta"
+        },
+        "source": "https://www.aem.live/docs/special-metadata-properties#tags"
+      },
+      {
+        "title": "Article schema",
+        "detail": "Generate Article JSON-LD from the visible H1, image, author and date, and keep it in line with the page.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "Rich Results Test"
+        },
+        "source": "https://www.aem.live/docs/schema-structured-data#best-practice-iterate--promote"
+      },
+      {
+        "title": "Related links",
+        "detail": "Link to related articles and the index page with descriptive anchor text, not read more.",
+        "level": "could",
+        "verify": {
+          "by": "agent",
+          "how": "/internal-linking"
+        },
+        "source": null
+      }
+    ],
+    "related": [
+      "article-index",
+      "metadata",
+      "images",
+      "query-index"
+    ],
+    "wild": [
+      {
+        "label": "Adobe Blog",
+        "url": "https://blog.adobe.com/",
+        "note": "Large EDS article site with auto-blocked article headers"
+      },
+      {
+        "label": "adobe/blog repo",
+        "url": "https://github.com/adobe/blog",
+        "note": "Source of the Adobe Blog, including its auto blocking"
+      },
+      {
+        "label": "aem.live blog",
+        "url": "https://www.aem.live/blog",
+        "note": "Articles on the product's own site"
+      }
+    ]
+  },
+  {
+    "id": "article-index",
+    "category": "pages",
+    "title": "Article index",
+    "summary": "An article index lists pages from the query index, a JSON file AEM updates when pages are published. The list is rendered client-side, so the index config, its fields and the intro copy all need care.",
+    "items": [
+      {
+        "title": "Index covers the folder",
+        "detail": "Scope the index definition with include and exclude paths so only real articles end up in the list.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl /query-index.json"
+        },
+        "source": "https://www.aem.live/docs/indexing-reference#indexing-reference"
+      },
+      {
+        "title": "Fields for cards",
+        "detail": "Index the fields each card needs, such as title, image, description, date and lastModified.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl /query-index.json"
+        },
+        "source": "https://www.aem.live/developer/indexing#setting-up-an-initial-index-with-the-index-admin-tool"
+      },
+      {
+        "title": "Selectors match markup",
+        "detail": "Write index selectors against the server markup, not the decorated DOM, and test them locally.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "aem up --print-index"
+        },
+        "source": "https://www.aem.live/docs/indexing-reference#indexing-reference"
+      },
+      {
+        "title": "Reindex after changes",
+        "detail": "Run Reindex in the Index Admin tool after adding or changing index properties.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "Index Admin tool"
+        },
+        "source": "https://www.aem.live/developer/indexing#reindexing"
+      },
+      {
+        "title": "Client-side list is fine",
+        "detail": "Render the list from query-index.json in a block; listing pages have no canonical content of their own.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/building-blocks"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#server-sided-vs-client-sided-rendering"
+      },
+      {
+        "title": "Authored intro",
+        "detail": "Author the H1 and a short intro on the page so the index page still has content in its initial HTML.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "curl page.plain.html"
+        },
+        "source": "https://www.aem.live/docs/seo-geo#google-and-other-search-engines"
+      },
+      {
+        "title": "Filter noindex pages",
+        "detail": "Drop entries whose robots value is noindex when the content source cannot filter them out of the index.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "curl /query-index.json"
+        },
+        "source": "https://www.aem.live/developer/indexing#omitting-published-pages-from-the-index"
+      },
+      {
+        "title": "Check one record",
+        "detail": "Check how a single article is indexed with the Admin API index endpoint before debugging the list.",
+        "level": "could",
+        "verify": {
+          "by": "machine",
+          "how": "Admin API /index"
+        },
+        "source": "https://www.aem.live/developer/indexing#check-your-index"
+      }
+    ],
+    "related": [
+      "query-index",
+      "article",
+      "cards",
+      "sitemap"
+    ],
+    "wild": [
+      {
+        "label": "Indexing docs",
+        "url": "https://www.aem.live/developer/indexing",
+        "note": "Index Admin tool, partitions and troubleshooting"
+      },
+      {
+        "label": "aem.live query index",
+        "url": "https://www.aem.live/query-index.json",
+        "note": "A live query index as JSON"
+      },
+      {
+        "label": "aem.live blog archive",
+        "url": "https://www.aem.live/blog/archive",
+        "note": "A listing page built from published posts"
+      }
+    ]
+  },
+  {
+    "id": "product-detail",
+    "category": "pages",
+    "title": "Product detail",
+    "summary": "On an Adobe Commerce storefront on EDS, a product detail page (PDP) is rendered by the product-details drop-in from catalog data. Its SEO depends on metadata and JSON-LD published server-side, since the product loads in the browser.",
+    "items": [
+      {
+        "title": "Server-side metadata",
+        "detail": "Publish product metadata to EDS so title, description and og tags are in the first HTML, not only after JS.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl pdp | grep meta"
+        },
+        "source": "https://experienceleague.adobe.com/developer/commerce/storefront/setup/seo/metadata/"
+      },
+      {
+        "title": "Full tag set",
+        "detail": "Include title, description, og:title, og:image, og:url and og:product:price:amount and currency on every PDP.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl pdp | grep og:"
+        },
+        "source": "https://experienceleague.adobe.com/developer/commerce/storefront/setup/seo/metadata/"
+      },
+      {
+        "title": "Product JSON-LD",
+        "detail": "Add Product, BreadcrumbList and rating JSON-LD; one invalid annotation makes Google drop all of them.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "Rich Results Test"
+        },
+        "source": "https://experienceleague.adobe.com/developer/commerce/storefront/setup/seo/metadata/#schemaorg-data-json-ld"
+      },
+      {
+        "title": "Generate metadata",
+        "detail": "Use the PDP Metadata Generator to build a bulk metadata sheet from Catalog Service data.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "npm start in tools/pdp-metadata"
+        },
+        "source": "https://experienceleague.adobe.com/developer/commerce/storefront/setup/seo/metadata/#generate-metadata"
+      },
+      {
+        "title": "Lowercase SKU URLs",
+        "detail": "Build links with getProductLink so URLs follow /products/{urlKey}/{sku} with a lowercase SKU.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/code-review"
+        },
+        "source": "https://experienceleague.adobe.com/developer/commerce/storefront/setup/seo/indexing/#url-format-of-catalog-pages"
+      },
+      {
+        "title": "Canonical to parent",
+        "detail": "Point configurable variants to the parent product canonical, and never to a URL that redirects.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl pdp | grep canonical"
+        },
+        "source": "https://experienceleague.adobe.com/developer/commerce/storefront/setup/seo/indexing/#canonical-urls"
+      },
+      {
+        "title": "PDPs in sitemap",
+        "detail": "Add PDPs to the sitemap yourself or with AEM Commerce Prerender; they are left out by default.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl /sitemap.xml"
+        },
+        "source": "https://experienceleague.adobe.com/developer/commerce/storefront/setup/seo/sitemaps/#whats-included-automatically"
+      },
+      {
+        "title": "Prerender thin pages",
+        "detail": "If validators still see an empty PDP, configure AEM Commerce Prerender for full product HTML.",
+        "level": "could",
+        "verify": {
+          "by": "machine",
+          "how": "URL Inspection Tool"
+        },
+        "source": "https://experienceleague.adobe.com/developer/commerce/storefront/setup/seo/#keep-both-layers-aligned"
+      }
+    ],
+    "related": [
+      "commerce",
+      "product-listing",
+      "metadata",
+      "bulk-metadata"
+    ],
+    "wild": [
+      {
+        "label": "Commerce boilerplate",
+        "url": "https://github.com/hlxsites/aem-boilerplate-commerce",
+        "note": "Storefront starter with the PDP block and drop-ins"
+      },
+      {
+        "label": "Product details drop-in",
+        "url": "https://experienceleague.adobe.com/developer/commerce/storefront/dropins/product-details/",
+        "note": "Containers that make up a PDP"
+      },
+      {
+        "label": "Storefront SEO metadata",
+        "url": "https://experienceleague.adobe.com/developer/commerce/storefront/setup/seo/metadata/",
+        "note": "Required tags, JSON-LD and the metadata generator"
+      }
+    ]
+  },
+  {
+    "id": "product-listing",
+    "category": "pages",
+    "title": "Product listing",
+    "summary": "A product listing page (PLP) or category page on a Commerce storefront is an application part, built from the Product Discovery drop-in. The grid loads in the browser, so the page metadata, links and schema carry the SEO.",
+    "items": [
+      {
+        "title": "Discovery containers",
+        "detail": "Compose the PLP from Product Discovery containers: SearchResults, Facets, SortBy and Pagination.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/code-review"
+        },
+        "source": "https://experienceleague.adobe.com/developer/commerce/storefront/dropins/product-discovery/"
+      },
+      {
+        "title": "Page metadata",
+        "detail": "Give each category page its own title, description and og tags in the first HTML, as for PDPs.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl plp | grep meta"
+        },
+        "source": "https://experienceleague.adobe.com/developer/commerce/storefront/setup/seo/metadata/"
+      },
+      {
+        "title": "Schema on catalog pages",
+        "detail": "Add schema.org JSON-LD such as BreadcrumbList to PLPs and validate it.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "Rich Results Test"
+        },
+        "source": "https://experienceleague.adobe.com/developer/commerce/storefront/setup/seo/metadata/#schemaorg-data-json-ld"
+      },
+      {
+        "title": "Consistent product links",
+        "detail": "Generate every product tile link with getProductLink so URLs use the canonical lowercase form.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/code-review"
+        },
+        "source": "https://experienceleague.adobe.com/developer/commerce/storefront/setup/seo/metadata/#product-link-generation"
+      },
+      {
+        "title": "LCP after the grid",
+        "detail": "If the first image comes from the catalog call, delay LCP candidate detection until the block has rendered.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "PageSpeed Insights"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#lcp"
+      },
+      {
+        "title": "Multi-store hreflang",
+        "detail": "For several stores or locales, set hreflang and check catalog requests carry the cb cache key.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "hreflang Tags Testing Tool"
+        },
+        "source": "https://experienceleague.adobe.com/developer/commerce/storefront/setup/seo/indexing/#multi-store-setups"
+      },
+      {
+        "title": "Breadcrumbs",
+        "detail": "Show the category path as breadcrumbs so shoppers and crawlers see where the page sits.",
+        "level": "could",
+        "verify": {
+          "by": "agent",
+          "how": "/internal-linking"
+        },
+        "source": "https://www.aem.live/developer/block-collection/breadcrumbs"
+      }
+    ],
+    "related": [
+      "commerce",
+      "product-detail",
+      "search-results",
+      "site-search"
+    ],
+    "wild": [
+      {
+        "label": "Product Discovery drop-in",
+        "url": "https://experienceleague.adobe.com/developer/commerce/storefront/dropins/product-discovery/",
+        "note": "Containers for PLPs, facets and quick search"
+      },
+      {
+        "label": "Commerce boilerplate",
+        "url": "https://github.com/hlxsites/aem-boilerplate-commerce",
+        "note": "Storefront starter with PLP blocks"
+      },
+      {
+        "label": "Storefront SEO indexing",
+        "url": "https://experienceleague.adobe.com/developer/commerce/storefront/setup/seo/indexing/",
+        "note": "Canonicals, URL format and multi-store rules"
+      }
+    ]
+  },
+  {
+    "id": "search-results",
+    "category": "pages",
+    "title": "Search results",
+    "summary": "A search results page in EDS is usually the Block Collection search block or a widget reading the query index; on a storefront, Product Discovery runs product search. It has no canonical content, so focus on states and accessibility.",
+    "items": [
+      {
+        "title": "Pick the source",
+        "detail": "Use the Block Collection search block, which reads /query-index.json unless a source is given.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/block-collection-and-party"
+        },
+        "source": "https://www.aem.live/developer/block-collection/search#notes"
+      },
+      {
+        "title": "Index has the fields",
+        "detail": "Index title and description so results can show and match more than the URL.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl /query-index.json"
+        },
+        "source": "https://www.aem.live/developer/indexing#setting-up-an-initial-index-with-the-index-admin-tool"
+      },
+      {
+        "title": "Query in the URL",
+        "detail": "Keep the term in the q parameter so results can be shared, bookmarked and reloaded.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "open ?q=term"
+        },
+        "source": "https://github.com/adobe/aem-block-collection/blob/main/blocks/search/search.js"
+      },
+      {
+        "title": "Results announced",
+        "detail": "Mark the results list as a polite live region so screen readers hear the update.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "axe DevTools"
+        },
+        "source": "https://github.com/adobe/aem-block-collection/blob/main/blocks/search/search.js"
+      },
+      {
+        "title": "Empty state",
+        "detail": "Show a no-results message, translated through placeholders, when nothing matches.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "search a nonsense term"
+        },
+        "source": "https://github.com/adobe/aem-block-collection/blob/main/blocks/search/search.js"
+      },
+      {
+        "title": "Labelled input",
+        "detail": "Give the search input an accessible label, not only placeholder text.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "axe DevTools"
+        },
+        "source": "https://github.com/adobe/aem-block-collection/blob/main/blocks/search/search.js"
+      },
+      {
+        "title": "Results not indexed",
+        "detail": "Set robots noindex on the search page through page or bulk metadata.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl page | grep robots"
+        },
+        "source": "https://www.aem.live/docs/bulk-metadata#bulk-metadata"
+      },
+      {
+        "title": "Search term redirects",
+        "detail": "Handle redirects for terms like /search?q= in code; the redirect sheet only matches paths.",
+        "level": "could",
+        "verify": {
+          "by": "agent",
+          "how": "/code-review"
+        },
+        "source": "https://experienceleague.adobe.com/developer/commerce/storefront/setup/seo/indexing/#redirects"
+      }
+    ],
+    "related": [
+      "site-search",
+      "query-index",
+      "placeholders",
+      "product-listing"
+    ],
+    "wild": [
+      {
+        "label": "Search · Block Collection",
+        "url": "https://www.aem.live/developer/block-collection/search",
+        "note": "Reference block over the query index"
+      },
+      {
+        "label": "search.js",
+        "url": "https://github.com/adobe/aem-block-collection/blob/main/blocks/search/search.js",
+        "note": "Source: q param, live region, highlighting"
+      },
+      {
+        "label": "Widgets docs",
+        "url": "https://www.aem.live/docs/widgets",
+        "note": "Search results as a self-contained widget"
+      }
+    ]
+  },
+  {
+    "id": "page-404",
+    "category": "pages",
+    "title": "404",
+    "summary": "EDS serves 404.html from the root of the code repo for any URL with no content or code behind it. The boilerplate version shows the site header and footer, links home and reports the miss to OpTel.",
+    "items": [
+      {
+        "title": "404.html in repo root",
+        "detail": "Commit a 404.html at the code repo root; it replaces the minimal default 404 response.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl -sI /no-such-page"
+        },
+        "source": "https://www.aem.live/developer/anatomy-of-a-project#not-found-404html"
+      },
+      {
+        "title": "Real 404 status",
+        "detail": "Return HTTP 404 for missing pages, never a 200 or a redirect to the homepage.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl -sI /no-such-page"
+        },
+        "source": "https://www.aem.live/docs/error-pages#errors"
+      },
+      {
+        "title": "Clear title",
+        "detail": "Tell the visitor in the title and heading that the page was not found.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/content-audit"
+        },
+        "source": "https://github.com/adobe/aem-boilerplate/blob/main/404.html"
+      },
+      {
+        "title": "Branded header and footer",
+        "detail": "Load the site header and footer on the 404 so visitors can navigate on.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "open a missing URL"
+        },
+        "source": "https://www.aem.live/docs/error-pages#errors"
+      },
+      {
+        "title": "Way home and back",
+        "detail": "Offer a Go home link, and Go back when the visitor came from your own site.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "open a missing URL"
+        },
+        "source": "https://github.com/adobe/aem-boilerplate/blob/main/404.html"
+      },
+      {
+        "title": "Authorable content",
+        "detail": "Load a fragment such as /fragments/404 so authors can edit the copy or localise it per site.",
+        "level": "could",
+        "verify": {
+          "by": "agent",
+          "how": "/fragment"
+        },
+        "source": "https://www.aem.live/docs/error-pages#customizing-404-content-with-fragments"
+      },
+      {
+        "title": "Track misses",
+        "detail": "Keep the sampleRUM 404 call so OpTel shows which URLs and referrers produce 404s.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "OpTel 404 report"
+        },
+        "source": "https://www.aem.live/docs/error-pages#errors"
+      },
+      {
+        "title": "Redirect top misses",
+        "detail": "Watch 404s after launch and add redirects for the popular ones in the redirects sheet.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "redirects sheet review"
+        },
+        "source": "https://www.aem.live/docs/go-live-checklist#report"
+      }
+    ],
+    "related": [
+      "redirects",
+      "rum",
+      "fragment",
+      "going-live"
+    ],
+    "wild": [
+      {
+        "label": "Boilerplate 404.html",
+        "url": "https://github.com/adobe/aem-boilerplate/blob/main/404.html",
+        "note": "Reference 404 page with home and back links"
+      },
+      {
+        "label": "Error Pages docs",
+        "url": "https://www.aem.live/docs/error-pages",
+        "note": "404.html and the fragment pattern"
+      },
+      {
+        "label": "Adobe Blog 404.html",
+        "url": "https://github.com/adobe/blog/blob/main/404.html",
+        "note": "A production 404 page on EDS"
+      }
+    ]
+  },
+  {
+    "id": "locale-root",
+    "category": "pages",
+    "title": "Locale root",
+    "summary": "A locale root such as /de/ is the home of one language or market folder. EDS recommends language first, then market, with localized nav, footer and placeholders in the folder and hreflang in the sitemap.",
+    "items": [
+      {
+        "title": "Language-first path",
+        "detail": "Use a language folder first and an optional market below it, such as /en/ and /en/uk/.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "IA review"
+        },
+        "source": "https://www.aem.live/docs/translation-and-localization#url-and-content-structure"
+      },
+      {
+        "title": "Localized nav and footer",
+        "detail": "Keep nav and footer documents in the locale folder so the header loads the right links.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "open /de/ and check nav"
+        },
+        "source": "https://www.aem.live/docs/translation-and-localization#link-rewriting-for-localization-in-practice"
+      },
+      {
+        "title": "Locale nav paths",
+        "detail": "Set nav and footer metadata for /de/** in bulk metadata; the boilerplate defaults to /nav and /footer.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl /de/ | grep nav"
+        },
+        "source": "https://www.aem.live/docs/bulk-metadata#bulk-metadata"
+      },
+      {
+        "title": "Correct html lang",
+        "detail": "Replace the boilerplate's fixed lang en in scripts.js, or set html-lang metadata, per locale.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl /de/ | grep lang"
+        },
+        "source": "https://github.com/adobe/aem-boilerplate/blob/main/scripts/scripts.js"
+      },
+      {
+        "title": "hreflang in sitemap",
+        "detail": "Configure per-language sitemaps with hreflang and alternate paths rather than hreflang tags on each page.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl /sitemap-de.xml"
+        },
+        "source": "https://www.aem.live/developer/sitemap#multiple-sitemaps"
+      },
+      {
+        "title": "x-default",
+        "detail": "Set the default language in the sitemap config so entries get an x-default alternate.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl /sitemap.xml"
+        },
+        "source": "https://www.aem.live/developer/sitemap#specifying-the-default-language"
+      },
+      {
+        "title": "Localized placeholders",
+        "detail": "Keep placeholders in the language folder and override only what a market changes.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "curl /de/placeholders.json"
+        },
+        "source": "https://www.aem.live/docs/translation-and-localization#url-and-content-structure"
+      },
+      {
+        "title": "Let visitors choose",
+        "detail": "Offer a language and market switcher and remember the choice; do not force geo redirects.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "switcher walkthrough"
+        },
+        "source": "https://www.aem.live/docs/translation-and-localization#language-and-market-detection"
+      }
+    ],
+    "related": [
+      "translation",
+      "adding-a-locale",
+      "sitemap",
+      "header"
+    ],
+    "wild": [
+      {
+        "label": "Adobe Blog /de/",
+        "url": "https://blog.adobe.com/de/",
+        "note": "A live language root on EDS"
+      },
+      {
+        "label": "Translation and Localization",
+        "url": "https://www.aem.live/docs/translation-and-localization",
+        "note": "Language-first structure and hreflang sitemap"
+      },
+      {
+        "label": "Sitemap docs",
+        "url": "https://www.aem.live/developer/sitemap",
+        "note": "Multi-language sitemaps with hreflang"
+      }
+    ]
+  }
+]

@@ -1,0 +1,86 @@
+.verify-legend {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+.verify-legend .verify-legend-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.verify-legend :is(p, .prosemirror-editor, .ProseMirror) {
+  margin: 0;
+}
+
+.verify-legend .verify-legend-count {
+  font-size: 3.5rem;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.verify-legend .verify-legend-text :is(h2, h3) {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-2);
+  font-size: 1.375rem;
+  letter-spacing: -0.02em;
+}
+
+.verify-legend .verify-legend-text :is(h2, h3)::before {
+  content: "";
+  inline-size: 1.1rem;
+  block-size: 1.1rem;
+  flex: none;
+  background-color: var(--kind-color, var(--color-machine));
+  mask: url("../../icons/cpu.svg") center / contain no-repeat;
+}
+
+.verify-legend [data-verify="agent"] { --kind-color: var(--color-agent); }
+.verify-legend [data-verify="human"] { --kind-color: var(--color-human); }
+.verify-legend [data-verify="agent"] .verify-legend-text :is(h2, h3)::before { mask-image: url("../../icons/sparkles.svg"); }
+.verify-legend [data-verify="human"] .verify-legend-text :is(h2, h3)::before { mask-image: url("../../icons/user-round.svg"); }
+
+.verify-legend .verify-legend-text p {
+  color: var(--color-muted);
+  font-size: 0.9375rem;
+}
+
+.verify-legend .verify-legend-list ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.verify-legend .verify-legend-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-s);
+  background-color: var(--color-bg);
+  font-size: var(--font-size-s);
+}
+
+.verify-legend .verify-legend-list em {
+  color: var(--color-muted);
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (width >= 900px) {
+  .verify-legend {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

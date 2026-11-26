@@ -1,0 +1,849 @@
+[
+  {
+    "id": "metadata",
+    "category": "delivery",
+    "title": "Metadata",
+    "summary": "AEM turns each page's Metadata table and the site's bulk metadata sheets into the <title>, description, canonical and social tags in the head. Search engines, AI agents and link previews read these, not the page body.",
+    "items": [
+      {
+        "title": "One Metadata table",
+        "detail": "Add a single Metadata table per page, by convention at the bottom of the document.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/content-audit"
+        },
+        "source": "https://www.aem.live/developer/block-collection/metadata#notes"
+      },
+      {
+        "title": "Page title",
+        "detail": "Set title or rely on the first H1; it fills <title>, og:title and twitter:title.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl page | grep <title>"
+        },
+        "source": "https://www.aem.live/docs/special-metadata-properties#title"
+      },
+      {
+        "title": "Description",
+        "detail": "Write a description; otherwise AEM uses the first paragraph with 10 or more words.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/content-audit"
+        },
+        "source": "https://www.aem.live/docs/special-metadata-properties#description"
+      },
+      {
+        "title": "Share image",
+        "detail": "Set image, or add /default-meta-image.png so every page unfurls with a proper image.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl page | grep og:image"
+        },
+        "source": "https://www.aem.live/docs/special-metadata-properties#image"
+      },
+      {
+        "title": "Canonical on prod host",
+        "detail": "Set cdn.prod.host so AEM generates canonical URLs on your production domain.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl page | grep canonical"
+        },
+        "source": "https://www.aem.live/docs/special-metadata-properties#canonical"
+      },
+      {
+        "title": "Site-wide suffixes",
+        "detail": "Put repeated properties like title:suffix and html-lang in the bulk metadata sheet, not on every page.",
+        "level": "could",
+        "verify": {
+          "by": "agent",
+          "how": "/bulk-metadata"
+        },
+        "source": "https://www.aem.live/docs/special-metadata-properties#titlesuffix"
+      },
+      {
+        "title": "Bulk sheet order",
+        "detail": "List the /** row first in the metadata sheet, then the more specific URL patterns.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/bulk-metadata"
+        },
+        "source": "https://www.aem.live/docs/bulk-metadata#bulk-metadata"
+      },
+      {
+        "title": "Page overrides sparingly",
+        "detail": "Use the page Metadata block for exceptions only; it always wins over bulk metadata.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "author walkthrough"
+        },
+        "source": "https://www.aem.live/docs/bulk-metadata#metadata-source-hierarchy"
+      },
+      {
+        "title": "Sheet published",
+        "detail": "Preview and publish the metadata sheet after every change, or the site will not see it.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl /metadata.json"
+        },
+        "source": "https://www.aem.live/docs/bulk-metadata#bulk-metadata"
+      }
+    ],
+    "related": [
+      "bulk-metadata",
+      "robots",
+      "head-html",
+      "article"
+    ],
+    "wild": [
+      {
+        "label": "Metadata · Block Collection",
+        "url": "https://www.aem.live/developer/block-collection/metadata",
+        "note": "How the Metadata table maps to head tags"
+      },
+      {
+        "label": "Special metadata properties",
+        "url": "https://www.aem.live/docs/special-metadata-properties",
+        "note": "canonical, title:suffix, image, json-ld and more"
+      },
+      {
+        "label": "aem.live bulk metadata",
+        "url": "https://www.aem.live/metadata.json",
+        "note": "A real metadata sheet with /** first"
+      }
+    ]
+  },
+  {
+    "id": "redirects",
+    "category": "delivery",
+    "title": "Redirects",
+    "summary": "EDS serves 301 redirects from a redirects sheet in the content root, previewed and published like any page. Moving or retiring content without them loses visitors and search ranking.",
+    "items": [
+      {
+        "title": "Redirects sheet",
+        "detail": "Keep a redirects sheet in the content root with Source and Destination columns.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl /redirects.json"
+        },
+        "source": "https://www.aem.live/docs/redirects#redirects"
+      },
+      {
+        "title": "Relative sources",
+        "detail": "Write Source as a path only; use a full URL as Destination only for other sites.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "review redirects.json"
+        },
+        "source": "https://www.aem.live/docs/redirects#redirects"
+      },
+      {
+        "title": "helix-default sheet",
+        "detail": "If the workbook has several sheets, keep the live rules on the sheet named helix-default.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "review workbook"
+        },
+        "source": "https://www.aem.live/docs/redirects#redirects"
+      },
+      {
+        "title": "Tested on preview",
+        "detail": "Preview the sheet and check each redirect on .aem.page before publishing it.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl -sI on .aem.page"
+        },
+        "source": "https://www.aem.live/docs/redirects#redirects"
+      },
+      {
+        "title": "Redirects hide pages",
+        "detail": "A redirect wins over an existing page at the same URL, so remove stale rules.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "diff sheet vs query index"
+        },
+        "source": "https://www.aem.live/docs/redirects#redirects"
+      },
+      {
+        "title": "Top URLs mapped",
+        "detail": "Map popular legacy URLs and top backlinks 1-to-1 to their new pages.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "Google Search Console"
+        },
+        "source": "https://www.aem.live/docs/go-live-checklist#legacy-redirects"
+      },
+      {
+        "title": "Patterns at the CDN",
+        "detail": "Put pattern rules, like dropping .html, at the CDN; the redirects sheet has no wildcards.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "CDN config review"
+        },
+        "source": "https://www.aem.live/docs/redirects#site-migrations-and-seo"
+      },
+      {
+        "title": "No homepage dumping",
+        "detail": "Do not send pruned URLs to one common page such as the homepage.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/link-rot-scanner"
+        },
+        "source": "https://www.aem.live/docs/redirects#site-migrations-and-seo"
+      },
+      {
+        "title": "404s watched",
+        "detail": "After go-live, watch 404s in Operational Telemetry and add the missing redirects.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "OpTel 404 report"
+        },
+        "source": "https://www.aem.live/docs/go-live-checklist#report"
+      }
+    ],
+    "related": [
+      "going-live",
+      "migrating-a-page",
+      "retiring-a-page",
+      "page-404"
+    ],
+    "wild": [
+      {
+        "label": "Redirects docs",
+        "url": "https://www.aem.live/docs/redirects",
+        "note": "Sheet format, CDN wildcards, migration advice"
+      },
+      {
+        "label": "aem.live redirects",
+        "url": "https://www.aem.live/redirects.json",
+        "note": "A live redirects sheet as JSON"
+      },
+      {
+        "label": "Google: site moves",
+        "url": "https://developers.google.com/search/docs/crawling-indexing/site-move-with-url-changes",
+        "note": "Why 1-to-1 redirects matter"
+      }
+    ]
+  },
+  {
+    "id": "sitemap",
+    "category": "delivery",
+    "title": "Sitemap",
+    "summary": "AEM generates sitemap.xml from published pages or from query indexes and a sitemap config, including hreflang for multilingual sites. It is how search engines find new and changed content.",
+    "items": [
+      {
+        "title": "Sitemap served",
+        "detail": "Check /sitemap.xml (or your sitemap index) on the production domain lists the published pages.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl /sitemap.xml"
+        },
+        "source": "https://www.aem.live/developer/sitemap#creating-a-sitemap-without-any-configuration"
+      },
+      {
+        "title": "Production URLs",
+        "detail": "Set cdn.prod.host or an origin so sitemap URLs use your production domain.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "/sitemap-audit"
+        },
+        "source": "https://www.aem.live/developer/sitemap#domain-name-used-in-external-urls"
+      },
+      {
+        "title": "noindex pages out",
+        "detail": "Keep a robots column in the index so pages with noindex drop out of the sitemap.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/sitemap-audit"
+        },
+        "source": "https://www.aem.live/developer/sitemap#manual-setup-of-your-sitemap-configuration"
+      },
+      {
+        "title": "Within limits",
+        "detail": "Keep each sitemap under 50,000 URLs and 50MB uncompressed; split by section or language.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "/sitemap-audit"
+        },
+        "source": "https://www.aem.live/developer/sitemap#sitemaps"
+      },
+      {
+        "title": "lastmod dates",
+        "detail": "Add lastmod with a date format so crawlers can see when pages changed.",
+        "level": "could",
+        "verify": {
+          "by": "machine",
+          "how": "curl /sitemap.xml"
+        },
+        "source": "https://www.aem.live/developer/sitemap#simple-sitemap"
+      },
+      {
+        "title": "hreflang alternates",
+        "detail": "On multilingual sites, configure languages with hreflang and alternate paths.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/sitemap-audit"
+        },
+        "source": "https://www.aem.live/developer/sitemap#multiple-sitemaps"
+      },
+      {
+        "title": "Generated index",
+        "detail": "Add an index list so AEM builds /sitemap-index.xml, and delete any static copy in the repo.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl /sitemap-index.xml"
+        },
+        "source": "https://www.aem.live/developer/sitemap#generating-a-sitemap-index-automatically"
+      },
+      {
+        "title": "Linked from robots.txt",
+        "detail": "Reference the sitemap or sitemap index from robots.txt on the production domain.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl /robots.txt"
+        },
+        "source": "https://www.aem.live/developer/sitemap#generating-a-sitemap-index-automatically"
+      },
+      {
+        "title": "Search Console",
+        "detail": "Submit the sitemap in Google Search Console and watch coverage for weeks after launch.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "Google Search Console"
+        },
+        "source": "https://www.aem.live/docs/go-live-checklist#google-search-console"
+      }
+    ],
+    "related": [
+      "query-index",
+      "robots",
+      "translation",
+      "going-live"
+    ],
+    "wild": [
+      {
+        "label": "Sitemaps docs",
+        "url": "https://www.aem.live/developer/sitemap",
+        "note": "Default, index-based and multilingual setups"
+      },
+      {
+        "label": "aem.live sitemap",
+        "url": "https://www.aem.live/sitemap.xml",
+        "note": "A generated sitemap in production"
+      },
+      {
+        "label": "Admin API · generate sitemap",
+        "url": "https://www.aem.live/docs/admin.html",
+        "note": "POST /sitemap/{org}/{site}/{ref}/{path}"
+      }
+    ]
+  },
+  {
+    "id": "query-index",
+    "category": "delivery",
+    "title": "Query index",
+    "summary": "The query index is a JSON list of published pages and chosen properties, served at /query-index.json by default. Blogs, lists, feeds, search and the sitemap all build on it.",
+    "items": [
+      {
+        "title": "Index configured",
+        "detail": "Create the index with the Index Admin tool or the Admin API index config.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "Index Admin tool"
+        },
+        "source": "https://www.aem.live/developer/indexing#setting-up-an-initial-index-with-the-index-admin-tool"
+      },
+      {
+        "title": "Scoped paths",
+        "detail": "Use include and exclude paths so only real pages land in the index.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "review query.yaml"
+        },
+        "source": "https://www.aem.live/docs/indexing-reference#indexing-reference"
+      },
+      {
+        "title": "Only needed fields",
+        "detail": "Extract only the properties your lists use, such as title, image and description.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "review query.yaml"
+        },
+        "source": "https://www.aem.live/developer/indexing#setting-up-an-initial-index-with-the-index-admin-tool"
+      },
+      {
+        "title": "robots indexed",
+        "detail": "Index the robots property so the sitemap and lists can skip noindex pages.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl /query-index.json"
+        },
+        "source": "https://www.aem.live/developer/indexing#omitting-published-pages-from-the-index"
+      },
+      {
+        "title": "Selectors on source",
+        "detail": "Write selectors against View Source HTML, not the decorated DOM.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "aem up --print-index"
+        },
+        "source": "https://www.aem.live/docs/indexing-reference#indexing-reference"
+      },
+      {
+        "title": "Tested locally",
+        "detail": "Run aem up --print-index and check every property extracts a value.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "aem up --print-index"
+        },
+        "source": "https://www.aem.live/developer/indexing#debug-your-index-configuration"
+      },
+      {
+        "title": "Reindexed",
+        "detail": "Reindex after changing properties; otherwise pages update only when published.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "Index Admin tool"
+        },
+        "source": "https://www.aem.live/developer/indexing#reindexing"
+      },
+      {
+        "title": "Page record checked",
+        "detail": "Check a page's record with the Admin API index endpoint and the Log Viewer.",
+        "level": "could",
+        "verify": {
+          "by": "machine",
+          "how": "Admin API /index"
+        },
+        "source": "https://www.aem.live/developer/indexing#check-your-index"
+      },
+      {
+        "title": "Removed by unpublish",
+        "detail": "Unpublish a page to take it out of the live index.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "Sidekick"
+        },
+        "source": "https://www.aem.live/developer/indexing#reindexing"
+      }
+    ],
+    "related": [
+      "sitemap",
+      "article-index",
+      "site-search",
+      "spreadsheets"
+    ],
+    "wild": [
+      {
+        "label": "Indexing docs",
+        "url": "https://www.aem.live/developer/indexing",
+        "note": "Index Admin, partitions, troubleshooting"
+      },
+      {
+        "label": "Indexing reference",
+        "url": "https://www.aem.live/docs/indexing-reference",
+        "note": "select, value and extraction functions"
+      },
+      {
+        "label": "aem.live query index",
+        "url": "https://www.aem.live/query-index.json",
+        "note": "A live index as JSON"
+      },
+      {
+        "label": "helix-shared index config",
+        "url": "https://github.com/adobe/helix-shared/blob/main/docs/indexconfig.md",
+        "note": "Full index definition schema"
+      }
+    ]
+  },
+  {
+    "id": "robots",
+    "category": "delivery",
+    "title": "Indexing & robots",
+    "summary": "EDS keeps *.aem.page and *.aem.live out of search, and lets your production domain be crawled through robots.txt and per-page robots metadata. Getting this wrong hides the site or leaks duplicates.",
+    "items": [
+      {
+        "title": "Platform domains blocked",
+        "detail": "Leave .aem.page and .aem.live blocked; they send X-Robots-Tag noindex, nofollow by default.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl -sI .aem.live URL"
+        },
+        "source": "https://www.aem.live/docs/robots#x-robots-tag-header"
+      },
+      {
+        "title": "Header gone on prod",
+        "detail": "After go-live, confirm the production domain no longer sends X-Robots-Tag.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl -sI prod URL"
+        },
+        "source": "https://www.aem.live/docs/robots#x-robots-tag-header"
+      },
+      {
+        "title": "Production robots.txt",
+        "detail": "Check production /robots.txt allows crawling and names your sitemap.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl /robots.txt"
+        },
+        "source": "https://www.aem.live/docs/robots#default-robotstxt"
+      },
+      {
+        "title": "Custom robots.txt",
+        "detail": "Edit a custom robots.txt in the robots.txt Editor or via the Admin API.",
+        "level": "could",
+        "verify": {
+          "by": "machine",
+          "how": "Admin API config"
+        },
+        "source": "https://www.aem.live/docs/robots#custom-robotstxt"
+      },
+      {
+        "title": "noindex, not Disallow",
+        "detail": "To drop a page from search, allow crawling and set robots noindex; Disallow prevents that.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/content-audit"
+        },
+        "source": "https://www.aem.live/docs/robots#custom-robotstxt"
+      },
+      {
+        "title": "Page exceptions",
+        "detail": "Add a robots row to one page's Metadata block for one-offs like thank-you pages.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl page | grep robots"
+        },
+        "source": "https://www.aem.live/docs/robots#page-level-directives-via-metadata"
+      },
+      {
+        "title": "Sections via bulk",
+        "detail": "Set robots noindex for whole sections, such as /drafts/**, in the bulk metadata sheet.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl /metadata.json"
+        },
+        "source": "https://www.aem.live/docs/robots#site-wide-directives-via-bulk-metadata"
+      },
+      {
+        "title": "Canonicals return 200",
+        "detail": "Point canonical URLs at pages that return 2xx, never a redirect or a 404.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "/link-rot-scanner"
+        },
+        "source": "https://www.aem.live/docs/go-live-checklist#canonical-urls"
+      }
+    ],
+    "related": [
+      "metadata",
+      "sitemap",
+      "bulk-metadata",
+      "going-live"
+    ],
+    "wild": [
+      {
+        "label": "Robots docs",
+        "url": "https://www.aem.live/docs/robots",
+        "note": "Metadata, robots.txt and X-Robots-Tag"
+      },
+      {
+        "label": "robots.txt Editor",
+        "url": "https://tools.aem.live/tools/robots-edit/index.html",
+        "note": "Edit a site's custom robots.txt"
+      },
+      {
+        "label": "aem.live robots.txt",
+        "url": "https://www.aem.live/robots.txt",
+        "note": "Default production robots.txt with sitemap"
+      }
+    ]
+  },
+  {
+    "id": "site-config",
+    "category": "delivery",
+    "title": "Site configuration",
+    "summary": "The configuration service holds a site's code and content location, CDN, access, headers, index, sitemap and robots settings, managed via tools.aem.live or the Admin API. It replaces fstab.yaml and .helix sheets and enables repoless sites.",
+    "items": [
+      {
+        "title": "Config service in use",
+        "detail": "Manage settings in the configuration service, not .helix/config sheets.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "Admin API GET config"
+        },
+        "source": "https://www.aem.live/docs/configuration#document-based-project-configuration"
+      },
+      {
+        "title": "Code and content set",
+        "detail": "Set the code owner and repo and the content source URL for the site.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "Admin API GET config"
+        },
+        "source": "https://www.aem.live/docs/config-service-setup#add-your-site"
+      },
+      {
+        "title": "No live switches",
+        "detail": "Never change code or content location of a live site; create a new site and move the CDN origin.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "change review"
+        },
+        "source": "https://www.aem.live/docs/config-service-setup#update-content-location"
+      },
+      {
+        "title": "Production CDN",
+        "detail": "Set the cdn.prod host so canonicals and sitemaps use your real domain.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "Admin API GET config"
+        },
+        "source": "https://www.aem.live/docs/config-service-setup#update-production-cdn"
+      },
+      {
+        "title": "Roles granted",
+        "detail": "Grant roles such as config and publish to named users in the access settings.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "Admin API GET config"
+        },
+        "source": "https://www.aem.live/docs/config-service-setup#update-access-control"
+      },
+      {
+        "title": "No secrets in public",
+        "detail": "Keep secrets out of public config; anyone can read it at /config.json.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl /config.json"
+        },
+        "source": "https://www.aem.live/docs/config-service-setup#update-public-custom-configuration"
+      },
+      {
+        "title": "Legacy files removed",
+        "detail": "Remove fstab.yaml, robots.txt, helix-query.yaml and helix-sitemap.yaml from the repo.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "repo file check"
+        },
+        "source": "https://www.aem.live/docs/config-service-setup#remove-unused-configuration-files"
+      },
+      {
+        "title": "Canonical repoless site",
+        "detail": "For repoless, keep one site whose org/site matches the GitHub owner/repo.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "Admin API GET config"
+        },
+        "source": "https://www.aem.live/docs/config-service-setup#prerequisites"
+      },
+      {
+        "title": "Versions to restore",
+        "detail": "Use the Admin API config versions list to roll back a bad config change.",
+        "level": "could",
+        "verify": {
+          "by": "machine",
+          "how": "Admin API versions"
+        },
+        "source": "https://www.aem.live/docs/admin.html"
+      }
+    ],
+    "related": [
+      "site-auth",
+      "going-repoless",
+      "byo-cdn",
+      "headers"
+    ],
+    "wild": [
+      {
+        "label": "Config service setup",
+        "url": "https://www.aem.live/docs/config-service-setup",
+        "note": "Every config endpoint with curl examples"
+      },
+      {
+        "label": "tools.aem.live",
+        "url": "https://tools.aem.live",
+        "note": "UIs for site config, index, robots, headers"
+      },
+      {
+        "label": "Admin API reference",
+        "url": "https://www.aem.live/docs/admin.html",
+        "note": "Full config, versioning and secrets API"
+      },
+      {
+        "label": "Repoless sites",
+        "url": "https://www.aem.live/docs/repoless",
+        "note": "Many sites on one codebase"
+      }
+    ]
+  },
+  {
+    "id": "site-auth",
+    "category": "delivery",
+    "title": "Site authentication",
+    "summary": "Site authentication puts token-based protection on preview (aem.page), live (aem.live) or both. Use it for intranets or unreleased work, then make sure the CDN, authors and tooling can still get through.",
+    "items": [
+      {
+        "title": "Scope chosen",
+        "detail": "Pick access/preview, access/live or access/site; protecting live locks out every visitor.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "stakeholder sign-off"
+        },
+        "source": "https://www.aem.live/docs/authentication-setup-site#enable-the-token-to-access-your-site"
+      },
+      {
+        "title": "Site token, not admin",
+        "detail": "Create a site token via the secrets endpoint; never use your Admin API token for site access.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "Admin API secrets"
+        },
+        "source": "https://www.aem.live/docs/authentication-setup-site#create-a-site-token-to-access-your-protected-site"
+      },
+      {
+        "title": "GET before POST",
+        "detail": "GET the access object before changing it, since each POST overwrites it.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "Admin API GET access"
+        },
+        "source": "https://www.aem.live/docs/authentication-setup-site#enable-the-token-to-access-your-site"
+      },
+      {
+        "title": "401 without token",
+        "detail": "Confirm a plain request gets 401 and one with the token in Authorization succeeds.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl -H 'authorization: token …'"
+        },
+        "source": "https://www.aem.live/docs/authentication-setup-site#verify-that-access-has-been-limited"
+      },
+      {
+        "title": "CDN sends token",
+        "detail": "Configure the CDN to add the Authorization header to every origin request.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl prod domain"
+        },
+        "source": "https://www.aem.live/docs/authentication-setup-site#make-your-cdn-pass-the-right-authorization-header"
+      },
+      {
+        "title": "Browser users",
+        "detail": "Give people who browse the protected site a role, and have them sign in with AEM Sidekick.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "Sidekick sign-in"
+        },
+        "source": "https://www.aem.live/docs/authentication-setup-site#browser-access-to-the-protected-sites"
+      },
+      {
+        "title": "Known limits",
+        "detail": "Auth covers the whole site only: no per-path authorization and no custom denied page.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "requirements review"
+        },
+        "source": "https://www.aem.live/docs/authentication-setup-site#limitations"
+      },
+      {
+        "title": "No wildcard CORS",
+        "detail": "Avoid access-control-allow-origin * on protected sites; it exposes signed-in authors to CSRF.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl -sI protected URL"
+        },
+        "source": "https://www.aem.live/docs/custom-headers#security-warning"
+      },
+      {
+        "title": "Keys rotated",
+        "detail": "Store API key values safely and rotate keys before they expire; they cannot be retrieved again.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "Admin API apiKeys list"
+        },
+        "source": "https://www.aem.live/docs/admin-apikeys#key-expiration-and-rotation"
+      }
+    ],
+    "related": [
+      "site-config",
+      "byo-cdn",
+      "headers",
+      "access-roles"
+    ],
+    "wild": [
+      {
+        "label": "Site authentication docs",
+        "url": "https://www.aem.live/docs/authentication-setup-site",
+        "note": "Tokens, access scopes, CDN header"
+      },
+      {
+        "label": "Admin API keys",
+        "url": "https://www.aem.live/docs/admin-apikeys",
+        "note": "Create, list and rotate keys"
+      },
+      {
+        "label": "Authentication for authors",
+        "url": "https://www.aem.live/docs/authentication-setup-authoring",
+        "note": "Controlling who can preview and publish"
+      }
+    ]
+  }
+]

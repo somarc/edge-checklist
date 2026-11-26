@@ -9,8 +9,20 @@ import {
   loadSection,
   loadSections,
   loadCSS,
-  buildBlock,
 } from './aem.js';
+
+/* Authoring signal: decided at module evaluation, before any decoration. */
+const params = new URLSearchParams(window.location.search);
+const QUICK_EDIT = params.has('quick-edit');
+if (QUICK_EDIT) document.documentElement.setAttribute('quick-edit', '');
+
+/**
+ * True inside DA Canvas / quick-edit. Gate interaction with it, never content.
+ * @returns {boolean}
+ */
+export function isAuthoring() {
+  return document.documentElement.hasAttribute('quick-edit');
+}
 
 if (window.trustedTypes && window.trustedTypes.createPolicy) {
   const innerTT = window.trustedTypes.createPolicy('tt-inner', {
@@ -50,30 +62,6 @@ async function loadFonts() {
 }
 
 /**
- * Turns `/widgets/...` links into widget blocks.
- * @param {Element} main The container element
- */
-function buildWidgetAutoBlocks(main) {
-  const widgetLinks = [...main.querySelectorAll('a[href*="/widgets/"]')];
-  widgetLinks.forEach((link) => {
-    if (link.closest('.widget')) return;
-    const newLink = link.cloneNode(true);
-    const widgetBlock = buildBlock('widget', { elems: [newLink] });
-    const p = link.closest('p');
-    if (
-      p
-      && p.querySelectorAll('a').length === 1
-      && p.querySelector('a') === link
-      && p.textContent.trim() === link.textContent.trim()
-    ) {
-      p.replaceWith(widgetBlock);
-    } else {
-      link.replaceWith(widgetBlock);
-    }
-  });
-}
-
-/**
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
  */
@@ -96,7 +84,6 @@ function buildAutoBlocks(main) {
         });
       });
     }
-    buildWidgetAutoBlocks(main);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
@@ -142,30 +129,80 @@ function decorateButtons(main) {
   });
 }
 
+const CATEGORY_PATH = /^\/(blocks|pages|delivery|authoring|systems|flows)\/?$/;
+
+/**
+ * True when the paragraph holds only icons (authored `:name:` syntax).
+ * @param {Element} p paragraph
+ */
+function isIconOnly(p) {
+  return p.querySelector('.icon') && !p.textContent.trim();
+}
+
+/**
+ * True when the paragraph holds a single link and nothing else.
+ * @param {Element} p paragraph
+ */
+function soleLink(p) {
+  const links = p.querySelectorAll('a');
+  const only = links.length === 1 && p.textContent.trim() === links[0].textContent.trim();
+  return only ? links[0] : null;
+}
+
+/**
+ * Adds role classes to authored default content in styled sections.
+ * Classifies the cell owners; never moves or rebuilds authored text.
+ * @param {Element} main The main element
+ */
+function decorateSectionRoles(main) {
+  main.querySelectorAll('.section.title .default-content-wrapper p').forEach((p) => {
+    const link = soleLink(p);
+    const isCategory = link && CATEGORY_PATH.test(new URL(link.href, window.location).pathname);
+    if (isIconOnly(p)) p.classList.add('title-icon');
+    else if (isCategory) p.classList.add('title-category');
+    else p.classList.add('title-summary');
+  });
+
+  main.querySelectorAll('.section.hero, .section.promo').forEach((section) => {
+    section.querySelectorAll('.default-content-wrapper p').forEach((p) => {
+      const em = p.querySelector('em');
+      if (em && !p.querySelector('a') && p.textContent.trim() === em.textContent.trim()) {
+        p.classList.add('concept-label');
+      }
+    });
+  });
+
+  const here = window.location.pathname.replace(/\/$/, '') || '/';
+  main.querySelectorAll('.section.filters a[href]').forEach((a) => {
+    const path = new URL(a.href, window.location).pathname.replace(/\/$/, '') || '/';
+    if (path === here) a.setAttribute('aria-current', 'page');
+  });
+}
+
 /**
  * Decorates the main element.
  * @param {Element} main The main element
  */
-// eslint-disable-next-line import/prefer-default-export
 export function decorateMain(main) {
   decorateIcons(main);
   buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
   decorateButtons(main);
+  decorateSectionRoles(main);
 }
 
 /**
  * Loads everything needed to get to LCP.
- * @param {Element} doc The container element
+ * @param {Document} doc The document
  */
 async function loadEager(doc) {
-  document.documentElement.lang = 'en';
+  doc.documentElement.lang = 'en';
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
-    document.body.classList.add('appear');
+    doc.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }
 
@@ -181,19 +218,21 @@ async function loadEager(doc) {
 
 /**
  * Loads everything that doesn't need to be delayed.
- * @param {Element} doc The container element
+ * @param {Document} doc The document
  */
 async function loadLazy(doc) {
-  loadHeader(doc.querySelector('body > header'));
+  const header = doc.querySelector('body > header');
+  if (header) loadHeader(header);
 
   const main = doc.querySelector('main');
-  await loadSections(main);
+  if (main) await loadSections(main);
 
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
-  if (hash && element) element.scrollIntoView();
+  if (hash && element && !isAuthoring()) element.scrollIntoView();
 
-  loadFooter(doc.querySelector('body > footer'));
+  const footer = doc.querySelector('body > footer');
+  if (footer) loadFooter(footer);
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
@@ -204,14 +243,35 @@ async function loadLazy(doc) {
  * without impacting the user experience.
  */
 function loadDelayed() {
+  if (isAuthoring()) return;
   import('./consent-check.js');
-  // load anything that can be postponed to the latest here
 }
 
-async function loadPage() {
-  await loadEager(document);
-  await loadLazy(document);
+/**
+ * One fully awaited path: Canvas calls it again after each body replacement.
+ * @param {Document} doc The document
+ */
+export async function loadPage(doc = document) {
+  await loadEager(doc);
+  await loadLazy(doc);
   loadDelayed();
+}
+
+/* Load quick-edit ourselves, so preview.da.live serves this file unchanged. */
+if (QUICK_EDIT) {
+  let payload = {};
+  try {
+    const q = params.get('quick-edit');
+    payload = q && q !== 'on' ? JSON.parse(decodeURIComponent(q)) : {};
+  } catch { /* plain flag */ }
+  try {
+    // eslint-disable-next-line import/no-unresolved
+    const { default: loadQuickEdit } = await import('https://da.live/nx/public/plugins/quick-edit/quick-edit.js');
+    await loadQuickEdit(payload, loadPage);
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.warn('quick-edit unavailable outside Canvas', error);
+  }
 }
 
 loadPage();

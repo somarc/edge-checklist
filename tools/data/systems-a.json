@@ -1,0 +1,743 @@
+[
+  {
+    "id": "commerce",
+    "category": "systems",
+    "title": "Adobe Commerce",
+    "summary": "The Commerce storefront runs on EDS: authored pages plus drop-in components (cart, checkout, PDP, PLP, account) talking to Commerce GraphQL services. This checklist covers the storefront-specific steps before real shoppers arrive.",
+    "items": [
+      {
+        "title": "Production endpoints",
+        "detail": "Point config.json, Sidekick extensions, sitemap jobs and image import at the same production Commerce GraphQL endpoints.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "curl /config.json"
+        },
+        "source": "https://experienceleague.adobe.com/en/tools/commerce-storefront/setup/launch/launch-checklist/#cdn-and-caching"
+      },
+      {
+        "title": "Catalog service live",
+        "detail": "Switch the storefront configuration to the production Catalog or Merchandising Services endpoint and headers.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "curl /config.json"
+        },
+        "source": "https://experienceleague.adobe.com/en/tools/commerce-storefront/setup/launch/launch-checklist/#catalog-service"
+      },
+      {
+        "title": "Drop-ins tested",
+        "detail": "Customize and test every drop-in you use: cart, checkout, product detail, product listing, sign-in and account.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "storefront walkthrough"
+        },
+        "source": "https://experienceleague.adobe.com/en/tools/commerce-storefront/setup/launch/launch-checklist/#content-and-authoring"
+      },
+      {
+        "title": "Test order",
+        "detail": "Walk a test order from add to cart through checkout to confirmation and confirm each step is tracked.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "test order walkthrough"
+        },
+        "source": "https://experienceleague.adobe.com/en/tools/commerce-storefront/setup/launch/launch-checklist/#analytics-and-monitoring"
+      },
+      {
+        "title": "Product page SEO",
+        "detail": "Give PDPs and PLPs a document title and metadata, and add JSON-LD structured data to product pages.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "Rich Results Test"
+        },
+        "source": "https://experienceleague.adobe.com/en/tools/commerce-storefront/setup/launch/launch-checklist/#seo-and-indexing"
+      },
+      {
+        "title": "Pre-rendered key pages",
+        "detail": "Turn on pre-rendering for key pages so View Source shows metadata and main content in the first HTML response.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl page | grep"
+        },
+        "source": "https://experienceleague.adobe.com/en/tools/commerce-storefront/setup/launch/launch-checklist/#enable-pre-rendering"
+      },
+      {
+        "title": "Consent before events",
+        "detail": "Wire consent-check.js to the merchant's CMP so analytics SDKs and collectors stay unloaded until consent.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "DevTools network tab"
+        },
+        "source": "https://experienceleague.adobe.com/en/tools/commerce-storefront/setup/launch/launch-checklist/#consent-and-privacy"
+      },
+      {
+        "title": "CORS restricted",
+        "detail": "Limit CORS on Commerce backends to the origins your storefront and tools actually use.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl -H Origin"
+        },
+        "source": "https://experienceleague.adobe.com/en/tools/commerce-storefront/setup/launch/launch-checklist/#security-and-access"
+      },
+      {
+        "title": "Environment Production",
+        "detail": "Change the environment field in the storefront configuration from Testing to Production at launch.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "curl /config.json"
+        },
+        "source": "https://experienceleague.adobe.com/en/tools/commerce-storefront/setup/launch/launch-checklist/#performance-and-monitoring"
+      }
+    ],
+    "related": [
+      "product-detail",
+      "product-listing",
+      "consent",
+      "going-live"
+    ],
+    "wild": [
+      {
+        "label": "Commerce boilerplate \u00b7 GitHub",
+        "url": "https://github.com/hlxsites/aem-boilerplate-commerce",
+        "note": "Starter repo for the EDS Commerce storefront"
+      },
+      {
+        "label": "Storefront launch checklist",
+        "url": "https://experienceleague.adobe.com/en/tools/commerce-storefront/setup/launch/launch-checklist/",
+        "note": "Adobe's full go-live list for Commerce on EDS"
+      },
+      {
+        "label": "Drop-ins introduction",
+        "url": "https://experienceleague.adobe.com/en/tools/commerce-storefront/dropins/all/introduction/",
+        "note": "What each drop-in component does"
+      }
+    ]
+  },
+  {
+    "id": "assets",
+    "category": "systems",
+    "title": "AEM Assets & Dynamic Media",
+    "summary": "EDS can take images from AEM Assets either by copying them into its Media Bus at preview or by linking to Dynamic Media with OpenAPI delivery. The choice drives performance, governance and how asset changes reach the page.",
+    "items": [
+      {
+        "title": "Delivery approach",
+        "detail": "Decide whether DAM images are copied into the Media Bus at preview or linked from the DAM's own CDN.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "architecture review"
+        },
+        "source": "https://www.aem.live/docs/media#centralized-asset-management-and-delivery"
+      },
+      {
+        "title": "Same-origin LCP",
+        "detail": "With linked DAM assets, route the DAM's CDN through your production domain so the LCP image stays same-origin.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "PageSpeed Insights"
+        },
+        "source": "https://www.aem.live/docs/media#approach-b-asset-management-delivery"
+      },
+      {
+        "title": "Links rewritten early",
+        "detail": "Rewrite DAM asset links to picture and img elements early in scripts.js decoration.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/code-review"
+        },
+        "source": "https://www.aem.live/docs/media#approach-b-asset-management-delivery"
+      },
+      {
+        "title": "Approved assets",
+        "detail": "Mark assets Approved in AEM Assets before referencing them through Dynamic Media with OpenAPI.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "Asset Selector status"
+        },
+        "source": "https://www.aem.live/docs/aem-assets-sidekick-plugin#prerequisites"
+      },
+      {
+        "title": "Within size limits",
+        "detail": "Downscale oversized assets or add edge-delivery-services-* renditions with a processing profile.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "Admin API preview status"
+        },
+        "source": "https://www.aem.live/docs/universal-editor-assets#creating-a-processing-profile"
+      },
+      {
+        "title": "Folder access",
+        "detail": "Grant the publishing technical account access to any private AEM Assets folder used on pages.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "AEM folder permissions"
+        },
+        "source": "https://www.aem.live/docs/universal-editor-assets#ensuring-assets-folders-are-accessible"
+      },
+      {
+        "title": "Path mapping",
+        "detail": "Include the DAM folder in the site's path mapping so referenced assets publish with the page.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "site config review"
+        },
+        "source": "https://www.aem.live/docs/universal-editor-assets#assigning-a-proper-configuration-to-an-asset-folder"
+      },
+      {
+        "title": "Alt text per use",
+        "detail": "Write alt text with the reference on the page, not on the asset, and use empty alt for decorative images.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/image-seo"
+        },
+        "source": "https://www.aem.live/docs/media#text-alternatives-alt"
+      },
+      {
+        "title": "Video handling",
+        "detail": "Use a DAM or streaming service for long videos and give short hero MP4s a fast poster image.",
+        "level": "could",
+        "verify": {
+          "by": "agent",
+          "how": "/cwv-optimizer"
+        },
+        "source": "https://www.aem.live/docs/media#videos"
+      }
+    ],
+    "related": [
+      "images",
+      "universal-editor",
+      "document-authoring",
+      "performance"
+    ],
+    "wild": [
+      {
+        "label": "Media Assets \u00b7 aem.live",
+        "url": "https://www.aem.live/docs/media",
+        "note": "Media Bus vs DAM delivery approaches"
+      },
+      {
+        "label": "Assets Sidekick plugin",
+        "url": "https://www.aem.live/docs/aem-assets-sidekick-plugin",
+        "note": "Asset Selector and Dynamic Media references"
+      },
+      {
+        "label": "Set up AEM Assets",
+        "url": "https://www.aem.live/docs/ew/administering/set-up-aem-assets",
+        "note": "Experience Workspace integration keys"
+      },
+      {
+        "label": "Publishing pages with AEM Assets",
+        "url": "https://www.aem.live/docs/universal-editor-assets",
+        "note": "Folder access and processing profiles"
+      }
+    ]
+  },
+  {
+    "id": "forms",
+    "category": "systems",
+    "title": "Forms",
+    "summary": "EDS forms come in two kinds: document-based forms authored in a spreadsheet, and Adaptive Forms built in Universal Editor with rules and submit actions. Both render through the form block and need a working, safe submission path.",
+    "items": [
+      {
+        "title": "Authoring mode",
+        "detail": "Use document-based forms for simple field lists and Universal Editor forms for rules, panels and data integrations.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "requirements review"
+        },
+        "source": "https://www.aem.live/developer/forms#key-features-of-document-based-authoring-and-wysiwyg-authoring"
+      },
+      {
+        "title": "Forms block in repo",
+        "detail": "Add the Adaptive Forms Block to the existing project or start from the forms boilerplate.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "repo review"
+        },
+        "source": "https://www.aem.live/developer/forms#create-or-configure-your-aem-edge-delivery-services-github-project"
+      },
+      {
+        "title": "Incoming sheet",
+        "detail": "For sheet submissions, add an incoming sheet with field-name headers, then preview the workbook again.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "Admin API form POST"
+        },
+        "source": "https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/edge-delivery/build-forms/getting-started-edge-delivery-services-forms/submit-forms#manually-enable-the-spreadsheet-to-accept-data"
+      },
+      {
+        "title": "No PII in sheets",
+        "detail": "Keep personal or sensitive data out of shared-aem and shared-default sheets, which can be read publicly.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl form .json"
+        },
+        "source": "https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/edge-delivery/build-forms/getting-started-edge-delivery-services-forms/submit-forms"
+      },
+      {
+        "title": "Submit URL",
+        "detail": "Set submitBaseUrl in blocks/form/constant.js to the right AEM publish URL, with no trailing slash.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "repo review"
+        },
+        "source": "https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/edge-delivery/build-forms/universal-editor/publish-forms#phase-2-configure-security-settings"
+      },
+      {
+        "title": "CORS and referrer",
+        "detail": "Allow aem.page and aem.live origins in dispatcher CORS and the referrer filter so submissions reach AEM.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl -H Origin POST"
+        },
+        "source": "https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/edge-delivery/build-forms/universal-editor/publish-forms#phase-2-configure-security-settings"
+      },
+      {
+        "title": "Spam protection",
+        "detail": "Add reCAPTCHA Enterprise with a score-based site key to Universal Editor forms.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "form config review"
+        },
+        "source": "https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/edge-delivery/build-forms/universal-editor/recaptcha-forms"
+      },
+      {
+        "title": "Thank-you message",
+        "detail": "Customize the message visitors see after a successful submission.",
+        "level": "could",
+        "verify": {
+          "by": "human",
+          "how": "author walkthrough"
+        },
+        "source": "https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/edge-delivery/build-forms/getting-started-edge-delivery-services-forms/submit-forms#automatic-changes-to-sheet-once-it-is-enabled-to-accept-data"
+      },
+      {
+        "title": "Live test submission",
+        "detail": "Submit a test entry on the live URL and confirm it arrives in the sheet or target system.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "test submission"
+        },
+        "source": "https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/edge-delivery/build-forms/universal-editor/publish-forms#phase-3-access-your-published-form"
+      }
+    ],
+    "related": [
+      "spreadsheets",
+      "universal-editor",
+      "landing-page",
+      "rum"
+    ],
+    "wild": [
+      {
+        "label": "Forms \u00b7 aem.live",
+        "url": "https://www.aem.live/developer/forms",
+        "note": "Feature matrix and getting-started links"
+      },
+      {
+        "label": "Forms boilerplate \u00b7 GitHub",
+        "url": "https://github.com/adobe-rnd/aem-boilerplate-forms",
+        "note": "Project pre-configured with the Adaptive Forms Block"
+      },
+      {
+        "label": "Accept data in a sheet",
+        "url": "https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/edge-delivery/build-forms/getting-started-edge-delivery-services-forms/submit-forms",
+        "note": "Incoming sheet and Admin API setup"
+      }
+    ]
+  },
+  {
+    "id": "site-search",
+    "category": "systems",
+    "title": "Site search",
+    "summary": "Most EDS sites search the query index JSON in the browser, as the Block Collection search block does; catalogs use a search service such as the Commerce Product Discovery drop-in. Search is only as good as the index behind it.",
+    "items": [
+      {
+        "title": "Pick the engine",
+        "detail": "Search content with the query index and use a dedicated search service for large catalogs.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "architecture review"
+        },
+        "source": "https://www.aem.live/developer/block-collection/search#notes"
+      },
+      {
+        "title": "Index the fields",
+        "detail": "Index title, description, image and lastModified so results have something useful to show.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "Index Admin tool"
+        },
+        "source": "https://www.aem.live/developer/indexing#setting-up-an-initial-index-with-the-index-admin-tool"
+      },
+      {
+        "title": "Selectors on source",
+        "detail": "Write index selectors against served HTML, not the decorated DOM, and check them with aem up --print-index.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "aem up --print-index"
+        },
+        "source": "https://www.aem.live/docs/indexing-reference#indexing-reference"
+      },
+      {
+        "title": "Index on publish",
+        "detail": "Pages enter the index on publish and leave on unpublish; reindex after changing the index config.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "admin.hlx.page/index"
+        },
+        "source": "https://www.aem.live/developer/indexing#reindexing"
+      },
+      {
+        "title": "Noindex filtered",
+        "detail": "Keep drafts out with exclude paths and filter noindex pages out using the robots property.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "curl /query-index.json"
+        },
+        "source": "https://www.aem.live/developer/indexing#omitting-published-pages-from-the-index"
+      },
+      {
+        "title": "Paginate the JSON",
+        "detail": "Use limit and offset to fetch past the default 1000 rows of the index JSON.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl /query-index.json"
+        },
+        "source": "https://www.aem.live/developer/spreadsheets#offset-and-limit"
+      },
+      {
+        "title": "Accessible results",
+        "detail": "Label the search input and announce results in an aria-live region.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "axe DevTools"
+        },
+        "source": "https://github.com/adobe/aem-block-collection/blob/main/blocks/search/search.js"
+      },
+      {
+        "title": "Linkable query",
+        "detail": "Keep the search term in the q parameter so result pages can be shared and reloaded.",
+        "level": "could",
+        "verify": {
+          "by": "agent",
+          "how": "/code-review"
+        },
+        "source": "https://github.com/adobe/aem-block-collection/blob/main/blocks/search/search.js"
+      },
+      {
+        "title": "No-results message",
+        "detail": "Show an authored no-results message from placeholders instead of an empty list.",
+        "level": "could",
+        "verify": {
+          "by": "human",
+          "how": "author walkthrough"
+        },
+        "source": "https://github.com/adobe/aem-block-collection/blob/main/blocks/search/search.js"
+      }
+    ],
+    "related": [
+      "query-index",
+      "search-results",
+      "placeholders",
+      "product-listing"
+    ],
+    "wild": [
+      {
+        "label": "Search \u00b7 Block Collection",
+        "url": "https://www.aem.live/developer/block-collection/search",
+        "note": "Reference block over query-index.json"
+      },
+      {
+        "label": "search.js \u00b7 GitHub",
+        "url": "https://github.com/adobe/aem-block-collection/blob/main/blocks/search/search.js",
+        "note": "Filtering, highlighting and aria-live results"
+      },
+      {
+        "label": "Index Admin tool",
+        "url": "https://tools.aem.live/tools/index-admin/index.html",
+        "note": "Create and reindex query indexes"
+      },
+      {
+        "label": "Product Discovery drop-in",
+        "url": "https://experienceleague.adobe.com/en/tools/commerce-storefront/dropins/product-discovery/",
+        "note": "Catalog search, facets and sorting"
+      }
+    ]
+  },
+  {
+    "id": "cloud-manager",
+    "category": "systems",
+    "title": "Cloud Manager & domains",
+    "summary": "Adding an EDS site to Cloud Manager ties it to your license and lets you run domains, certificates and the Adobe-managed CDN in one place. This checklist walks the onboarding to a live custom domain.",
+    "items": [
+      {
+        "title": "EDS license on program",
+        "detail": "Create the program with an Edge Delivery Services license before onboarding the site.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "Cloud Manager program"
+        },
+        "source": "https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/implementing/using-cloud-manager/edge-delivery-sites/add-edge-delivery-site"
+      },
+      {
+        "title": "Add the site",
+        "detail": "Add the site under Edge Delivery Sites with a clear name and its main--site--org.aem.live origin.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "Cloud Manager"
+        },
+        "source": "https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/implementing/using-cloud-manager/edge-delivery-sites/add-edge-delivery-site"
+      },
+      {
+        "title": "Verify repo ownership",
+        "detail": "Merge well-known/adobe/cloudmanager-challenge.txt with the given code to main, then click Verify.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl challenge file"
+        },
+        "source": "https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/implementing/using-cloud-manager/edge-delivery-sites/add-edge-delivery-site"
+      },
+      {
+        "title": "Auth paused to verify",
+        "detail": "If site authentication is on, turn it off briefly so the challenge file can be read, then back on.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "Cloud Manager status"
+        },
+        "source": "https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/implementing/using-cloud-manager/edge-delivery-sites/add-edge-delivery-site"
+      },
+      {
+        "title": "Certs and domains",
+        "detail": "Add certificates and domains in Cloud Manager for both the www and apex hosts.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "Cloud Manager domains"
+        },
+        "source": "https://www.aem.live/docs/byo-cdn-adobe-managed#before-you-go-live"
+      },
+      {
+        "title": "CDN maps to main",
+        "detail": "Add a CDN configuration that maps the domain to an origin starting with main-- for caching and purge.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl -I production URL"
+        },
+        "source": "https://www.aem.live/docs/byo-cdn-adobe-managed#before-you-go-live"
+      },
+      {
+        "title": "Push invalidation",
+        "detail": "Set the cdn prod host and type managed in the site configuration so publishes purge the CDN.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "Admin API config"
+        },
+        "source": "https://www.aem.live/docs/byo-cdn-adobe-managed#setup-push-invalidation-for-adobe-managed-cdn"
+      },
+      {
+        "title": "DNS records",
+        "detail": "Point www CNAME to cdn.adobeaemcloud.com and apex A records to the documented IPs, with a TTL of an hour or more.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "dig"
+        },
+        "source": "https://www.aem.live/docs/byo-cdn-adobe-managed#as-you-go-live"
+      },
+      {
+        "title": "Redirects in place",
+        "detail": "Rely on the apex-to-www redirect and put every other redirect in the redirects sheet.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl -I apex"
+        },
+        "source": "https://www.aem.live/docs/byo-cdn-adobe-managed#option-2-setup-an-edge-delivery-site-without-an-existing-environment"
+      }
+    ],
+    "related": [
+      "going-live",
+      "byo-cdn",
+      "redirects",
+      "site-auth"
+    ],
+    "wild": [
+      {
+        "label": "Add an Edge Delivery site",
+        "url": "https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/implementing/using-cloud-manager/edge-delivery-sites/add-edge-delivery-site",
+        "note": "Cloud Manager onboarding steps"
+      },
+      {
+        "label": "EDS in Cloud Manager",
+        "url": "https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/implementing/using-cloud-manager/edge-delivery-sites/introduction-to-edge-delivery-services",
+        "note": "Deployment options and benefits"
+      },
+      {
+        "label": "Adobe Managed CDN \u00b7 aem.live",
+        "url": "https://www.aem.live/docs/byo-cdn-adobe-managed",
+        "note": "DNS, certificates and push invalidation"
+      }
+    ]
+  },
+  {
+    "id": "github",
+    "category": "systems",
+    "title": "GitHub & Code Sync",
+    "summary": "EDS serves code straight from GitHub: the AEM Code Sync app syncs each push, and every branch gets its own preview and live URL. Repoless sites reuse one repo through the Configuration Service.",
+    "items": [
+      {
+        "title": "Code Sync scoped",
+        "detail": "Install the AEM Code Sync app with Only select repositories and pick just the site repo.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "GitHub app settings"
+        },
+        "source": "https://www.aem.live/developer/tutorial#get-started-with-the-boilerplate-repository-template"
+      },
+      {
+        "title": "Public by default",
+        "detail": "Keep the repo public where policy allows; private repos also work with Code Sync installed.",
+        "level": "could",
+        "verify": {
+          "by": "human",
+          "how": "repo settings"
+        },
+        "source": "https://www.aem.live/docs/faq#does-edge-delivery-services-support-private-github-repositories"
+      },
+      {
+        "title": "Short branch names",
+        "detail": "Keep branch--repo--owner within 63 characters and never use -- inside any of the three names.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "branch name lint"
+        },
+        "source": "https://www.aem.live/developer/anatomy-of-a-project#code-git-and-github"
+      },
+      {
+        "title": "Branch previews",
+        "detail": "Review each feature branch at its own branch--repo--owner.aem.page URL before merging.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "PR preview link"
+        },
+        "source": "https://www.aem.live/developer/anatomy-of-a-project#code-git-and-github"
+      },
+      {
+        "title": "PSI check passes",
+        "detail": "Let the PageSpeed Insights check on each pull request pass before you merge.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "PR status checks"
+        },
+        "source": "https://www.aem.live/docs/faq#what-makes-edge-delivery-services-websites-so-fast"
+      },
+      {
+        "title": "Production on main",
+        "detail": "Serve production only from main; other branches get different cache headers and no push invalidation.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl -I origin"
+        },
+        "source": "https://www.aem.live/docs/faq#can-i-use-any-code-branch-for-my-production-website"
+      },
+      {
+        "title": ".hlxignore",
+        "detail": "List tests, build tools and other non-site files in .hlxignore so they are not served.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl file path"
+        },
+        "source": "https://www.aem.live/developer/anatomy-of-a-project#dont-serve-hlxignore"
+      },
+      {
+        "title": "Config Service",
+        "detail": "Keep content source, folders, robots and indexes in the Configuration Service; fstab.yaml is legacy document mode.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "Admin API config"
+        },
+        "source": "https://www.aem.live/docs/repoless#whats-not-needed-once-you-go-repoless"
+      },
+      {
+        "title": "Repoless reuse",
+        "detail": "Point extra sites at the canonical repo through the Admin API instead of copying repositories.",
+        "level": "could",
+        "verify": {
+          "by": "machine",
+          "how": "Admin API config"
+        },
+        "source": "https://www.aem.live/docs/repoless#create-a-repoless-site"
+      }
+    ],
+    "related": [
+      "going-repoless",
+      "reviewing-a-pr",
+      "site-config",
+      "rolling-back"
+    ],
+    "wild": [
+      {
+        "label": "AEM Code Sync \u00b7 GitHub",
+        "url": "https://github.com/apps/aem-code-sync",
+        "note": "The GitHub app that syncs your code"
+      },
+      {
+        "label": "AEM Boilerplate \u00b7 GitHub",
+        "url": "https://github.com/adobe/aem-boilerplate",
+        "note": "Template repo for new sites"
+      },
+      {
+        "label": "Repoless \u00b7 aem.live",
+        "url": "https://www.aem.live/docs/repoless",
+        "note": "One codebase, many sites"
+      },
+      {
+        "label": "Bring your own Git",
+        "url": "https://www.aem.live/developer/byo-git",
+        "note": "GitLab, Bitbucket and Azure DevOps"
+      }
+    ]
+  }
+]

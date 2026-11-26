@@ -1,0 +1,824 @@
+[
+  {
+    "id": "performance",
+    "category": "delivery",
+    "title": "Lighthouse 100",
+    "summary": "EDS projects start at a mobile and desktop Lighthouse score of 100 from the boilerplate. It is hard to win back once lost, so every change is tested against PageSpeed Insights before it merges.",
+    "items": [
+      {
+        "title": "Score 100 on .aem.live",
+        "detail": "Run PageSpeed Insights on the .aem.live URL and get 100 on mobile and desktop.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "PageSpeed Insights"
+        },
+        "source": "https://www.aem.live/docs/go-live-checklist#performance-validation"
+      },
+      {
+        "title": "PR test URLs",
+        "detail": "List test URLs in the PR description so the AEM bot runs PageSpeed Insights and fails a low score.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "AEM Code Sync PR check"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#testing-your-pull-requests"
+      },
+      {
+        "title": "100 KB to LCP",
+        "detail": "Keep markup, CSS, JS and the LCP image below about 100 KB in total before LCP shows.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "Lighthouse network requests"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#lcp"
+      },
+      {
+        "title": "One origin before LCP",
+        "detail": "Load nothing from a second origin before LCP; each extra connection adds TLS and DNS delay.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/cwv-optimizer"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#lcp"
+      },
+      {
+        "title": "No preload hints",
+        "detail": "Remove preload links, fetchpriority, preconnect, early hints and h2-push; they spend the LCP bandwidth budget.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl page | grep preload"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#early-hints--h2-push--pre-connect-are-part-of-the-network-budget"
+      },
+      {
+        "title": "Content in the markup",
+        "detail": "Render canonical content on the server; fetch JSON on the client only for lists, apps and other non-canonical content.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "curl .plain.html"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#server-sided-vs-client-sided-rendering"
+      },
+      {
+        "title": "No redirect chains",
+        "detail": "Send visitors straight to the final URL instead of hopping from / to /en to /en/home.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl -sIL"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#redirects-for-paths-resolution"
+      },
+      {
+        "title": "Score 100 in production",
+        "detail": "Rerun PageSpeed Insights on the production domain after the CDN goes live and compare it with .aem.live.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "PageSpeed Insights"
+        },
+        "source": "https://www.aem.live/docs/go-live-checklist#performance-validation-1"
+      },
+      {
+        "title": "Watch field data",
+        "detail": "Use Operational Telemetry to confirm Core Web Vitals in the field, since lab and real-device numbers differ.",
+        "level": "could",
+        "verify": {
+          "by": "machine",
+          "how": "OpTel dashboard"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#core-web-vitals-cwv-and-lighthouse-via-pagespeed-insights"
+      }
+    ],
+    "related": [
+      "loading-phases",
+      "images",
+      "byo-cdn",
+      "rum"
+    ],
+    "wild": [
+      {
+        "label": "PageSpeed Insights",
+        "url": "https://pagespeed.web.dev/",
+        "note": "The lab test aem.live treats as authoritative"
+      },
+      {
+        "label": "Deep PSI",
+        "url": "https://tools.aem.live/tools/deep-psi/deep-psi.html",
+        "note": "Repeat PSI runs to compare two URLs"
+      },
+      {
+        "label": "Preload demo",
+        "url": "https://main--prefetch--aem-sandbox.aem.live/index-preload.html",
+        "note": "Sandbox showing preload hurting LCP"
+      }
+    ]
+  },
+  {
+    "id": "loading-phases",
+    "category": "delivery",
+    "title": "Eager, lazy, delayed",
+    "summary": "EDS splits every page load into three phases: eager (up to LCP), lazy (first-party sections, blocks and styles) and delayed (consented martech). Code in the wrong phase is the most common cause of a lost Lighthouse score.",
+    "items": [
+      {
+        "title": "Body hidden until ready",
+        "detail": "Keep body display:none in styles.css until decoration adds the appear class, so no image loads early.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "read styles.css"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#phase-e-eager"
+      },
+      {
+        "title": "Lean first section",
+        "detail": "Put few blocks in the first section; all of its blocks load before LCP can show.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "author walkthrough"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#phase-e-eager"
+      },
+      {
+        "title": "Right LCP candidate",
+        "detail": "Make the first image of the first section the real LCP, or let the block set it before loading picks one.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/cwv-optimizer"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#lcp"
+      },
+      {
+        "title": "Header and footer lazy",
+        "detail": "Load header and footer as blocks in the lazy phase, not in the markup or the eager path.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "read scripts.js loadLazy"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#header-and-footer"
+      },
+      {
+        "title": "Post-LCP CSS deferred",
+        "detail": "Put global CSS that is not needed for LCP in lazy-styles.css, which loads after LCP.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "read styles/"
+        },
+        "source": "https://www.aem.live/developer/anatomy-of-a-project#scripts-and-styles"
+      },
+      {
+        "title": "Libraries per block",
+        "detail": "Load third-party libraries with loadScript() in the block that needs them, not in head.html.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/code-review"
+        },
+        "source": "https://www.aem.live/docs/dev-collab-and-good-practices#loading-3rd-party-libraries"
+      },
+      {
+        "title": "Martech in consented.js",
+        "detail": "Load analytics, tag managers and other martech only from consented.js after consent-check.js grants consent.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "read scripts/consented.js"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#phase-d-delayed"
+      },
+      {
+        "title": "Delay after LCP",
+        "detail": "Start the delayed phase at least three seconds after LCP; add that wait yourself, the boilerplate no longer does.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/cwv-optimizer"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#phase-d-delayed"
+      }
+    ],
+    "related": [
+      "performance",
+      "head-html",
+      "consent",
+      "martech"
+    ],
+    "wild": [
+      {
+        "label": "scripts.js \u00b7 Boilerplate",
+        "url": "https://github.com/adobe/aem-boilerplate/blob/main/scripts/scripts.js",
+        "note": "loadEager, loadLazy and loadDelayed"
+      },
+      {
+        "label": "consent-check.js \u00b7 Boilerplate",
+        "url": "https://github.com/adobe/aem-boilerplate/blob/main/scripts/consent-check.js",
+        "note": "Dummy consent gate for the delayed phase"
+      },
+      {
+        "label": "Adding your own CMP",
+        "url": "https://www.aem.live/developer/cmp-integration",
+        "note": "Wire consent-check.js to a real CMP"
+      }
+    ]
+  },
+  {
+    "id": "head-html",
+    "category": "delivery",
+    "title": "head.html",
+    "summary": "head.html is injected verbatim into every page's <head> after the metadata from content. It is on the critical path of every page, so it should stay close to the boilerplate.",
+    "items": [
+      {
+        "title": "Close to boilerplate",
+        "detail": "Keep head.html largely unchanged; legit edits are a different code base path or legacy browser support.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "diff vs boilerplate"
+        },
+        "source": "https://www.aem.live/developer/anatomy-of-a-project#the-entry-point-headhtml"
+      },
+      {
+        "title": "Three entry points",
+        "detail": "Reference aem.js, scripts.js and styles.css, which together must stay small enough to reach LCP fast.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl page | grep head"
+        },
+        "source": "https://www.aem.live/developer/anatomy-of-a-project#scripts-and-styles"
+      },
+      {
+        "title": "No martech in head",
+        "detail": "Keep Web SDK, Google Tag Manager and other third-party scripts out of head.html.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl page | grep script"
+        },
+        "source": "https://www.aem.live/developer/anatomy-of-a-project#the-entry-point-headhtml"
+      },
+      {
+        "title": "No inline code",
+        "detail": "Do not add inline scripts or styles; put code in scripts.js, styles.css or a block.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/code-review"
+        },
+        "source": "https://www.aem.live/docs/dev-collab-and-good-practices#head"
+      },
+      {
+        "title": "No preload links",
+        "detail": "Leave out preload and preconnect links, including font preloads; they slow LCP in PageSpeed Insights.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl page | grep preload"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#early-hints--h2-push--pre-connect-are-part-of-the-network-budget"
+      },
+      {
+        "title": "Nonce on scripts",
+        "detail": "Mark each trusted script tag with nonce=\"aem\" so AEM can swap in a random nonce for the CSP.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl page | grep nonce"
+        },
+        "source": "https://www.aem.live/docs/csp#headhtml"
+      },
+      {
+        "title": "Subfolder paths match",
+        "detail": "When AEM serves only a folder such as /en/blog/, point the script and style paths at that folder.",
+        "level": "could",
+        "verify": {
+          "by": "agent",
+          "how": "read head.html"
+        },
+        "source": "https://www.aem.live/developer/anatomy-of-a-project#commonly-used-file-and-folder-structure"
+      },
+      {
+        "title": "Repoless head in config",
+        "detail": "For repoless sites, store head.html in the site configuration instead of the repo.",
+        "level": "could",
+        "verify": {
+          "by": "machine",
+          "how": "Admin API config"
+        },
+        "source": "https://www.aem.live/developer/anatomy-of-a-project#headhtml-in-a-repoless-setup"
+      }
+    ],
+    "related": [
+      "loading-phases",
+      "headers",
+      "metadata",
+      "going-repoless"
+    ],
+    "wild": [
+      {
+        "label": "head.html \u00b7 Boilerplate",
+        "url": "https://github.com/adobe/aem-boilerplate/blob/main/head.html",
+        "note": "Reference head with CSP meta and nonces"
+      },
+      {
+        "label": "Anatomy of a project",
+        "url": "https://www.aem.live/developer/anatomy-of-a-project",
+        "note": "Why head.html stays minimal"
+      },
+      {
+        "label": "Markup reference",
+        "url": "https://www.aem.live/developer/markup-reference",
+        "note": "Where head.html lands in the delivered page"
+      }
+    ]
+  },
+  {
+    "id": "fonts",
+    "category": "delivery",
+    "title": "Web fonts",
+    "summary": "EDS loads web fonts after LCP and paints first with a size-adjusted system font, so the swap causes no layout shift. Preloading fonts or blocking on them costs the Lighthouse score.",
+    "items": [
+      {
+        "title": "Fonts in fonts.css",
+        "detail": "Declare @font-face rules in styles/fonts.css, not styles.css, so scripts.js loads them after the first section.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "read styles/"
+        },
+        "source": "https://github.com/adobe/aem-boilerplate/blob/main/scripts/scripts.js"
+      },
+      {
+        "title": "Never preload fonts",
+        "detail": "Do not preload fonts by link, early hints or h2-push; aem.live calls it counterproductive.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl page | grep preload"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#fonts"
+      },
+      {
+        "title": "Size-adjusted fallback",
+        "detail": "Define a fallback @font-face on a local font with size-adjust so text keeps its size when the font swaps.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "read styles.css"
+        },
+        "source": "https://www.aem.live/developer/font-fallback#font-fallback-and-cls"
+      },
+      {
+        "title": "Fallback after custom font",
+        "detail": "List the fallback family right after the custom font in each font-family stack.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "read styles.css"
+        },
+        "source": "https://www.aem.live/developer/font-fallback#the-font-fallback-extension"
+      },
+      {
+        "title": "Measure with the extension",
+        "detail": "Compute size-adjust values with the font-fallback Chrome extension, averaged over several pages.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "font-fallback extension"
+        },
+        "source": "https://www.aem.live/developer/font-fallback#edge-cases"
+      },
+      {
+        "title": "Set line-height",
+        "detail": "Set line-height on text so height does not depend on the font.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "read styles.css"
+        },
+        "source": "https://www.aem.live/developer/font-fallback#the-font-fallback-extension"
+      },
+      {
+        "title": "Trim the font kit",
+        "detail": "Load only the font faces the site uses; unused weights in a kit waste bytes.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "Lighthouse network requests"
+        },
+        "source": "https://www.aem.live/developer/font-fallback#the-font-fallback-extension"
+      },
+      {
+        "title": "Swap with woff2",
+        "detail": "Use font-display: swap and woff2 files, as the boilerplate fonts.css does.",
+        "level": "could",
+        "verify": {
+          "by": "agent",
+          "how": "read styles/fonts.css"
+        },
+        "source": "https://github.com/adobe/aem-boilerplate/blob/main/styles/fonts.css"
+      }
+    ],
+    "related": [
+      "performance",
+      "loading-phases",
+      "head-html",
+      "any-block"
+    ],
+    "wild": [
+      {
+        "label": "fonts.css \u00b7 Boilerplate",
+        "url": "https://github.com/adobe/aem-boilerplate/blob/main/styles/fonts.css",
+        "note": "Self-hosted woff2 with font-display swap"
+      },
+      {
+        "label": "styles.css \u00b7 Boilerplate",
+        "url": "https://github.com/adobe/aem-boilerplate/blob/main/styles/styles.css",
+        "note": "roboto-fallback with size-adjust"
+      },
+      {
+        "label": "Font fallback extension",
+        "url": "https://github.com/adobe/helix-font-fallback-extension",
+        "note": "Computes size-adjust per font face"
+      }
+    ]
+  },
+  {
+    "id": "images",
+    "category": "delivery",
+    "title": "Images & media",
+    "summary": "EDS serves authored images and short videos through the Media Bus: same origin, content-addressed and resized on the fly. Most image wins come from authoring and from keeping the LCP image on that path.",
+    "items": [
+      {
+        "title": "Images via Media Bus",
+        "detail": "Paste or upload images in content so they ship from the same origin as media_ URLs, not from the repo.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl page | grep media_"
+        },
+        "source": "https://www.aem.live/docs/media#dedicated-delivery-infrastructure-media-bus"
+      },
+      {
+        "title": "No binaries in GitHub",
+        "detail": "Keep content images out of the code repo; commit an SVG only when code references it.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/code-review"
+        },
+        "source": "https://www.aem.live/docs/dev-collab-and-good-practices#use-content-for-static-resources"
+      },
+      {
+        "title": "Width and height kept",
+        "detail": "Keep the width and height that EDS puts on each img, including when a block rebuilds the picture.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "/image-seo"
+        },
+        "source": "https://www.aem.live/docs/media#images"
+      },
+      {
+        "title": "Pictures via helper",
+        "detail": "Build pictures in JS with createOptimizedPicture() from aem.js for webp sources and widths.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/code-review"
+        },
+        "source": "https://www.aem.live/docs/media#filenames"
+      },
+      {
+        "title": "Lazy except LCP",
+        "detail": "Leave images lazy; aem.js switches the first image of the first section to eager.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "/cwv-optimizer"
+        },
+        "source": "https://www.aem.live/docs/media#images"
+      },
+      {
+        "title": "One hero image",
+        "detail": "When content has desktop and mobile heroes, remove the unused one so it never loads.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "/cwv-optimizer"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#lcp"
+      },
+      {
+        "title": "Alt text by role",
+        "detail": "Write alt text for informative images and use an empty alt for decorative ones.",
+        "level": "must",
+        "verify": {
+          "by": "human",
+          "how": "/image-seo"
+        },
+        "source": "https://www.aem.live/docs/media#text-alternatives-alt"
+      },
+      {
+        "title": "Short video with poster",
+        "detail": "Upload short hero videos as MP4 with a poster image; host long videos on a DAM or streaming service.",
+        "level": "should",
+        "verify": {
+          "by": "human",
+          "how": "author walkthrough"
+        },
+        "source": "https://www.aem.live/docs/media#videos"
+      },
+      {
+        "title": "Same-origin DAM images",
+        "detail": "If images link to a DAM, route that DAM through the production CDN so the LCP image stays same-origin.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "PageSpeed Insights"
+        },
+        "source": "https://www.aem.live/docs/media#approach-b-asset-management-delivery"
+      }
+    ],
+    "related": [
+      "hero",
+      "performance",
+      "assets",
+      "embed"
+    ],
+    "wild": [
+      {
+        "label": "Media docs",
+        "url": "https://www.aem.live/docs/media",
+        "note": "Media Bus, image parameters and video"
+      },
+      {
+        "label": "aem.js \u00b7 Boilerplate",
+        "url": "https://github.com/adobe/aem-boilerplate/blob/main/scripts/aem.js",
+        "note": "createOptimizedPicture and waitForFirstImage"
+      },
+      {
+        "label": "Images \u00b7 Block Collection",
+        "url": "https://www.aem.live/developer/block-collection/images",
+        "note": "How images behave in default content"
+      }
+    ]
+  },
+  {
+    "id": "headers",
+    "category": "delivery",
+    "title": "Custom headers & CSP",
+    "summary": "EDS sets custom HTTP response headers from the headers object in site configuration, and the boilerplate ships a nonce-based Content Security Policy. Both apply to preview and live, so mistakes reach authors too.",
+    "items": [
+      {
+        "title": "Headers in site config",
+        "detail": "Set response headers in the headers object of the site configuration, keyed by URL glob.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "Admin API headers.json"
+        },
+        "source": "https://www.aem.live/docs/custom-headers#custom-http-response-headers"
+      },
+      {
+        "title": "Tight glob patterns",
+        "detail": "Scope each header with a glob such as /fragments/** instead of applying it site-wide.",
+        "level": "should",
+        "verify": {
+          "by": "agent",
+          "how": "read headers config"
+        },
+        "source": "https://www.aem.live/docs/custom-headers#custom-http-response-headers"
+      },
+      {
+        "title": "No wildcard CORS",
+        "detail": "Avoid access-control-allow-origin: *; allow one origin, or limit the header to specific URLs.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl -sI"
+        },
+        "source": "https://www.aem.live/docs/custom-headers#security-warning"
+      },
+      {
+        "title": "Code headers need sync",
+        "detail": "Expect headers on code resources to apply only after the next code sync.",
+        "level": "could",
+        "verify": {
+          "by": "machine",
+          "how": "curl -sI"
+        },
+        "source": "https://www.aem.live/docs/custom-headers#security-warning"
+      },
+      {
+        "title": "Strict CSP policy",
+        "detail": "Use script-src 'nonce-aem' 'strict-dynamic' with base-uri 'self' and object-src 'none'.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl -sI | grep -i csp"
+        },
+        "source": "https://www.aem.live/docs/csp#content-security-policy-strict-dynamic--cached-nonce"
+      },
+      {
+        "title": "Nonce on static HTML",
+        "detail": "Add nonce=\"aem\" to trusted scripts in head.html and in static files such as 404.html.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl page | grep nonce"
+        },
+        "source": "https://www.aem.live/docs/csp#trusted-scripts"
+      },
+      {
+        "title": "CSP as a header",
+        "detail": "Trial the CSP as a meta tag in a branch, then move it to a header via site config.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl -sI | grep -i csp"
+        },
+        "source": "https://www.aem.live/docs/csp#policy-enforcement"
+      },
+      {
+        "title": "No document.write",
+        "detail": "Avoid document.write and createContextualFragment; the cached nonce does not protect them.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "grep -r document.write"
+        },
+        "source": "https://www.aem.live/docs/csp#dom-based-xss"
+      },
+      {
+        "title": "Current Cloudflare worker",
+        "detail": "On Cloudflare, run the latest worker so 304 responses drop the CSP header.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "curl -sI 304 response"
+        },
+        "source": "https://www.aem.live/docs/csp#a-note-on-byo-cdn---cloudflare"
+      }
+    ],
+    "related": [
+      "head-html",
+      "site-config",
+      "byo-cdn",
+      "site-auth"
+    ],
+    "wild": [
+      {
+        "label": "HTTP Headers Editor",
+        "url": "https://labs.aem.live/tools/headers-edit/index.html",
+        "note": "Edit site headers in the browser"
+      },
+      {
+        "label": "CSP guide",
+        "url": "https://www.aem.live/docs/csp",
+        "note": "strict-dynamic with cached nonce"
+      },
+      {
+        "label": "head.html \u00b7 Boilerplate",
+        "url": "https://github.com/adobe/aem-boilerplate/blob/main/head.html",
+        "note": "Boilerplate CSP meta with move-to-http-header"
+      }
+    ]
+  },
+  {
+    "id": "byo-cdn",
+    "category": "delivery",
+    "title": "BYO CDN",
+    "summary": "A production domain on EDS sits behind a CDN, either Adobe-managed or your own Fastly, Akamai, Cloudflare or CloudFront. The CDN must forward the right headers and honor origin caching, or pages go stale or slow.",
+    "items": [
+      {
+        "title": "Origin is main branch",
+        "detail": "Point the CDN at https://main--<site>--<org>.aem.live for production.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl -sI origin"
+        },
+        "source": "https://www.aem.live/docs/byo-cdn-setup#byo-cdn-setup"
+      },
+      {
+        "title": "X-Forwarded-Host sent",
+        "detail": "Send X-Forwarded-Host with the production domain on every origin request.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "read CDN config"
+        },
+        "source": "https://www.aem.live/docs/byo-cdn-setup#byo-cdn-setup"
+      },
+      {
+        "title": "Push invalidation on",
+        "detail": "Register the CDN in the site's production CDN config and send X-Push-Invalidation: enabled.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "publish and curl prod"
+        },
+        "source": "https://www.aem.live/docs/setup-byo-cdn-push-invalidation#setup-at-a-glance"
+      },
+      {
+        "title": "Purge keys as secrets",
+        "detail": "Store purge credentials as secrets and reference them from the CDN config.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "Admin API config"
+        },
+        "source": "https://www.aem.live/docs/setup-byo-cdn-push-invalidation#store-credentials-as-secrets"
+      },
+      {
+        "title": "Origin controls caching",
+        "detail": "Honor origin Cache-Control headers and enable gzip compression.",
+        "level": "must",
+        "verify": {
+          "by": "agent",
+          "how": "read CDN config"
+        },
+        "source": "https://www.aem.live/docs/byo-cdn-setup#byo-cdn-setup"
+      },
+      {
+        "title": "Query strings in key",
+        "detail": "Forward query parameters to the origin and include them in the cache key.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl -sI ?x=1"
+        },
+        "source": "https://www.aem.live/docs/byo-cdn-setup#byo-cdn-setup"
+      },
+      {
+        "title": "Age header stripped",
+        "detail": "Remove the Age response header or force Age: 0.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl -sI | grep -i age"
+        },
+        "source": "https://www.aem.live/docs/byo-cdn-setup#byo-cdn-setup"
+      },
+      {
+        "title": "HTTP to HTTPS",
+        "detail": "Redirect every HTTP request with a 301 to HTTPS, keeping host, path and query string.",
+        "level": "must",
+        "verify": {
+          "by": "machine",
+          "how": "curl -sI http://"
+        },
+        "source": "https://www.aem.live/docs/go-live-checklist#cdn-configuration"
+      },
+      {
+        "title": "No CDN add-ons",
+        "detail": "Disable CDN-injected scripts, bot managers and RUM add-ons that slow LCP; recheck PSI after launch.",
+        "level": "should",
+        "verify": {
+          "by": "machine",
+          "how": "PageSpeed Insights"
+        },
+        "source": "https://www.aem.live/developer/keeping-it-100#cdn-client-scripts-injection"
+      }
+    ],
+    "related": [
+      "going-live",
+      "headers",
+      "cloud-manager",
+      "performance"
+    ],
+    "wild": [
+      {
+        "label": "Picking the right CDN",
+        "url": "https://www.aem.live/docs/cdn-guide",
+        "note": "Trade-offs per supported CDN"
+      },
+      {
+        "label": "Fastly setup",
+        "url": "https://www.aem.live/docs/byo-cdn-fastly-setup",
+        "note": "VCL snippets for headers and Age"
+      },
+      {
+        "label": "Akamai setup",
+        "url": "https://www.aem.live/docs/byo-cdn-akamai-setup",
+        "note": "Property rules and caveats"
+      },
+      {
+        "label": "Push invalidation",
+        "url": "https://www.aem.live/docs/setup-byo-cdn-push-invalidation",
+        "note": "Per-vendor purge configuration"
+      }
+    ]
+  }
+]
