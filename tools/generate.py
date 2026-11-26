@@ -155,7 +155,7 @@ def checklist_page(c, by_id):
     sections.append(kv_block('metadata', [
         ('title', f"{c['title']} · {CAT_NAME[cat]} checklist"),
         ('description', c['summary']),
-        ('template', 'checklist'),
+        ('template', 'checklist-page'),
         ('theme', f'cat-{cat}'),
         ('category', CAT_NAME[cat]),
         ('icon', ICON.get(c['id'], 'list-checks')),

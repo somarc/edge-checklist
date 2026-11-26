@@ -32,7 +32,7 @@ authored text (Canvas / quick-edit rule).
 
 ### Checklist page (`/{category}/{id}`)
 
-Metadata: `Title`, `Description`, `Template: checklist`, `Theme: cat-{category}`,
+Metadata: `Title`, `Description`, `Template: checklist-page`, `Theme: cat-{category}`,
 `Category`, `Icon` (icon name), `Checks` (count), `Keywords` (item titles).
 
 1. **Title section** (section style `title`): `:icon:` paragraph, `h1`, category link paragraph
