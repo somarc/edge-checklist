@@ -371,7 +371,7 @@ def sidekick_page():
         '<p>Authors and developers already open every page through the Sidekick. A checklist plugin there meets them '
         'on the preview, before publish.</p>' + section_style('hero'),
         sidekick_demo(),
-        steps,
+        '<h2>How it would work</h2>' + steps + section_style('intro'),
         kv_block('metadata', [
             ('title', 'Sidekick plugin · Edge Checklist'),
             ('description', 'Concept: the Edge Checklist as a Sidekick plugin that matches the preview page to its '
