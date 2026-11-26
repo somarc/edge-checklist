@@ -1,16 +1,10 @@
 import { getMetadata } from '../../scripts/aem.js';
 import { isAuthoring } from '../../scripts/scripts.js';
+import { loadPlaceholders, t } from '../../scripts/placeholders.js';
 
 const LEVELS = ['must', 'should', 'could'];
 const VERIFIERS = ['machine', 'agent', 'human'];
-const FORMATS = [
-  ['txt', 'Plain text'],
-  ['md', 'Markdown'],
-  ['gh', 'GitHub'],
-  ['jira', 'Jira'],
-  ['slack', 'Slack'],
-  ['agent', 'Agent prompt'],
-];
+const FORMATS = ['txt', 'md', 'gh', 'jira', 'slack', 'agent'];
 
 const storageKey = () => `edge-checklist:${window.location.pathname}`;
 
@@ -94,8 +88,9 @@ function el(tag, attrs = {}, text = '') {
  * Adds published-only interaction: checkboxes, progress, filter, reset and export.
  * @param {Element} block checklist block
  * @param {Element[]} rows classified rows
+ * @param {Record<string, string>} texts UI text from the placeholders sheet
  */
-function addInteraction(block, rows) {
+function addInteraction(block, rows, texts) {
   const done = readState();
   const items = rows.map(readItem);
   const mustCount = rows.filter((r) => r.dataset.level === 'must').length;
@@ -103,25 +98,26 @@ function addInteraction(block, rows) {
   const head = el('div', { class: 'checklist-head' });
   const score = el('h2', { class: 'checklist-score', 'aria-live': 'polite' });
   const actions = el('div', { class: 'checklist-actions' });
-  const filter = el('div', { class: 'checklist-filter', role: 'group', 'aria-label': 'Filter checks' });
-  const allBtn = el('button', { type: 'button', 'aria-pressed': 'true' }, 'All');
-  const mustBtn = el('button', { type: 'button', 'aria-pressed': 'false' }, `Must ${mustCount}`);
+  const filter = el('div', { class: 'checklist-filter', role: 'group', 'aria-label': t(texts, 'checklist-filter-label') });
+  const allBtn = el('button', { type: 'button', 'aria-pressed': 'true' }, t(texts, 'checklist-filter-all'));
+  const mustBtn = el('button', { type: 'button', 'aria-pressed': 'false' }, t(texts, 'checklist-filter-must', { count: mustCount }));
   filter.append(allBtn, mustBtn);
-  const reset = el('button', { type: 'button', class: 'checklist-reset' }, 'Reset');
+  const reset = el('button', { type: 'button', class: 'checklist-reset' }, t(texts, 'checklist-reset'));
   const progress = el('span', { class: 'checklist-progress', 'aria-hidden': 'true' });
   actions.append(filter, reset);
   head.append(score, actions, progress);
   block.prepend(head);
 
-  const doneNote = el('p', { class: 'checklist-done', hidden: '' }, `All ${rows.length} checked. Keep it 100.`);
+  const doneNote = el('p', { class: 'checklist-done', hidden: '' }, t(texts, 'checklist-all-checked', { total: rows.length }));
   const exportBar = el('div', { class: 'checklist-export' });
-  exportBar.append(el('span', { class: 'checklist-export-label' }, 'Copy as'));
+  exportBar.append(el('span', { class: 'checklist-export-label' }, t(texts, 'checklist-copy-as')));
   const status = el('span', { class: 'checklist-export-status', role: 'status' });
-  FORMATS.forEach(([fmt, label]) => {
+  FORMATS.forEach((fmt) => {
+    const label = t(texts, `export-${fmt}`);
     const btn = el('button', { type: 'button', 'data-format': fmt }, label);
     btn.addEventListener('click', async () => {
       const ok = await copyText(exportText(items, done, fmt));
-      status.textContent = ok ? `${label} copied` : 'Copy blocked in this browser';
+      status.textContent = ok ? t(texts, 'checklist-copied', { label }) : t(texts, 'checklist-copy-blocked');
     });
     exportBar.append(btn);
   });
@@ -145,7 +141,7 @@ function addInteraction(block, rows) {
     });
     writeState(done);
     const n = boxes.filter((b) => b.checked).length;
-    score.textContent = `${n} out of ${rows.length}`;
+    score.textContent = t(texts, 'checklist-progress', { done: n, total: rows.length });
     progress.style.inlineSize = `${(n / rows.length) * 100}%`;
     doneNote.hidden = n !== rows.length;
   };
@@ -175,7 +171,7 @@ function addInteraction(block, rows) {
  * | Check (heading + detail) | Level | Verify | Source |
  * @param {Element} block The block element
  */
-export default function decorate(block) {
+export default async function decorate(block) {
   const rows = [...block.children];
   rows.forEach((row, i) => {
     row.classList.add('checklist-item');
@@ -200,5 +196,5 @@ export default function decorate(block) {
   });
 
   if (isAuthoring()) return;
-  addInteraction(block, rows);
+  addInteraction(block, rows, await loadPlaceholders());
 }

@@ -154,18 +154,21 @@ def verify_with(c):
         f'<p><a href="{HELIX_TOOLS}">All Helix admin tools on tools.aem.live</a></p>'
 
 
+def item_row(it):
+    src = f'<a href="{e(it["source"])}">{e(host_label(it["source"]))}</a>' if it.get('source') else 'No public source'
+    return [f'<h3>{e(it["title"])}</h3><p>{e(it["detail"])}</p>', e(it['level'].capitalize()),
+            verify_cell(it['verify']), src]
+
+
+def related_items(c, by_id):
+    return [f'<li>{icon_link(by_id[rid])} {e(CAT_NAME[by_id[rid]["category"]])}</li>'
+            for rid in c.get('related', []) if rid in by_id]
+
+
 def checklist_page(c, by_id):
     cat = c['category']
-    items = []
-    for it in c['items']:
-        verify = verify_cell(it['verify'])
-        src = f'<a href="{e(it["source"])}">{e(host_label(it["source"]))}</a>' if it.get('source') else 'No public source'
-        items.append([f'<h3>{e(it["title"])}</h3><p>{e(it["detail"])}</p>', e(it['level'].capitalize()), verify, src])
-    related = []
-    for rid in c.get('related', []):
-        r = by_id.get(rid)
-        if r:
-            related.append(f'<li>{icon_link(r)} {e(CAT_NAME[r["category"]])}</li>')
+    items = [item_row(it) for it in c['items']]
+    related = related_items(c, by_id)
     sections = [
         f'<p>:{ICON.get(c["id"], "list-checks")}:</p><h1>{e(c["title"])}</h1>'
         f'<p><a href="/{cat}">{e(CAT_NAME[cat])}</a></p><p>{e(c["summary"])}</p>{section_style("title")}',
@@ -213,12 +216,19 @@ def top_checkers(lists, kind, n=4):
     return counter.most_common(n)
 
 
-def home_page(lists, by_cat, by_id, totals):
-    cards = []
+def category_rows(ids, by_id, by_cat):
+    rows = []
     for cid, name, blurb in CATEGORIES:
+        if cid not in ids:
+            continue
         chips = ''.join(f'<li>{icon_link(by_id[i])}</li>' for i in FEATURED_CHIPS[cid] if i in by_id)
-        cards.append([f'<h2>{e(name)}</h2><p>{e(blurb)}</p><p><a href="/{cid}">View all {len(by_cat[cid])}</a></p>',
-                      f'<ul>{chips}</ul>'])
+        rows.append([f'<h2>{e(name)}</h2><p>{e(blurb)}</p><p><a href="/{cid}">View all {len(by_cat[cid])}</a></p>',
+                     f'<ul>{chips}</ul>'])
+    return rows
+
+
+def home_page(lists, by_cat, by_id, totals):
+    cards = category_rows([c[0] for c in CATEGORIES], by_id, by_cat)
     items_total = sum(totals.values())
     machine_pct = round(totals['machine'] / items_total * 100)
     sourced = sum(1 for c in lists for it in c['items'] if it.get('source'))
@@ -267,6 +277,10 @@ def sidekick_demo():
 
 
 def legend_block(lists, totals):
+    return block('verify-legend', legend_rows(lists, totals))
+
+
+def legend_rows(lists, totals):
     rows = []
     for k in KINDS:
         top = []
@@ -276,7 +290,25 @@ def legend_block(lists, totals):
             top.append(f'<li>{name} <em>{n}</em></li>')
         rows.append([str(totals[k]), f'<h3>{k.capitalize()} checks</h3><p>{e(KIND_BLURB[k])}</p>',
                      f'<ul>{"".join(top)}</ul>'])
-    return block('verify-legend', rows)
+    return rows
+
+
+def checker_rows(lists, limit):
+    tally = defaultdict(lambda: {'n': 0, 'by': '', 'lists': set()})
+    for c in lists:
+        for it in c['items']:
+            if it['verify']['by'] == 'human':
+                continue
+            t = tally[it['verify']['how']]
+            t['n'] += 1
+            t['by'] = it['verify']['by']
+            t['lists'].add(c['id'])
+    rows = [['Checker', 'Kind', 'Checks', 'Lists']]
+    for how, t in sorted(tally.items(), key=lambda kv: -kv[1]['n'])[:limit]:
+        found = checker(how)
+        cell = f'<a href="{e(found[1])}">{e(how)}</a>' if found and found[1] else e(how)
+        rows.append([cell, t['by'].capitalize(), str(t['n']), str(len(t['lists']))])
+    return rows
 
 
 def skill_page(lists, by_id, totals):
@@ -289,20 +321,7 @@ def skill_page(lists, by_id, totals):
                   + '; '.join(e(it['title']) for it in human_items) + '.')
     matched_names = ', '.join(f"{c['title']} · {CAT_NAME[c['category']]}" for c in matched)
 
-    tally = defaultdict(lambda: {'n': 0, 'by': '', 'lists': set()})
-    for c in lists:
-        for it in c['items']:
-            if it['verify']['by'] == 'human':
-                continue
-            t = tally[it['verify']['how']]
-            t['n'] += 1
-            t['by'] = it['verify']['by']
-            t['lists'].add(c['id'])
-    rows = [['Checker', 'Kind', 'Checks', 'Lists']]
-    for how, t in sorted(tally.items(), key=lambda kv: -kv[1]['n'])[:14]:
-        found = checker(how)
-        cell = f'<a href="{e(found[1])}">{e(how)}</a>' if found and found[1] else e(how)
-        rows.append([cell, t['by'].capitalize(), str(t['n']), str(len(t['lists']))])
+    rows = checker_rows(lists, 14)
 
     chat = block('chat', [
         ['You', 'Check <code>feat-hero--brand-site--acme.aem.page</code> before I merge.'],
@@ -511,6 +530,19 @@ def main():
     files['sources.html'] = sources_page(lists)
     files['nav.html'] = nav_page()
     files['footer.html'] = footer_page(lists, by_cat, items_total)
+
+    import library  # noqa: E402  pylint: disable=import-outside-toplevel
+    lib_count = library.write(out, lists, by_id, {
+        'item_row': item_row,
+        'related_items': lambda c: related_items(c, by_id),
+        'verify_with': verify_with,
+        'index_rows': index_rows,
+        'category_rows': lambda ids: category_rows(ids, by_id, by_cat),
+        'legend_rows': lambda: legend_rows(lists, totals),
+        'checker_rows': lambda n: checker_rows(lists, n),
+        'sidekick_demo': sidekick_demo,
+    })
+    print(f'library: {lib_count} files')
 
     for rel, content in files.items():
         target = out / rel

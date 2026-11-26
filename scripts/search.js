@@ -3,6 +3,7 @@
  * Data: /query-index.json rows under a category path; falls back to the footer's links.
  */
 import { loadCSS } from './aem.js';
+import { loadPlaceholders, t as tr } from './placeholders.js';
 
 const CATEGORY_NAMES = {
   blocks: 'Blocks',
@@ -32,6 +33,7 @@ let options = [];
 let selected = 0;
 let indexPromise;
 let returnFocus;
+let texts = {};
 
 const categoryOf = (path) => (PATH_RE.exec(path) || [])[1] || '';
 const cleanTitle = (t = '') => t
@@ -174,7 +176,7 @@ function row({ e, check }, terms, id) {
   if (subText) {
     const sub = document.createElement('span');
     sub.className = 'search-sub';
-    if (check) sub.append('Check: ');
+    if (check) sub.append(tr(texts, 'search-check-prefix'));
     highlight(sub, subText, terms);
     text.append(sub);
   }
@@ -219,28 +221,29 @@ async function render() {
   if (!query.trim()) {
     const byPath = Object.fromEntries(data.map((e) => [e.path, e]));
     const popular = POPULAR.map((p) => byPath[p] || entry({ path: p, title: humanize(p) }));
-    list.append(groupLabel('Popular'));
+    list.append(groupLabel(tr(texts, 'search-popular')));
     popular.forEach((e, i) => list.append(row({ e }, [], i)));
     count = popular.length;
   } else {
     const { terms, results } = search(query, data);
     const lists = results.filter((r) => !r.check);
     const checks = results.filter((r) => r.check);
-    if (lists.length) list.append(groupLabel('Checklists'));
+    if (lists.length) list.append(groupLabel(tr(texts, 'search-checklists')));
     lists.forEach((r, i) => list.append(row(r, terms, i)));
-    if (checks.length) list.append(groupLabel('Checks'));
+    if (checks.length) list.append(groupLabel(tr(texts, 'search-checks')));
     checks.forEach((r, i) => list.append(row(r, terms, lists.length + i)));
     count = results.length;
     if (!count) {
       const none = document.createElement('li');
       none.className = 'search-none';
       none.setAttribute('aria-hidden', 'true');
-      none.textContent = `Nothing matches “${query.trim()}”.`;
+      none.textContent = tr(texts, 'search-none', { query: query.trim() });
       list.append(none);
     }
   }
   options = [...list.querySelectorAll('[role="option"]')];
-  status.textContent = query.trim() ? `${count} result${count === 1 ? '' : 's'}` : '';
+  const countKey = count === 1 ? 'search-count-one' : 'search-count-many';
+  status.textContent = query.trim() ? tr(texts, countKey, { count }) : '';
   select(0);
 }
 
@@ -259,7 +262,7 @@ function kbd(text) {
 function build() {
   dialog = document.createElement('dialog');
   dialog.className = 'search-dialog';
-  dialog.setAttribute('aria-label', 'Search checklists');
+  dialog.setAttribute('aria-label', tr(texts, 'search-label'));
 
   const box = document.createElement('div');
   box.className = 'search-box';
@@ -270,18 +273,18 @@ function build() {
   icon.height = 20;
   input = document.createElement('input');
   input.type = 'search';
-  input.placeholder = 'Search checklists and checks: hero, redirects, LCP…';
+  input.placeholder = tr(texts, 'search-input');
   input.autocomplete = 'off';
   input.spellcheck = false;
   input.setAttribute('role', 'combobox');
-  input.setAttribute('aria-label', 'Search checklists');
+  input.setAttribute('aria-label', tr(texts, 'search-label'));
   input.setAttribute('aria-autocomplete', 'list');
   input.setAttribute('aria-expanded', 'true');
   input.setAttribute('aria-controls', 'search-results');
   const close = document.createElement('button');
   close.type = 'button';
   close.className = 'search-close';
-  close.setAttribute('aria-label', 'Close search');
+  close.setAttribute('aria-label', tr(texts, 'search-close'));
   close.append(kbd('esc'));
   box.append(icon, input, close);
 
@@ -289,7 +292,7 @@ function build() {
   list.id = 'search-results';
   list.className = 'search-results';
   list.setAttribute('role', 'listbox');
-  list.setAttribute('aria-label', 'Results');
+  list.setAttribute('aria-label', tr(texts, 'search-results'));
 
   status = document.createElement('p');
   status.className = 'visually-hidden';
@@ -298,11 +301,11 @@ function build() {
   const foot = document.createElement('div');
   foot.className = 'search-foot';
   const move = document.createElement('span');
-  move.append(kbd('↑'), kbd('↓'), ' to move');
+  move.append(kbd('↑'), kbd('↓'), ` ${tr(texts, 'search-hint-move')}`);
   const open = document.createElement('span');
-  open.append(kbd('↵'), ' to open');
+  open.append(kbd('↵'), ` ${tr(texts, 'search-hint-open')}`);
   const esc = document.createElement('span');
-  esc.append(kbd('esc'), ' to close');
+  esc.append(kbd('esc'), ` ${tr(texts, 'search-hint-close')}`);
   foot.append(move, open, esc);
 
   dialog.append(box, list, status, foot);
@@ -342,7 +345,7 @@ function build() {
 export default async function openSearch({ trigger } = {}) {
   // authoring (Canvas quick-edit) keeps the header's plain link: no modal over the editor
   if (document.documentElement.hasAttribute('quick-edit')) return;
-  await loadCSS(`${window.hlx.codeBasePath}/scripts/search.css`);
+  [texts] = await Promise.all([loadPlaceholders(), loadCSS(`${window.hlx.codeBasePath}/scripts/search.css`)]);
   if (!dialog || !dialog.isConnected) build();
   returnFocus = trigger || document.activeElement;
   if (!dialog.open) dialog.showModal();
