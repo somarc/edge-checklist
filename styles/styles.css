@@ -20,6 +20,7 @@
   --color-agent: #3f3bd1;
   --color-human: #8a5a20;
   --color-pass: #1c7c43;
+  --color-missing: #b3261e;
 
   /* category tints and inks (inks pass 4.5:1 on their tint) */
   --cat-blocks: #ede6d5;
@@ -373,6 +374,14 @@ main > .section.hero {
   font-style: normal;
 }
 
+.section .concept-label::before {
+  content: "";
+  inline-size: 0.8125rem;
+  block-size: 0.8125rem;
+  background-color: currentcolor;
+  mask: url("../icons/sparkles.svg") center / contain no-repeat;
+}
+
 /* section style: filters (category links on index pages) */
 .section.filters ul {
   display: flex;
@@ -488,25 +497,49 @@ main > .section.wild {
   }
 }
 
-/* section style: promo (home Sidekick concept) */
+/* section style: promo (home Sidekick concept): one white card around copy and demo */
+main > .section.promo {
+  margin: var(--space-7) var(--gutter);
+  padding: var(--space-6) var(--space-5);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
 main > .section.promo > div {
   max-inline-size: var(--content-max);
+  padding-inline: 0;
+}
+
+main > .section.promo .sidekick-demo-wrapper {
+  margin-block-start: var(--space-6);
+}
+
+.section.promo a.button.primary::after {
+  content: "";
+  inline-size: 1rem;
+  block-size: 1rem;
+  background-color: currentcolor;
+  mask: url("../icons/arrow-right.svg") center / contain no-repeat;
 }
 
 @media (width >= 900px) {
   main > .section.promo {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
-    gap: var(--space-7);
+    gap: var(--space-8);
     align-items: center;
-    max-inline-size: var(--content-max);
-    margin-inline: auto;
-    padding-inline: var(--gutter);
+    margin-inline: max(var(--gutter), calc((100% - var(--content-max)) / 2 + var(--gutter)));
+    padding: var(--space-8);
+    border-radius: 2.25rem;
   }
 
   main > .section.promo > div {
-    padding-inline: 0;
     margin-inline: 0;
+  }
+
+  main > .section.promo .sidekick-demo-wrapper {
+    margin-block-start: 0;
   }
 }
 

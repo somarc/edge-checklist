@@ -238,7 +238,7 @@ def sidekick_demo():
     return block('sidekick-demo', [
         ['main--brand-site--acme.aem.page/products/trail-runner'],
         ['Product detail · Pages', 'matched by template'],
-        ['9 pass', '2 review', '1 missing'],
+        ['<p>9</p><p>pass</p>', '<p>2</p><p>review</p>', '<p>1</p><p>missing</p>'],
         ['✅', 'Product image is the LCP and loads eagerly'],
         ['✅', 'Title and description metadata present'],
         ['🤔', 'Price renders after a client fetch; check the layout shift'],
