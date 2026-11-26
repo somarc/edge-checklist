@@ -1,20 +1,178 @@
-footer {
-  background-color: var(--light-color);
-  font-size: var(--body-font-size-xs);
+/* footer: brand + CTAs, one column per category (2 / 3 / 6 across), bottom line */
+.footer {
+  border-block-start: 1px solid var(--color-line);
+  color: var(--color-ink);
+  font-size: var(--font-size-s);
 }
 
-footer .footer > div {
-  margin: auto;
-  max-width: 1200px;
-  padding: 40px 24px 24px;
+.footer .footer-inner {
+  max-inline-size: var(--content-max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
 }
 
-footer .footer p {
+.footer p,
+.footer ul {
   margin: 0;
 }
 
-@media (width >= 900px) {
-  footer .footer > div {
-    padding: 40px 32px 24px;
+.footer a:any-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  color: var(--color-ink);
+}
+
+/* top: brand, blurb, CTAs */
+.footer .footer-top .default-content-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+  padding-block: var(--space-7) var(--space-6);
+  border-block-end: 1px solid var(--color-line);
+}
+
+.footer .footer-intro p:not(.footer-brand) {
+  margin-block-start: var(--space-2);
+  max-inline-size: var(--measure);
+  color: var(--color-muted);
+}
+
+.footer .footer-brand a:any-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-h3);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.footer .footer-brand .icon {
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+}
+
+.footer .footer-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: 0;
+  list-style: none;
+}
+
+.footer .footer-ctas a:any-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3) var(--space-2) var(--space-2);
+  border-radius: var(--radius-m);
+  background-color: var(--color-surface-soft);
+  box-shadow: 0 0 0 1px var(--color-line);
+  font-weight: 500;
+}
+
+.footer .footer-ctas a:hover {
+  background-color: var(--color-surface);
+  box-shadow: 0 0 0 1px var(--color-faint);
+}
+
+.footer .footer-cta-icon {
+  display: grid;
+  place-items: center;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  border-radius: calc(var(--radius-s) / 1.6);
+  background-color: var(--color-ink);
+}
+
+.footer .footer-cta-sidekick {
+  background-color: var(--color-accent);
+}
+
+.footer .footer-cta-icon img {
+  inline-size: 0.75rem;
+  block-size: 0.75rem;
+  filter: invert(1);
+}
+
+.footer .footer-cta-arrow {
+  display: inline-flex;
+  opacity: 0.6;
+}
+
+.footer .footer-cta-arrow img {
+  inline-size: 0.9375rem;
+  block-size: 0.9375rem;
+}
+
+/* category columns */
+.footer .footer-cols .columns > div {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: var(--space-6) var(--space-5);
+  padding-block: var(--space-6);
+}
+
+.footer .footer-cols .columns > div > div {
+  order: 0;
+}
+
+.footer .footer-cols h1,
+.footer .footer-cols h2,
+.footer .footer-cols h3,
+.footer .footer-cols h4 {
+  margin-block: 0 var(--space-3);
+  font-size: var(--font-size-s);
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: var(--line-height-body);
+}
+
+.footer .footer-cols ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: 0;
+  list-style: none;
+}
+
+.footer .footer-cols a:any-link {
+  color: var(--color-muted);
+}
+
+.footer .footer-cols a:hover {
+  color: var(--color-ink);
+}
+
+/* bottom line */
+.footer .footer-bottom .default-content-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+  padding-block: var(--space-5) var(--space-7);
+  border-block-start: 1px solid var(--color-line);
+  color: var(--color-muted);
+}
+
+.footer .footer-bottom a:any-link {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+@media (width >= 600px) {
+  .footer .footer-cols .columns > div {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (width >= 1200px) {
+  .footer .footer-cols .columns > div {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 }

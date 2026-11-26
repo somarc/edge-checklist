@@ -332,7 +332,7 @@ def nav_page():
     cats = ''.join(f'<li><a href="/{cid}">{e(name)}</a></li>' for cid, name, _ in CATEGORIES)
     return page([
         '<p><a href="/">:logo:Edge Checklist</a></p>',
-        f'<ul><li><p>Browse</p><ul>{cats}<li><a href="/browse">All checklists</a></li></ul></li>'
+        f'<ul><li><a href="/">Home</a></li><li><p>Browse</p><ul>{cats}<li><a href="/browse">All checklists</a></li></ul></li>'
         '<li><a href="/skill">Agent skill</a></li><li><a href="/sidekick">Sidekick</a></li></ul>',
         '<p><a href="/browse">Search</a></p>',
     ])
