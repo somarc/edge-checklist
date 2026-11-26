@@ -372,6 +372,7 @@ def sources_page(lists):
     for cid, it in items:
         if it.get('source'):
             host = urlparse(it['source']).netloc
+            host = host[4:] if host.startswith('www.') and host != 'www.aem.live' else host
             key = host if any(host == h for h, _, _ in SOURCE_HOSTS) else 'other'
             by_host[key][0] += 1
             by_host[key][1].add(cid)

@@ -30,16 +30,16 @@
 }
 
 .related .related-item {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  column-gap: var(--space-2);
+  padding-inline-start: 2rem;
   color: var(--color-muted);
+  text-indent: -2rem;
   font-size: var(--font-size-body);
 }
 
 .related .related-item a:any-link {
   display: inline-flex;
+  margin-inline-end: var(--space-2);
+  text-indent: 0;
   align-items: center;
   gap: var(--space-3);
   padding-block: var(--space-1);
